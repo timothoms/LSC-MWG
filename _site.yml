@@ -1,7 +1,7 @@
 name: "LSC-MWG"
 output_dir: "docs"
 navbar:
-  title: "LSC-MWG: large-N analyses"
+  title: "LSC-MWG Large-N analyses"
   left:
   - text: "Home"
     href: index.html
@@ -9,4 +9,4 @@ navbar:
     href: intro.html
 output:
   html_document:
-theme: jekyll-theme-cayman
+theme: cosmo
