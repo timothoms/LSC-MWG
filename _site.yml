@@ -1,7 +1,7 @@
 name: "LSC-MWG"
 output_dir: "docs"
 navbar:
-  title: "LSC-MWG Large-N analyses"
+  title: "LSC-MWG"
   left:
   - text: "Home"
     href: index.html
