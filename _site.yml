@@ -1,0 +1,12 @@
+name: "LSC-MWG"
+output_dir: "docs"
+navbar:
+  title: "LSC-MWG: large-N analyses"
+  left:
+  - text: "Home"
+    href: index.html
+  - text: "Introduction"
+    href: intro.html
+output:
+  html_document:
+theme: jekyll-theme-cayman
