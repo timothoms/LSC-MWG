@@ -2,6 +2,10 @@
 _ignore/
 _summary/
 
+# specific data files
+_data/LSCMWG_working_class.RData
+_data/LSCMWG_working_data.RData
+
 # History files
 .Rhistory
 .Rapp.history
