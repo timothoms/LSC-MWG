@@ -1,0 +1,134 @@
+---
+title: "Data & Correlations"
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+knitr::knit_hooks$set(webgl = rgl::hook_webgl)
+knitr::knit_hooks$set(optipng = knitr::hook_optipng)
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE, fig.width = 12, fig.height = 10, out.width = "100%", out.height = "100%", optipng = '-o7', rownames.print = FALSE, rows.print = 10, cols.min.print = 8)
+options(width = 240)
+```
+
+## Variables
+
+All the analyses are based on a large global dataset (and accompanying codebook) which we assembled from commonly used quantitative indicators on health, gender equality and several types of violence. The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Lancet Commission Metrics Working Group, or at this [link](https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing) (access via logging into the shared folder provides more functionality). The dataset is also available in the shared Dropbox folder of the Working Group.) We begin by considering the following measures within the categories of health outcomes, gender inequalities, state-based violent conflict, one-sided violence, and societal violence. The code also sets up vectors of variable names for later use.)  
+
+```{r startup}
+load("_data/dataset_LSCMWG.RData", verbose = TRUE)
+link <- "https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing"
+googlesheets4::gs4_deauth()
+codebook <- googlesheets4::read_sheet(link, sheet = "codebook")
+IsTrue <- function(x) { !is.na(x) & x }
+categories <- list(
+  one_sided = codebook$variable[IsTrue(codebook$flag == "use") & 
+    codebook$sub_category %in% c("one-sided violence", "repression")],
+  societal = codebook$variable[IsTrue(codebook$flag == "use") & 
+    IsTrue(codebook$sub_category == "societal violence")],
+  conflict = codebook$variable[IsTrue(codebook$flag == "use") & 
+    IsTrue(codebook$sub_category == "state-based conflict")],
+  gender = codebook$variable[IsTrue(codebook$flag == "use") & 
+    IsTrue(codebook$category == "gender") & 
+    IsTrue(!codebook$sub_category %in% c("education", "labor") | is.na(codebook$sub_category))],
+  gender_labor = codebook$variable[IsTrue(codebook$flag == "use") & 
+    IsTrue(codebook$category == "gender" & codebook$sub_category == "labor")],
+  gender_educ = codebook$variable[IsTrue(codebook$flag == "use") & 
+    IsTrue(codebook$category == "gender" & codebook$sub_category == "education")],
+  health = codebook$variable[IsTrue(codebook$flag == "use") & 
+    codebook$category %in% c("health")]
+)
+categories
+variables <- list(
+  measurement_models = c("latentmean_fariss", "v2cltort", "v2clkill", "v2caviol"),
+  death_rates = c("deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
+                  "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate"),
+  conflict_incidence = c("conflict_internal", "war_internal",  "conflict_non_state", "conflict_one_sided"),
+  health_full = c("imr_wpp", "ufmr_wpp", "life_exp_wpp", "daly_ihme"),
+  gender_full = c("labor_mod_ratio15_ilo", "wmn_parl_wdi", "tfr_wpp", 
+                  "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr"),
+  political = c("polity2_p4", "dem_bmr", "v2x_polyarchy", "v2x_libdem", 
+                "v2x_liberal", "v2x_partipdem", "v2x_partip")
+)
+variables <- lapply(variables, function(set) {
+  names(set) <- set 
+  return(set)
+})
+```
+
+## Country data coverage of measures over time
+```{r coverage}
+lapply(categories, function(cat) {
+  tbl <- lapply(cat, function(col_name) { 
+    table(data$year, !is.na(data[, col_name]))[, 2] 
+  })
+  tbl <- do.call(cbind, tbl)
+  colnames(tbl) <- cat
+  return(tbl)
+})
+```
+
+Due to data availability, the time period for our analyses will be primarily from 1990 until 2015 or 2018.
+
+## Within-category correlations
+```{r packages, echo = FALSE, eval = FALSE}
+PerformanceAnalytics::chart.Correlation(data[, categories$gender], histogram = TRUE)
+ggcorrplot::ggcorrplot(cor(data[, categories$gender], use = "pairwise.complete.obs"), 
+                       p.mat = cor_pmat(data[, categories$gender]), hc.order = TRUE, type = "lower")
+corrgram::corrgram(data[, categories$gender], order = TRUE, lower.panel = panel.ellipse, 
+                   upper.panel = panel.pts , text.panel = panel.txt, diag.panel = panel.minmax, main = "")
+GGally::ggcorr(data[, categories$gender], nbreaks = 10, palette = "RdGy", 
+               label = TRUE, label_size = 5, label_color = "white")
+GGally::ggpairs(data[, categories$gender])
+```
+```{r within, message = FALSE, warning = FALSE, results = 'hide'}
+lapply(names(categories), function(category) {
+  GGally::ggpairs(data[, categories[[category]]], mapping = aes(stroke = 0, alpha = 0.25)) + 
+    theme_bw() + 
+    theme(strip.text.y.right = element_text(angle = 0)) + 
+    ggtitle(category)
+})
+```
+
+## Across-category correlations
+
+Based on theoretical relevance and representativeness (see within-category correlations), we show correlations of certain of these variables across the categories: 
+
+```{r across, message = FALSE, warning = FALSE}
+variables_to_include <- c("labor_mod_ratio15_ilo", "mys_ratio_hdr", "tfr_wpp", "asfr_adol_wpp", "imr_wpp",
+                          "ufmr_wpp", "daly_ihme", "physicians_pc_wdi", "life_exp_wpp", "pc_rgdpe_pwt",
+                          "deaths_all_int_rate", "deaths_all_osv_rate", "latentmean_fariss", 
+                          "deaths_all_nsc_rate", "hom_odcwho_rate")
+GGally::ggpairs(data[, variables_to_include], mapping = aes(stroke = 0, alpha = 0.25)) + 
+  theme_bw() + 
+  theme(strip.text.y.right = element_text(angle = 0))
+```
+
+## Which countries have such high ratios of years of schooling in favor of women?
+
+We noticed that some of the education ratios (female to male) are surprisingly high, and want to know which country-years account for this. 
+
+```{r unexpected, rows.print = 12}
+variables$ed <- c("mys_ratio_hdr", "mys_ratio_uis", "eys_ratio_hdr", "eys_ratio_uis")
+summary(data[, variables$ed])
+paste(unique(data$country[IsTrue(data$mys_ratio_hdr > 1)]), collapse = "; ")
+data[IsTrue(data$mys_ratio_hdr > 1), c("country", "year", variables$ed)]
+```
+
+## Inverting variables for comparable interpretation within categories
+
+Since we are dealing with a wide range of measures, we need to ensure that they reflect the same "direction" of effects. We do this by coding the negative of some variables, so that higher values indicate better outcomes for the health and gender categories and higher values indicate worse outcomes for the violence categories. 
+
+```{r make_negative}
+variables$negative <- c("imr_wpp", "ufmr_wpp", "mmr_unicef", "daly_ihme", "asfr_adol_wpp", "tfr_wpp", 
+                        "latentmean_fariss", "v2cltort", "v2clkill", "latentmean_fariss_cumulative1991", 
+                        "latentmean_fariss_cumulative1996", "v2cltort_cumulative1991", 
+                        "v2cltort_cumulative1996", "v2clkill_cumulative1991", "v2clkill_cumulative1996")
+summary(data[, c(variables$negative[1:7])])
+data[, variables$negative] <- lapply(data[, variables$negative], '-')
+summary(data[, c(variables$negative[1:7])])
+```
+
+```{r saving, include = FALSE}
+save(data, codebook, categories, variables, file = "_data/LSCMWG_working_data.RData")
+```

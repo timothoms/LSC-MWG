@@ -9,14 +9,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Oskar Timo Thoms, Dane Rowlands, and Valerie Percival" />
 
 
-<title>Introduction</title>
+<title>Lancet-SIGHT Commission Metrics WG: Large-N analyses</title>
 
 <script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -30,8 +31,8 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -42,21 +43,12 @@
   ul.task-list{list-style: none;}
     </style>
 
-<style type="text/css">code{white-space: pre;}</style>
-<script type="text/javascript">
-if (window.hljs) {
-  hljs.configure({languages: []});
-  hljs.initHighlightingOnLoad();
-  if (document.readyState && document.readyState === "complete") {
-    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
-  }
-}
-</script>
 
 
 
 
 
+<link rel="stylesheet" href="styles.css" type="text/css" />
 
 
 
@@ -242,10 +234,25 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
+  <a href="intro.html">Introduction</a>
 </li>
 <li>
-  <a href="intro.html">Introduction</a>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="classifications.html">Classifications</a>
+</li>
+<li>
+  <a href="regressions.html">Cross-sectional Models</a>
+</li>
+<li>
+  <a href="panel.html">Panel Models</a>
+</li>
+<li>
+  <a href="sequences.html">Sequences</a>
+</li>
+<li>
+  <a href="cases.html">Cases</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -259,12 +266,56 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Introduction</h1>
+<h1 class="title toc-ignore">Lancet-SIGHT Commission Metrics WG: Large-N analyses</h1>
+<h4 class="author"><a href="mailto:timo.thoms@carleton.ca">Oskar Timo Thoms</a>, Dane Rowlands, and <a href="mailto:Valerie.Percival@carleton.ca">Valerie Percival</a></h4>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#research-questions">Research questions</a></li>
+<li><a href="#our-work-to-date">Our work to date</a></li>
+<li><a href="#other-possible-extensions">Other possible extensions</a></li>
+</ul>
+</div>
 
-
+<div id="research-questions" class="section level2">
+<h2>Research questions</h2>
+<p>In the large-N quantitative analyses, we examine the hypotheses of virtuous and vicious cycles. This is inspired by Suri et al’s (2011) analysis of the relationship and feedback loops between human development and economic growth. In our context, the hypothesis is that health, gender, and violence variables interact with each other (and with their broader political and economic context) to produce reinforcing cycles, which can be both positive or negative. From the Lancet Commission’s perspective, we are particularly interested in the direction of statistical effects from health and gender outcomes to violence, but also whether violence makes improvements in gender equality and health outcomes less likely. The key questions are:</p>
+<ul>
+<li><p>While accounting for the overall improvements that most countries have experienced in health and gender outcomes in recent decades, do those countries that score low in earlier periods improve less than the global average and/or high performers, or do they even decline?</p></li>
+<li><p>While accounting for possible ceiling effects, do those countries that score high in earlier periods a) maintain stable and high levels and b) avoid violence?</p></li>
+<li><p>Do countries that experience higher levels of violence a) improve less on gender equality and health outcomes than those with less violence, or b) do their gender and health outcomes even deteriorate?</p></li>
+<li><p>Are countries that score low on health and gender outcomes more prone to violence than those that score higher?</p></li>
+</ul>
+<p>Since we’re analyzing the data statistically, we are testing these questions in probabilistic terms, not in a deterministic fashion. Of course, there are many other factors influencing health, gender and violence outcomes. We do not aim to develop full causal models of each outcome, but to examine whether there are associations between the three categories of outcomes that are consistent with the virtuous and vicious cycles hypotheses.</p>
+</div>
+<div id="our-work-to-date" class="section level2">
+<h2>Our work to date</h2>
+<p>We have taken the following steps for far:</p>
+<ol style="list-style-type: decimal">
+<li><p>Identification of key gender, health and violence indicators as candidates for the analyses.</p></li>
+<li><p>Assembly of a comprehensive dataset with the best available cross-national health, gender and violence indicators and other relevant variables (such as GDP per capita, political regime type, etc). This was presented at the Commission meeting in late June.</p></li>
+<li><p>Analysis of the quality and availability of the available indicators.</p></li>
+<li><p>Quantitative checks to identify representative measures from within each category (within-category correlations).</p></li>
+<li><p>Across-category correlations to check basic bivariate statistical relationships between categories.</p></li>
+<li><p>Classification of countries based on health and gender outcomes, in order to create groups of countries for comparison, to be used in examining the virtuous and vicious cycles hypotheses.</p></li>
+<li><p>Bivariate graphical analyses of key measures to show health, gender, and violence trends within the classifications over time. Are there trajectories associated with certain classifications? Do these provide support for virtuous and vicious cycles?</p></li>
+<li><p>Multivariate cross-sectional statistical models to test the hypotheses, and to explore intervening economic and political variables.</p></li>
+<li><p>Multivariate panel models to further test the hypotheses and analytically separate virtuous and vicious cycles.</p></li>
+</ol>
+<p>This work is shown on this website. We are currently extending these analyses to further our understanding of virtuous and vicious cycles, and explore nuances in the statistical relationships. We are also exploring sequences of change in gender and health outcomes to examine possible pathways from vicious to virtuous cycles. This ongoing work will be added to this site.</p>
+</div>
+<div id="other-possible-extensions" class="section level2">
+<h2>Other possible extensions</h2>
+<ul>
+<li><p>Build fuller statistical models of individual outcomes in order to account for the role of other important factors.</p></li>
+<li><p>Examine the statistical effects of policy levers, such as foreign aid focused on health development.</p></li>
+<li><p>Identify high and low achievers on the gender and health dimensions (while accounting for economic wealth) to further explore the role of violence and conflict and possible mediating factors in particular country cases, for instance the quality of government.</p></li>
+<li><p>Possible follow-up covid-19 extension of the above analyses: Do the cross-national classifications tell us anything useful about covid-19 outcomes?</p></li>
+</ul>
+<!-- * Determine effective graphical presentation of results. For instance, we may be able to use 3-D visualizations to show statistical associations between gender, health and violence at particular points in time. -->
+</div>
 
 
 

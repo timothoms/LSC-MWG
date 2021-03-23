@@ -1,12 +1,36 @@
 name: "LSC-MWG"
 output_dir: "docs"
+author: "Oskar Timo Thoms"
+exclude: ["README.md"]
 navbar:
   title: "LSC-MWG"
   left:
-  - text: "Home"
-    href: index.html
   - text: "Introduction"
     href: intro.html
+  - text: "Data"
+    href: data.html
+  - text: "Classifications"
+    href: classifications.html
+  - text: "Cross-sectional Models"
+    href: regressions.html
+  - text: "Panel Models"
+    href: panel.html
+  - text: "Sequences"
+    href: sequences.html
+  - text: "Cases"
+    href: cases.html
 output:
   html_document:
-theme: cosmo
+    toc: true
+    toc_depth: 3
+    df_print: "paged"
+    fig_width: 8
+    fig_height: 8
+    css: styles.css
+    theme: flatly
+    highlight: pygments
+    code_folding: show
+    # self_contained: false
+    # lib_dir: libs
+editor_options:
+  chunk_output_type: console

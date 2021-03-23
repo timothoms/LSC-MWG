@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Mapping trajectories</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">LSC-MWG</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="intro.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="classifications.html">Classifications</a>
+</li>
+<li>
+  <a href="regressions.html">Cross-sectional Models</a>
+</li>
+<li>
+  <a href="panel.html">Panel Models</a>
+</li>
+<li>
+  <a href="sequences.html">Sequences</a>
+</li>
+<li>
+  <a href="cases.html">Cases</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Mapping trajectories</h1>
+
+</div>
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IsTrue <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> x }</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;_data/LSCMWG_working_class.RData&quot;</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## Loading objects:
+##   data
+##   codebook
+##   categories
+##   variables
+##   df
+##   new</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">unique</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;period&quot;</span>, <span class="st">&quot;health_class&quot;</span>, <span class="st">&quot;gender_class&quot;</span>, <span class="st">&quot;class&quot;</span>, <span class="st">&quot;class_vv&quot;</span>)])</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period <span class="ot">&lt;-</span> <span class="fu">str_sub</span>(df<span class="sc">$</span>period, <span class="dv">7</span>, <span class="dv">10</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[<span class="sc">!</span><span class="fu">is.na</span>(df<span class="sc">$</span>class) <span class="sc">&amp;</span> df<span class="sc">$</span>period <span class="sc">!=</span> <span class="dv">2020</span>, ]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(df<span class="sc">$</span>class_vv)</span></code></pre></div>
+<pre><code>## 
+## G &gt; H H &gt; G   low   mid   upp 
+##   314   285   541   165   447</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">noquote</span>(<span class="fu">tapply</span>(<span class="at">X =</span> df<span class="sc">$</span>class_vv, <span class="at">INDEX =</span> <span class="fu">list</span>(df<span class="sc">$</span>health_class, df<span class="sc">$</span>gender_class), <span class="cf">function</span>(set) { <span class="fu">paste</span>(<span class="fu">unique</span>(set), <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>) }))</span></code></pre></div>
+<pre><code>##   1     2     3     4     5    
+## 1 low   low   G &gt; H G &gt; H &lt;NA&gt; 
+## 2 low   low   G &gt; H G &gt; H G &gt; H
+## 3 H &gt; G H &gt; G mid   G &gt; H G &gt; H
+## 4 H &gt; G H &gt; G H &gt; G upp   upp  
+## 5 &lt;NA&gt;  H &gt; G H &gt; G upp   upp</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">pivot_wider</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;period&quot;</span>, <span class="st">&quot;class_vv&quot;</span>)], <span class="at">names_from =</span> period, <span class="at">values_from =</span> class_vv)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df_new[, <span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_new[, <span class="sc">-</span><span class="dv">1</span>], <span class="cf">function</span>(col) {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  col[<span class="fu">is.na</span>(col)] <span class="ot">&lt;-</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(col)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="fu">as.data.frame</span>(df_new))</span></code></pre></div>
+<pre><code>## [[1]]
+##                     country  1965  1970  1975  1980  1985  1990  1995  2000  2005  2010  2015
+## 1               Afghanistan   low   low   low   low   low   low   low   low   low   low   low
+## 2                   Albania G &gt; H G &gt; H G &gt; H   upp G &gt; H G &gt; H G &gt; H G &gt; H   mid   mid H &gt; G
+## 3                   Algeria G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H H &gt; G   mid   mid   mid   mid   mid
+## 4                    Angola               low   low   low   low   low   low   low   low   low
+## 5         Antigua &amp; Barbuda                         H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G
+## 6                 Argentina   upp   upp   upp H &gt; G H &gt; G   upp   upp   upp   upp H &gt; G H &gt; G
+## 7                   Armenia                                     G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H
+## 8                 Australia   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 9                   Austria   upp   upp   upp   upp   upp   upp H &gt; G H &gt; G H &gt; G   upp   upp
+## 10               Azerbaijan                                     G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H
+## 11                  Bahamas               upp H &gt; G H &gt; G H &gt; G H &gt; G   upp G &gt; H G &gt; H G &gt; H
+## 12                  Bahrain               upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 13               Bangladesh               low   low   low   low   low   low   low   low   low
+## 14                 Barbados       H &gt; G H &gt; G   upp   upp   upp   upp   upp   upp   upp   upp
+## 15                  Belarus                                     G &gt; H G &gt; H G &gt; H G &gt; H   upp
+## 16                  Belgium   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 17                   Belize                         H &gt; G   mid   mid   mid   mid   mid   mid
+## 18                    Benin G &gt; H G &gt; H G &gt; H G &gt; H   low   low   low   low   low   low   low
+## 19                   Bhutan G &gt; H G &gt; H G &gt; H G &gt; H   low   low   low   low   low   low   low
+## 20                  Bolivia G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H   low   low   low   low   low   low
+## 21     Bosnia &amp; Herzegovina                                       upp   upp H &gt; G H &gt; G H &gt; G
+## 22                 Botswana       H &gt; G H &gt; G H &gt; G H &gt; G G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H
+## 23                   Brazil   mid G &gt; H G &gt; H G &gt; H   mid G &gt; H G &gt; H   mid   mid   mid   mid
+## 24                   Brunei               upp   upp   upp H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G   upp
+## 25                 Bulgaria   upp   upp   upp   upp H &gt; G   upp H &gt; G H &gt; G H &gt; G   mid   mid
+## 26             Burkina Faso   low   low   low   low   low   low   low   low   low   low   low
+## 27                  Burundi G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H   low   low   low   low   low   low
+## 28                 Cambodia G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H   low   low   low   low   low   low
+## 29                 Cameroon   low   low   low   low   low   low   low   low   low   low   low
+## 30                   Canada   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 31               Cape Verde               mid H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G
+## 32 Central African Republic   low   low   low   low   low   low   low   low   low   low   low
+## 33                     Chad   low   low   low   low   low   low   low   low   low   low   low
+## 34                    Chile G &gt; H   mid G &gt; H   upp   upp   upp H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G
+## 35                    China G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H   mid   mid   mid H &gt; G
+## 36                 Colombia H &gt; G   mid   mid   mid   mid H &gt; G   mid   mid   mid   mid   mid
+## 37                  Comoros               low   low   low   low   low   low   low   low   low
+## 38                    Congo   low   low   low   low   low   low   low   low   low   low   low
+## 39               Congo, DRC   low   low   low   low   low   low   low   low   low   low   low
+## 40               Costa Rica H &gt; G   mid H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G
+## 41            Cote d&#39;Ivoire   low   low   low   low   low   low   low   low   low   low   low
+## 42                  Croatia                                     H &gt; G H &gt; G   upp   upp   upp
+## 43                     Cuba H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G   upp H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G
+## 44                   Cyprus   upp   upp   upp   upp   upp H &gt; G   upp   upp   upp   upp   upp
+## 45           Czech Republic                                       upp   upp   upp   upp   upp
+## 46                  Denmark   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 47                 Djibouti                   G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H
+## 48       Dominican Republic H &gt; G H &gt; G H &gt; G H &gt; G   low G &gt; H G &gt; H   mid G &gt; H G &gt; H G &gt; H
+## 49                  Ecuador H &gt; G H &gt; G   mid   mid   mid   mid   mid   mid   mid H &gt; G   mid
+## 50                    Egypt   low   low   low   low   low   low   low H &gt; G H &gt; G H &gt; G H &gt; G
+## 51              El Salvador H &gt; G H &gt; G H &gt; G   low   low   low H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G
+## 52        Equatorial Guinea         low   low   low   low   low   low   low   low   low   low
+## 53                  Eritrea                                       low   low   low   low   low
+## 54                  Estonia                                     G &gt; H G &gt; H   upp   upp   upp
+## 55                 Eswatini         low   low   low   low G &gt; H   low   low   low   low   low
+## 56                 Ethiopia                                       low   low   low   low   low
+## 57                     Fiji         upp G &gt; H G &gt; H G &gt; H G &gt; H   mid   mid G &gt; H G &gt; H G &gt; H
+## 58                  Finland   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 59                   France   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 60                    Gabon   low   low   low   low   low G &gt; H G &gt; H G &gt; H   low   low   low
+## 61                   Gambia   low   low   low   low   low   low   low   low   low   low   low
+## 62                  Georgia                                       mid   mid   mid   mid   mid
+## 63                  Germany                                       upp H &gt; G   upp   upp   upp
+## 64                    Ghana   low   low   low   low   low   low   low   low   low   low   low
+## 65                   Greece   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 66                  Grenada             H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G   mid   mid
+## 67                Guatemala   low   low   low   low   low   low   low   low   low   low   low
+## 68                   Guinea   low   low   low   low   low   low   low   low   low   low   low
+## 69            Guinea-Bissau             G &gt; H   low   low   low   low   low   low   low   low
+## 70                   Guyana       H &gt; G   mid   mid   mid G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H
+## 71                    Haiti G &gt; H G &gt; H G &gt; H G &gt; H G &gt; H   low   low   low   low   low   low
+## 72                 Honduras   low   low H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G   mid   mid
+## 73                  Hungary   upp   upp   upp   upp   upp H &gt; G G &gt; H H &gt; G H &gt; G   upp   upp
+## 74                  Iceland   upp H &gt; G   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 75                    India G &gt; H G &gt; H G &gt; H G &gt; H   low   low   low   low   low   low   low
+## 76                Indonesia   low   low   low   low G &gt; H   low   low G &gt; H G &gt; H   low   low
+## 77                     Iran   low   low   low   low   low   low H &gt; G H &gt; G   mid   mid   mid
+## 78                     Iraq H &gt; G H &gt; G H &gt; G   mid G &gt; H H &gt; G H &gt; G H &gt; G   low   low   low
+## 79                  Ireland   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 80                   Israel   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 81                    Italy   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+## 82                  Jamaica H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G H &gt; G   mid   mid
+## 83                    Japan   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp   upp
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 101 rows ]</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">pivot_wider</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;period&quot;</span>, <span class="st">&quot;class&quot;</span>)], <span class="at">names_from =</span> period, <span class="at">values_from =</span> class)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df_new[, <span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_new[, <span class="sc">-</span><span class="dv">1</span>], <span class="cf">function</span>(col) {</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  col[<span class="fu">is.na</span>(col)] <span class="ot">&lt;-</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(col)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># df_new$temp &lt;- apply( df_new[, -1], 1, paste , collapse = &quot; =&gt; &quot; )</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># df_new$temp &lt;- str_replace_all(df_new$temp, &quot;NA =&gt; &quot;, &quot;&quot;)</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># print(df_new[, c(&quot;country&quot;, &quot;temp&quot;)], n = Inf)</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="fu">as.data.frame</span>(df_new))</span></code></pre></div>
+<pre><code>## [[1]]
+##                     country 1965 1970 1975 1980 1985 1990 1995 2000 2005 2010 2015
+## 1               Afghanistan H1G2 H1G2 H1G2 H1G2 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 2                   Albania H3G4 H3G5 H3G5 H4G5 H3G5 H3G4 H3G4 H3G4 H3G3 H3G3 H4G3
+## 3                   Algeria H2G3 H2G3 H2G3 H2G3 H2G4 H3G2 H3G3 H3G3 H3G3 H3G3 H3G3
+## 4                    Angola           H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 5         Antigua &amp; Barbuda                     H4G3 H4G3 H4G3 H4G3 H4G3 H4G3 H4G3
+## 6                 Argentina H4G4 H4G4 H4G4 H4G3 H4G3 H4G4 H4G4 H4G4 H4G4 H4G3 H4G3
+## 7                   Armenia                               H3G4 H3G4 H3G4 H3G4 H3G4
+## 8                 Australia H5G5 H5G4 H5G4 H5G5 H5G5 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4
+## 9                   Austria H5G4 H5G4 H5G4 H5G5 H5G5 H5G4 H5G3 H5G3 H5G3 H5G4 H5G4
+## 10               Azerbaijan                               H2G3 H2G3 H2G3 H2G3 H2G3
+## 11                  Bahamas           H4G4 H4G3 H4G3 H4G3 H4G3 H4G4 H3G4 H3G4 H3G4
+## 12                  Bahrain           H4G4 H4G4 H4G4 H4G4 H4G5 H4G5 H4G4 H4G4 H4G4
+## 13               Bangladesh           H1G1 H1G1 H1G1 H1G1 H1G1 H2G1 H2G1 H2G1 H2G1
+## 14                 Barbados      H4G3 H4G3 H4G4 H4G4 H4G4 H4G4 H4G4 H4G4 H4G4 H4G4
+## 15                  Belarus                               H3G4 H3G4 H3G4 H3G4 H4G4
+## 16                  Belgium H5G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4
+## 17                   Belize                     H3G1 H3G3 H3G3 H3G3 H3G3 H3G3 H3G3
+## 18                    Benin H1G3 H1G3 H1G3 H1G3 H1G2 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 19                   Bhutan H1G3 H1G3 H1G3 H1G3 H1G2 H1G2 H1G2 H2G2 H2G1 H2G2 H2G2
+## 20                  Bolivia H1G3 H1G3 H1G3 H1G3 H1G3 H2G2 H2G2 H2G2 H2G2 H2G2 H2G2
+## 21     Bosnia &amp; Herzegovina                               H4G4 H4G4 H4G3 H4G3 H4G3
+## 22                 Botswana      H3G2 H3G2 H3G1 H3G1 H2G3 H2G3 H1G3 H1G3 H1G3 H2G3
+## 23                   Brazil H3G3 H3G4 H3G4 H3G4 H3G3 H3G4 H3G4 H3G3 H3G3 H3G3 H3G3
+## 24                   Brunei           H4G4 H4G4 H4G4 H4G3 H4G3 H4G3 H4G3 H4G3 H4G4
+## 25                 Bulgaria H5G4 H5G4 H5G4 H5G4 H4G3 H4G4 H4G3 H4G3 H4G3 H3G3 H3G3
+## 26             Burkina Faso H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 27                  Burundi H2G3 H1G3 H1G3 H1G3 H1G3 H1G2 H1G1 H1G1 H1G1 H1G2 H1G2
+## 28                 Cambodia H1G3 H1G3 H1G3 H1G4 H1G3 H1G2 H1G2 H1G2 H2G2 H2G2 H2G2
+## 29                 Cameroon H2G1 H2G1 H2G1 H2G1 H2G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 30                   Canada H5G4 H5G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G4 H5G5 H5G5 H5G5
+## 31               Cape Verde           H3G3 H3G2 H3G2 H3G2 H3G2 H3G2 H3G2 H3G2 H3G2
+## 32 Central African Republic H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 33                     Chad H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 34                    Chile H3G4 H3G3 H3G4 H4G4 H4G4 H4G4 H4G3 H4G3 H4G3 H4G3 H4G3
+## 35                    China H2G4 H3G4 H3G5 H3G5 H3G5 H3G4 H3G4 H3G3 H3G3 H3G3 H4G3
+## 36                 Colombia H3G2 H3G3 H3G3 H3G3 H3G3 H4G3 H3G3 H3G3 H3G3 H3G3 H3G3
+## 37                  Comoros           H1G2 H1G2 H2G2 H2G2 H2G2 H2G2 H1G2 H1G1 H1G1
+## 38                    Congo H2G2 H2G2 H2G2 H2G2 H2G2 H2G2 H1G1 H1G1 H1G1 H1G1 H1G1
+## 39               Congo, DRC H1G1 H1G1 H1G1 H1G2 H1G2 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 40               Costa Rica H4G3 H3G3 H4G3 H4G3 H4G3 H4G3 H4G3 H4G3 H4G3 H4G3 H4G3
+## 41            Cote d&#39;Ivoire H1G1 H1G1 H1G1 H1G1 H2G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 42                  Croatia                               H4G3 H5G3 H4G4 H4G4 H4G4
+## 43                     Cuba H4G3 H4G2 H4G2 H5G2 H5G3 H5G4 H5G3 H5G3 H5G3 H5G3 H5G3
+## 44                   Cyprus H5G5 H5G5 H5G5 H5G5 H5G4 H5G3 H5G4 H5G4 H5G4 H5G4 H5G4
+## 45           Czech Republic                               H4G4 H4G4 H5G4 H5G4 H5G4
+## 46                  Denmark H5G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G4 H5G5 H5G5 H5G4 H5G4
+## 47                 Djibouti                H2G4 H2G4 H2G4 H2G4 H2G4 H1G4 H1G4 H1G4
+## 48       Dominican Republic H3G1 H3G2 H3G2 H3G2 H2G2 H2G3 H2G3 H3G3 H2G3 H2G3 H2G3
+## 49                  Ecuador H3G2 H3G2 H3G3 H3G3 H3G3 H3G3 H3G3 H3G3 H3G3 H3G2 H3G3
+## 50                    Egypt H2G2 H2G2 H1G2 H1G2 H2G2 H2G1 H2G2 H3G2 H3G2 H3G2 H3G2
+## 51              El Salvador H3G2 H3G2 H3G2 H2G2 H2G2 H2G2 H3G2 H3G2 H3G2 H3G2 H3G2
+## 52        Equatorial Guinea      H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 53                  Eritrea                               H1G2 H1G2 H1G2 H2G2 H2G2
+## 54                  Estonia                               H3G4 H3G4 H4G4 H4G4 H4G4
+## 55                 Eswatini      H2G1 H2G1 H2G1 H2G1 H2G3 H2G1 H1G1 H1G1 H1G2 H1G2
+## 56                 Ethiopia                               H1G2 H1G1 H1G1 H1G1 H2G1
+## 57                     Fiji      H4G4 H3G4 H3G4 H3G4 H3G4 H3G3 H3G3 H2G3 H2G4 H2G4
+## 58                  Finland H4G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G4 H5G4 H5G4 H5G5 H5G5
+## 59                   France H5G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4
+## 60                    Gabon H1G1 H2G1 H2G1 H2G1 H2G1 H2G3 H2G3 H2G3 H2G2 H1G1 H2G1
+## 61                   Gambia H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 62                  Georgia                               H3G3 H3G3 H3G3 H3G3 H3G3
+## 63                  Germany                               H5G4 H5G3 H5G4 H5G4 H5G4
+## 64                    Ghana H2G2 H2G2 H2G2 H2G2 H2G2 H2G2 H2G2 H2G2 H2G2 H2G2 H1G2
+## 65                   Greece H5G5 H5G5 H5G5 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4
+## 66                  Grenada           H4G3 H4G3 H4G3 H3G2 H4G3 H4G3 H4G3 H3G3 H3G3
+## 67                Guatemala H2G2 H2G2 H2G2 H2G2 H2G2 H2G2 H2G1 H2G1 H2G1 H2G2 H2G2
+## 68                   Guinea H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1 H1G1
+## 69            Guinea-Bissau           H1G3 H1G2 H1G2 H1G2 H1G1 H1G1 H1G1 H1G1 H1G1
+## 70                   Guyana      H4G2 H3G3 H3G3 H3G3 H3G4 H2G3 H2G3 H2G3 H2G3 H2G3
+## 71                    Haiti H1G4 H1G4 H1G4 H1G4 H1G3 H1G2 H1G2 H1G2 H1G1 H1G1 H1G2
+## 72                 Honduras H2G2 H2G2 H3G2 H3G2 H3G2 H3G2 H3G2 H3G2 H3G2 H3G3 H3G3
+## 73                  Hungary H4G5 H4G4 H4G4 H4G4 H4G4 H4G3 H3G4 H4G3 H4G3 H4G4 H4G4
+## 74                  Iceland H5G4 H5G3 H5G4 H5G4 H5G4 H5G5 H5G4 H5G4 H5G5 H5G5 H5G4
+## 75                    India H2G3 H1G3 H2G3 H2G3 H2G2 H2G1 H2G1 H2G1 H2G2 H2G2 H2G2
+## 76                Indonesia H2G2 H2G2 H2G2 H2G2 H2G3 H2G2 H2G2 H2G3 H2G3 H2G2 H2G2
+## 77                     Iran H1G2 H1G2 H2G2 H2G2 H2G2 H2G2 H3G2 H3G2 H3G3 H3G3 H3G3
+## 78                     Iraq H3G2 H3G2 H3G2 H3G3 H2G3 H3G2 H3G2 H3G2 H2G2 H2G2 H2G1
+## 79                  Ireland H5G5 H5G5 H5G5 H5G5 H5G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G5
+## 80                   Israel H5G4 H5G5 H5G5 H5G5 H5G5 H5G4 H5G5 H5G5 H5G5 H5G4 H5G4
+## 81                    Italy H4G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4
+## 82                  Jamaica H4G2 H4G1 H4G1 H4G2 H4G2 H4G3 H4G3 H4G3 H4G3 H3G3 H3G3
+## 83                    Japan H5G5 H5G5 H5G5 H5G5 H5G5 H5G4 H5G4 H5G4 H5G4 H5G4 H5G4
+##  [ reached &#39;max&#39; / getOption(&quot;max.print&quot;) -- omitted 101 rows ]</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(country, period)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lag_health_class =</span> <span class="fu">lag</span>(health_class), <span class="at">lag_gender_class =</span> <span class="fu">lag</span>(gender_class), <span class="at">lag_class =</span> <span class="fu">lag</span>(class))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[<span class="sc">!</span><span class="fu">is.na</span>(df<span class="sc">$</span>lag_class), ]</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[<span class="fu">IsTrue</span>(df<span class="sc">$</span>lag_class <span class="sc">!=</span> df<span class="sc">$</span>class), ]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="fu">as.data.frame</span>(df_new[df_new<span class="sc">$</span>country <span class="sc">%in%</span> df_new<span class="sc">$</span>country[<span class="sc">!</span>df_new<span class="sc">$</span>country <span class="sc">%in%</span> <span class="fu">unique</span>(df<span class="sc">$</span>country)], ]))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">unique</span>(df<span class="sc">$</span>country), <span class="cf">function</span>(ctry) {</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df[df<span class="sc">$</span>country <span class="sc">==</span> ctry, ], </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>         <span class="fu">aes</span>(<span class="at">x =</span> lag_gender_class, <span class="at">y =</span> lag_health_class, <span class="at">xend =</span> gender_class, <span class="at">yend =</span> health_class)) <span class="sc">+</span> </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_segment</span>(<span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">angle =</span> <span class="dv">15</span>, <span class="at">type =</span> <span class="st">&quot;closed&quot;</span>)) <span class="sc">+</span> </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> lag_gender_class[period <span class="sc">==</span> <span class="fu">min</span>(period)], </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> lag_health_class[period <span class="sc">==</span> <span class="fu">min</span>(period)]), </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">shape =</span> <span class="dv">22</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> gender_class[period <span class="sc">==</span> <span class="fu">max</span>(period)], </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> health_class[period <span class="sc">==</span> <span class="fu">max</span>(period)]), </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">shape =</span> <span class="dv">23</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">fill =</span> <span class="st">&quot;red&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="fl">0.5</span>, <span class="fl">5.5</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fl">0.5</span>, <span class="fl">5.5</span>) <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Gender&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Health&quot;</span>) <span class="sc">+</span> <span class="fu">theme_classic</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(ctry)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p><img src="sequences_files/figure-html/sequencing-1.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-2.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-3.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-4.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-5.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-6.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-7.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-8.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-9.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-10.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-11.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-12.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-13.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-14.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-15.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-16.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-17.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-18.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-19.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-20.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-21.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-22.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-23.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-24.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-25.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-26.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-27.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-28.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-29.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-30.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-31.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-32.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-33.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-34.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-35.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-36.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-37.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-38.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-39.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-40.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-41.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-42.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-43.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-44.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-45.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-46.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-47.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-48.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-49.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-50.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-51.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-52.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-53.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-54.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-55.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-56.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-57.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-58.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-59.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-60.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-61.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-62.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-63.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-64.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-65.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-66.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-67.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-68.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-69.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-70.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-71.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-72.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-73.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-74.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-75.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-76.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-77.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-78.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-79.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-80.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-81.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-82.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-83.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-84.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-85.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-86.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-87.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-88.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-89.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-90.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-91.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-92.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-93.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-94.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-95.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-96.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-97.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-98.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-99.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-100.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-101.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-102.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-103.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-104.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-105.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-106.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-107.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-108.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-109.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-110.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-111.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-112.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-113.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-114.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-115.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-116.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-117.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-118.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-119.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-120.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-121.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-122.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-123.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-124.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-125.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-126.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-127.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-128.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-129.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-130.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-131.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-132.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-133.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-134.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-135.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-136.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-137.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-138.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-139.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-140.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-141.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-142.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-143.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-144.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-145.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-146.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-147.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-148.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-149.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-150.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-151.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-152.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-153.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-154.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-155.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-156.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-157.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-158.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-159.png" width="25%" height="25%" /><img src="sequences_files/figure-html/sequencing-160.png" width="25%" height="25%" /></p>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

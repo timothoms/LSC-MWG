@@ -1,0 +1,58 @@
+---
+title: "Mapping trajectories"
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+knitr::knit_hooks$set(webgl = rgl::hook_webgl)
+knitr::knit_hooks$set(optipng = knitr::hook_optipng)
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE, fig.width = 7, fig.height = 5, out.width = "67%", out.height = "67%", optipng = '-o7')
+options(width = 240)
+```
+
+```{r descriptives}
+IsTrue <- function(x) { !is.na(x) & x }
+load("_data/LSCMWG_working_class.RData", verbose = TRUE)
+df <- unique(df[, c("country", "period", "health_class", "gender_class", "class", "class_vv")])
+df$period <- str_sub(df$period, 7, 10)
+df <- df[!is.na(df$class) & df$period != 2020, ]
+table(df$class_vv)
+noquote(tapply(X = df$class_vv, INDEX = list(df$health_class, df$gender_class), function(set) { paste(unique(set), collapse = "; ") }))
+df_new <- pivot_wider(df[, c("country", "period", "class_vv")], names_from = period, values_from = class_vv)
+df_new[, -1] <- lapply(df_new[, -1], function(col) {
+  col[is.na(col)] <- ""
+  return(col)
+})
+list(as.data.frame(df_new))
+df_new <- pivot_wider(df[, c("country", "period", "class")], names_from = period, values_from = class)
+df_new[, -1] <- lapply(df_new[, -1], function(col) {
+  col[is.na(col)] <- ""
+  return(col)
+})
+# df_new$temp <- apply( df_new[, -1], 1, paste , collapse = " => " )
+# df_new$temp <- str_replace_all(df_new$temp, "NA => ", "")
+# print(df_new[, c("country", "temp")], n = Inf)
+list(as.data.frame(df_new))
+```
+
+```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold"}
+df <- df %>% arrange(country, period)
+df <- df %>% group_by(country) %>% 
+  mutate(lag_health_class = lag(health_class), lag_gender_class = lag(gender_class), lag_class = lag(class))
+df <- df[!is.na(df$lag_class), ]
+df <- df[IsTrue(df$lag_class != df$class), ]
+list(as.data.frame(df_new[df_new$country %in% df_new$country[!df_new$country %in% unique(df$country)], ]))
+lapply(unique(df$country), function(ctry) {
+  ggplot(df[df$country == ctry, ], 
+         aes(x = lag_gender_class, y = lag_health_class, xend = gender_class, yend = health_class)) + 
+    geom_segment(arrow = arrow(angle = 15, type = "closed")) + 
+    geom_point(aes(x = lag_gender_class[period == min(period)], 
+                   y = lag_health_class[period == min(period)]), 
+               shape = 22, size = 3, fill = "red") + 
+    geom_point(aes(x = gender_class[period == max(period)], 
+                   y = health_class[period == max(period)]), 
+               shape = 23, size = 3, fill = "red") + 
+    xlim(0.5, 5.5) + ylim(0.5, 5.5) + labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
+})
+```

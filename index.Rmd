@@ -1,3 +1,8 @@
 ---
-title: "Home"
+title: "Lancet-SIGHT Commission Metrics WG: Large-N analyses"
+author: "[Oskar Timo Thoms](mailto:timo.thoms@carleton.ca), Dane Rowlands, and [Valerie Percival](mailto:Valerie.Percival@carleton.ca)"
+output:
+  html_document:
+    code_folding: NULL
 ---
+
