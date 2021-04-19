@@ -31,8 +31,6 @@ df_new[, -1] <- lapply(df_new[, -1], function(col) {
   return(col)
 })
 as.data.frame(df_new)
-### no overall change
-paste(df_new$country[df_new$`1965` == df_new$`2015`], collapse = "; ")
 ```
 
 ```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold"}
