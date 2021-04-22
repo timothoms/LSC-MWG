@@ -30,7 +30,6 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
@@ -117,15 +116,6 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
-.sourceCode .row {
-  width: 100%;
-}
-.sourceCode {
-  overflow-x: auto;
-}
-.code-folding-btn {
-  margin-right: -30px;
-}
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -311,9 +301,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -371,14 +358,6 @@ $(document).ready(function () {
 
 <div id="header">
 
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
-
 
 
 <h1 class="title toc-ignore">Cross-sectional Regressions</h1>
@@ -410,14 +389,14 @@ $(document).ready(function () {
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">eval</span>(<span class="fu">bquote</span>(<span class="fu">lm</span>(.(equation), <span class="at">data =</span> data)))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">list</span>(</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">classical =</span> <span class="fu">summary</span>(fit), <span class="do">## classical SEs</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">robust =</span> <span class="co"># coeftest(fit, vcov = vcovCL, cluster = ~ country)</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    lmtest<span class="sc">::</span><span class="fu">coeftest</span>(fit, <span class="at">vcov =</span> sandwich<span class="sc">::</span><span class="fu">vcovHC</span>(fit, <span class="at">type =</span> <span class="st">&quot;HC1&quot;</span>)) <span class="do">## CRSEs;  Stata robust default</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">robust =</span> lmtest<span class="sc">::</span><span class="fu">coeftest</span>(fit, <span class="at">vcov =</span> sandwich<span class="sc">::</span><span class="fu">vcovHC</span>(fit, <span class="at">type =</span> <span class="st">&quot;HC1&quot;</span>)) <span class="do">## CRSEs;  Stata robust default</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># can also use: coeftest(fit, vcov = vcovCL, cluster = ~ country)</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  ))</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(fit)</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <div id="life-expectancy-regressions" class="section level2">
 <h2>Life expectancy regressions</h2>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Column 1:</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Column 1:</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> life_exp_wpp_1995 <span class="sc">+</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -470,7 +449,7 @@ $(document).ready(function () {
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1996_2015)</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="do">### Column 2: (no lag DV)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Column 2: (no lag DV)</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -526,7 +505,7 @@ $(document).ready(function () {
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_int_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="do">### Column 3:(prediction)</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Column 3:(prediction)</span></span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> life_exp_wpp_1995 <span class="sc">+</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -573,7 +552,7 @@ $(document).ready(function () {
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_int_rate_1995)</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + conflict_internal_cumulative1989_1995)</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">### Column 4: performance version</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">## Column 4: performance version</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(perf_life_exp_wpp_growth1995_2015 <span class="sc">~</span> perf_imr_wpp_1995 <span class="sc">+</span> perf_asfr_adol_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> pc_rgdpe_avg_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -622,7 +601,7 @@ $(document).ready(function () {
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(perf_life_exp_wpp_growth1995_2015 ~ perf_imr_wpp_1995 + perf_asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + pc_rgdpe_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="do">### no health variables (not reported)</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="do">## no health variables (not reported)</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -673,7 +652,7 @@ $(document).ready(function () {
 </div>
 <div id="imr-regressions" class="section level2">
 <h2>IMR regressions</h2>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">### base model</span></span>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">## base model</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(imr_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> pc_rgdpe_avg_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -802,7 +781,7 @@ $(document).ready(function () {
 <pre><code>##                              pc_rgdpe_avg_1995 pc_rgdpe_avg_growth1995_2015
 ## pc_rgdpe_avg_1995                    1.0000000                    0.5629647
 ## pc_rgdpe_avg_growth1995_2015         0.5629647                    1.0000000</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Prediction model</span></span>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Prediction model</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -875,7 +854,7 @@ $(document).ready(function () {
 </div>
 <div id="mys-regressions" class="section level2">
 <h2>MYS regressions</h2>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Column 1: MYS base</span></span>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Column 1: MYS base</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015 <span class="sc">+</span> deaths_civilians_osv_rate_1995 <span class="sc">+</span> deaths_civilians_osv_rate_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -920,7 +899,7 @@ $(document).ready(function () {
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>samplemys <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>country <span class="sc">%in%</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(fit<span class="sc">$</span>call<span class="sc">$</span>formula, <span class="at">data =</span> df, <span class="at">country =</span> country))[, <span class="st">&quot;country&quot;</span>], <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="do">### (checks)</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="do">## (checks)</span></span>
 <span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1087,7 +1066,7 @@ $(document).ready(function () {
 <span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015)</span></span>
 <span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + deaths_civilians_int_rate_cumulative1996_2015)</span></span>
 <span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="do">### Column 2 MYS predict</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Column 2 MYS predict</span></span>
 <span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1134,7 +1113,7 @@ $(document).ready(function () {
 </div>
 <div id="asfr-regressions" class="section level2">
 <h2>ASFR regressions</h2>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="do">### column 3 ASFR base</span></span>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="do">## column 3 ASFR base</span></span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(asfr_adol_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_partip_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1172,7 +1151,7 @@ $(document).ready(function () {
 ## v2x_partip_cumulative1996_2015 -16.374776   7.167537 -2.2846 0.0236437 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Column 4 ASFR predict</span></span>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Column 4 ASFR predict</span></span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(asfr_adol_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_partip_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1213,7 +1192,7 @@ $(document).ready(function () {
 </div>
 <div id="conflict-regressions" class="section level2">
 <h2>Conflict regressions</h2>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="do">### column 1</span></span>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="do">## column 1</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> life_exp_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1249,7 +1228,7 @@ $(document).ready(function () {
 ## conflict_internal_cumulative1989_1995  0.407134   0.057764  7.0483 3.896e-11 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="do">### column 2</span></span>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="do">## column 2</span></span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1285,7 +1264,7 @@ $(document).ready(function () {
 ## conflict_internal_cumulative1989_1995  0.4040668  0.0580755  6.9576 6.467e-11 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="do">### column 3</span></span>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="do">## column 3</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1321,7 +1300,7 @@ $(document).ready(function () {
 ## conflict_internal_cumulative1989_1995  0.373965   0.070379  5.3136 4.136e-07 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="do">### column 4</span></span>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="do">## column 4</span></span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">~</span> mys_ratio_hdr_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1355,7 +1334,7 @@ $(document).ready(function () {
 ## mys_ratio_hdr_1995 -0.49752    0.22654 -2.1962  0.02971 *
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="do">### column 5</span></span>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="do">## column 5</span></span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(deaths_civilians_osv_rate_cumulative1996_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
@@ -1520,11 +1499,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

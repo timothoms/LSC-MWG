@@ -30,7 +30,6 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
@@ -117,15 +116,6 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
-.sourceCode .row {
-  width: 100%;
-}
-.sourceCode {
-  overflow-x: auto;
-}
-.code-folding-btn {
-  margin-right: -30px;
-}
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -311,9 +301,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -371,14 +358,6 @@ $(document).ready(function () {
 
 <div id="header">
 
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
-
 
 
 <h1 class="title toc-ignore">Data &amp; Correlations</h1>
@@ -393,6 +372,7 @@ $(document).ready(function () {
 <li><a href="#across-category-correlations">Across-category correlations</a></li>
 <li><a href="#which-countries-have-such-high-ratios-of-years-of-schooling-in-favor-of-women">Which countries have such high ratios of years of schooling in favor of women?</a></li>
 <li><a href="#inverting-variables-for-comparable-interpretation-within-categories">Inverting variables for comparable interpretation within categories</a></li>
+<li><a href="#coding-performance-measures-for-later-use">Coding performance measures for later use</a></li>
 </ul>
 </div>
 
@@ -965,25 +945,72 @@ $(document).ready(function () {
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;latentmean_fariss_cumulative1991&quot;</span>, </span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss_cumulative1996&quot;</span>, <span class="st">&quot;v2cltort_cumulative1991&quot;</span>, </span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;v2cltort_cumulative1996&quot;</span>, <span class="st">&quot;v2clkill_cumulative1991&quot;</span>, <span class="st">&quot;v2clkill_cumulative1996&quot;</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>])])</span></code></pre></div>
-<pre><code>##     imr_wpp           ufmr_wpp         mmr_unicef     daly_ihme      asfr_adol_wpp        tfr_wpp      latentmean_fariss
-##  Min.   :  1.254   Min.   :  1.765   Min.   :   2   Min.   : 15334   Min.   :  0.283   Min.   :1.051   Min.   :-3.767   
-##  1st Qu.: 15.363   1st Qu.: 18.328   1st Qu.:  17   1st Qu.: 27130   1st Qu.: 29.676   1st Qu.:2.170   1st Qu.:-1.097   
-##  Median : 40.161   Median : 50.881   Median :  65   Median : 32776   Median : 69.553   Median :3.782   Median :-0.074   
-##  Mean   : 56.186   Mean   : 84.469   Mean   : 202   Mean   : 43276   Mean   : 78.652   Mean   :4.065   Mean   : 0.091   
-##  3rd Qu.: 85.913   3rd Qu.:129.686   3rd Qu.: 277   3rd Qu.: 50724   3rd Qu.:117.050   3rd Qu.:5.955   3rd Qu.: 1.187   
-##  Max.   :319.239   Max.   :465.517   Max.   :2480   Max.   :788016   Max.   :242.574   Max.   :8.800   Max.   : 5.140   
-##  NA&#39;s   :8259      NA&#39;s   :8259      NA&#39;s   :9396   NA&#39;s   :5145     NA&#39;s   :8259      NA&#39;s   :8259    NA&#39;s   :681</code></pre>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<pre><code>##     imr_wpp           ufmr_wpp         mmr_unicef     daly_ihme      asfr_adol_wpp        tfr_wpp      latentmean_fariss    v2cltort          v2clkill      
+##  Min.   :  1.254   Min.   :  1.765   Min.   :   2   Min.   : 15334   Min.   :  0.283   Min.   :1.051   Min.   :-3.767    Min.   :-3.2680   Min.   :-3.5870  
+##  1st Qu.: 15.363   1st Qu.: 18.328   1st Qu.:  17   1st Qu.: 27130   1st Qu.: 29.676   1st Qu.:2.170   1st Qu.:-1.097    1st Qu.:-0.9450   1st Qu.:-0.6980  
+##  Median : 40.161   Median : 50.881   Median :  65   Median : 32776   Median : 69.553   Median :3.782   Median :-0.074    Median : 0.3440   Median : 0.7360  
+##  Mean   : 56.186   Mean   : 84.469   Mean   : 202   Mean   : 43276   Mean   : 78.652   Mean   :4.065   Mean   : 0.091    Mean   : 0.3197   Mean   : 0.5478  
+##  3rd Qu.: 85.913   3rd Qu.:129.686   3rd Qu.: 277   3rd Qu.: 50724   3rd Qu.:117.050   3rd Qu.:5.955   3rd Qu.: 1.187    3rd Qu.: 1.6570   3rd Qu.: 1.9530  
+##  Max.   :319.239   Max.   :465.517   Max.   :2480   Max.   :788016   Max.   :242.574   Max.   :8.800   Max.   : 5.140    Max.   : 3.3210   Max.   : 3.2090  
+##  NA&#39;s   :8259      NA&#39;s   :8259      NA&#39;s   :9396   NA&#39;s   :5145     NA&#39;s   :8259      NA&#39;s   :8259    NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data[, variables<span class="sc">$</span>negative] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, variables<span class="sc">$</span>negative], <span class="st">&#39;-&#39;</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>])])</span></code></pre></div>
-<pre><code>##     imr_wpp            ufmr_wpp          mmr_unicef      daly_ihme       asfr_adol_wpp         tfr_wpp       latentmean_fariss
-##  Min.   :-319.239   Min.   :-465.517   Min.   :-2480   Min.   :-788016   Min.   :-242.574   Min.   :-8.800   Min.   :-5.140   
-##  1st Qu.: -85.913   1st Qu.:-129.686   1st Qu.: -277   1st Qu.: -50724   1st Qu.:-117.050   1st Qu.:-5.955   1st Qu.:-1.187   
-##  Median : -40.161   Median : -50.881   Median :  -65   Median : -32776   Median : -69.553   Median :-3.782   Median : 0.074   
-##  Mean   : -56.186   Mean   : -84.469   Mean   : -202   Mean   : -43276   Mean   : -78.652   Mean   :-4.065   Mean   :-0.091   
-##  3rd Qu.: -15.363   3rd Qu.: -18.328   3rd Qu.:  -17   3rd Qu.: -27130   3rd Qu.: -29.676   3rd Qu.:-2.170   3rd Qu.: 1.097   
-##  Max.   :  -1.254   Max.   :  -1.765   Max.   :   -2   Max.   : -15334   Max.   :  -0.283   Max.   :-1.051   Max.   : 3.767   
-##  NA&#39;s   :8259       NA&#39;s   :8259       NA&#39;s   :9396    NA&#39;s   :5145      NA&#39;s   :8259       NA&#39;s   :8259     NA&#39;s   :681</code></pre>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<pre><code>##     imr_wpp            ufmr_wpp          mmr_unicef      daly_ihme       asfr_adol_wpp         tfr_wpp       latentmean_fariss    v2cltort          v2clkill      
+##  Min.   :-319.239   Min.   :-465.517   Min.   :-2480   Min.   :-788016   Min.   :-242.574   Min.   :-8.800   Min.   :-5.140    Min.   :-3.3210   Min.   :-3.2090  
+##  1st Qu.: -85.913   1st Qu.:-129.686   1st Qu.: -277   1st Qu.: -50724   1st Qu.:-117.050   1st Qu.:-5.955   1st Qu.:-1.187    1st Qu.:-1.6570   1st Qu.:-1.9530  
+##  Median : -40.161   Median : -50.881   Median :  -65   Median : -32776   Median : -69.553   Median :-3.782   Median : 0.074    Median :-0.3440   Median :-0.7360  
+##  Mean   : -56.186   Mean   : -84.469   Mean   : -202   Mean   : -43276   Mean   : -78.652   Mean   :-4.065   Mean   :-0.091    Mean   :-0.3197   Mean   :-0.5478  
+##  3rd Qu.: -15.363   3rd Qu.: -18.328   3rd Qu.:  -17   3rd Qu.: -27130   3rd Qu.: -29.676   3rd Qu.:-2.170   3rd Qu.: 1.097    3rd Qu.: 0.9450   3rd Qu.: 0.6980  
+##  Max.   :  -1.254   Max.   :  -1.765   Max.   :   -2   Max.   : -15334   Max.   :  -0.283   Max.   :-1.051   Max.   : 3.767    Max.   : 3.2680   Max.   : 3.5870  
+##  NA&#39;s   :8259       NA&#39;s   :8259       NA&#39;s   :9396    NA&#39;s   :5145      NA&#39;s   :8259       NA&#39;s   :8259     NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
+</div>
+<div id="coding-performance-measures-for-later-use" class="section level2">
+<h2>Coding performance measures for later use</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">cut</span>(year, <span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2020</span>, <span class="dv">5</span>), <span class="at">right =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(country, period) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pc_rgdpe_avg =</span> <span class="fu">mean</span>(pc_rgdpe_pwt, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>pc_rgdpe_avg[<span class="fu">is.nan</span>(data<span class="sc">$</span>pc_rgdpe_avg)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>health) <span class="ot">&lt;-</span> variables<span class="sc">$</span>health <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>gender) <span class="ot">&lt;-</span> variables<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_avg&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs], log)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs_negative, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs_negative], <span class="cf">function</span>(col) { <span class="sc">-</span><span class="fu">log</span>(<span class="sc">-</span>col) })</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(take_logs_negative, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs_negative, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))])</span></code></pre></div>
+<pre><code>##     imr_wpp         asfr_adol_wpp        lg_imr_wpp     lg_asfr_adol_wpp
+##  Min.   :-319.239   Min.   :-242.574   Min.   :-5.766   Min.   :-5.491  
+##  1st Qu.: -85.913   1st Qu.:-117.050   1st Qu.:-4.453   1st Qu.:-4.763  
+##  Median : -40.161   Median : -69.553   Median :-3.693   Median :-4.242  
+##  Mean   : -56.186   Mean   : -78.652   Mean   :-3.521   Mean   :-3.996  
+##  3rd Qu.: -15.363   3rd Qu.: -29.676   3rd Qu.:-2.732   3rd Qu.:-3.390  
+##  Max.   :  -1.254   Max.   :  -0.283   Max.   :-0.226   Max.   : 1.262  
+##  NA&#39;s   :8259       NA&#39;s   :8259       NA&#39;s   :8259     NA&#39;s   :8259</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>CodePerformance <span class="ot">&lt;-</span> <span class="cf">function</span>(y_var, x_vars, df) {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  x_vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(x_vars, <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  equation <span class="ot">&lt;-</span> <span class="fu">paste</span>(y_var, <span class="st">&quot;~&quot;</span>, x_vars)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df, <span class="at">country =</span> country, <span class="at">year =</span> year))</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  df[, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> df[, y_var] <span class="sc">-</span> df<span class="sc">$</span>predicted</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))])</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1965</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vars, <span class="cf">function</span>(var) {</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    dat <span class="ot">&lt;-</span> data[data<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;lg_pc_rgdpe_avg&quot;</span>, var)]</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">nrow</span>(<span class="fu">na.omit</span>(dat)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">CodePerformance</span>(<span class="at">y_var =</span> var, <span class="at">x_vars =</span> <span class="st">&quot;lg_pc_rgdpe_avg&quot;</span>, <span class="at">df =</span> dat)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> results[<span class="sc">!</span><span class="fu">unlist</span>(<span class="fu">lapply</span>(results, is.null))]</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, results)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> performance_measures)</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, performance_measures, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(data, codebook, categories, variables, <span class="at">file =</span> <span class="st">&quot;_data/LSCMWG_working_data.RData&quot;</span>)</span></code></pre></div>
 </div>
 
 
@@ -1019,11 +1046,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

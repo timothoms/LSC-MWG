@@ -30,7 +30,6 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
@@ -117,15 +116,6 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
-.sourceCode .row {
-  width: 100%;
-}
-.sourceCode {
-  overflow-x: auto;
-}
-.code-folding-btn {
-  margin-right: -30px;
-}
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -311,9 +301,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -370,14 +357,6 @@ $(document).ready(function () {
 </div><!--/.navbar -->
 
 <div id="header">
-
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
 
@@ -461,35 +440,32 @@ $(document).ready(function () {
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>viol_vars_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_osv_rate&quot;</span>, </span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, <span class="st">&quot;deaths_civilians_nsc_rate&quot;</span>, <span class="st">&quot;deaths_all_ucdp_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>)</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>dfp[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, viol_vars_log, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(dfp[, viol_vars_log], <span class="cf">function</span>(col) { <span class="fu">log</span>(col <span class="sc">+</span> <span class="dv">1</span>) })</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(dfp[, paste(&quot;lg&quot;, viol_vars_log, sep = &quot;_&quot;)])</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_low <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_low[dfp<span class="sc">$</span>health_class <span class="sc">&lt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_low[dfp<span class="sc">$</span>health_class <span class="sc">&gt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_upp <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_upp[dfp<span class="sc">$</span>health_class <span class="sc">&gt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_upp[dfp<span class="sc">$</span>health_class <span class="sc">&lt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_low <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_low[dfp<span class="sc">$</span>gender_class <span class="sc">&lt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_low[dfp<span class="sc">$</span>gender_class <span class="sc">&gt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_upp <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_upp[dfp<span class="sc">$</span>gender_class <span class="sc">&gt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_upp[dfp<span class="sc">$</span>gender_class <span class="sc">&lt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>dfp_lag <span class="ot">&lt;-</span> dfp <span class="ot">&lt;-</span> dfp[dfp<span class="sc">$</span>year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>), <span class="fu">names</span>(dfp) <span class="sc">!=</span> <span class="st">&quot;period&quot;</span>]</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dfp_lag)[<span class="sc">!</span><span class="fu">names</span>(dfp_lag) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>)] <span class="ot">&lt;-</span> </span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(<span class="st">&quot;lag&quot;</span>, <span class="fu">names</span>(dfp_lag)[<span class="sc">!</span><span class="fu">names</span>(dfp_lag) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>)], <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>dfp_lag<span class="sc">$</span>year <span class="ot">&lt;-</span> dfp_lag<span class="sc">$</span>year <span class="sc">+</span> <span class="dv">5</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>dfp_lag<span class="sc">$</span>year[dfp_lag<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">2020</span>] <span class="ot">&lt;-</span> <span class="dv">2018</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>dfp <span class="ot">&lt;-</span> <span class="fu">merge</span>(dfp, dfp_lag, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>dfp[, <span class="fu">paste</span>(<span class="st">&quot;growth&quot;</span>, <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> </span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(<span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender), <span class="cf">function</span>(colname) {</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    dfp[, colname] <span class="sc">-</span> dfp[, <span class="fu">paste</span>(<span class="st">&quot;lag&quot;</span>, colname, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)]</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>dfp[, <span class="fu">paste</span>(<span class="st">&quot;growth_lg&quot;</span>, <span class="fu">c</span>(variables<span class="sc">$</span>health, <span class="st">&quot;asfr_adol_wpp&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> </span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(<span class="fu">c</span>(variables<span class="sc">$</span>health, <span class="st">&quot;asfr_adol_wpp&quot;</span>), <span class="cf">function</span>(colname) {</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    dfp[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, colname, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="sc">-</span> dfp[, <span class="fu">paste</span>(<span class="st">&quot;lag_lg&quot;</span>, colname, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)]</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(dfp[, paste(&quot;growth_lg&quot;, c(variables$health, &quot;asfr_adol_wpp&quot;), sep = &quot;_&quot;)])</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co"># table(dfp$lag_class_vv)</span></span></code></pre></div>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_low <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_low[dfp<span class="sc">$</span>health_class <span class="sc">&lt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_low[dfp<span class="sc">$</span>health_class <span class="sc">&gt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_upp <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_upp[dfp<span class="sc">$</span>health_class <span class="sc">&gt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>health_class_upp[dfp<span class="sc">$</span>health_class <span class="sc">&lt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_low <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_low[dfp<span class="sc">$</span>gender_class <span class="sc">&lt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_low[dfp<span class="sc">$</span>gender_class <span class="sc">&gt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_upp <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_upp[dfp<span class="sc">$</span>gender_class <span class="sc">&gt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>dfp<span class="sc">$</span>gender_class_upp[dfp<span class="sc">$</span>gender_class <span class="sc">&lt;=</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>dfp_lag <span class="ot">&lt;-</span> dfp <span class="ot">&lt;-</span> dfp[dfp<span class="sc">$</span>year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>), <span class="fu">names</span>(dfp) <span class="sc">!=</span> <span class="st">&quot;period&quot;</span>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dfp_lag)[<span class="sc">!</span><span class="fu">names</span>(dfp_lag) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>)] <span class="ot">&lt;-</span> </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste</span>(<span class="st">&quot;lag&quot;</span>, <span class="fu">names</span>(dfp_lag)[<span class="sc">!</span><span class="fu">names</span>(dfp_lag) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>)], <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>dfp_lag<span class="sc">$</span>year <span class="ot">&lt;-</span> dfp_lag<span class="sc">$</span>year <span class="sc">+</span> <span class="dv">5</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>dfp_lag<span class="sc">$</span>year[dfp_lag<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">2020</span>] <span class="ot">&lt;-</span> <span class="dv">2018</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>dfp <span class="ot">&lt;-</span> <span class="fu">merge</span>(dfp, dfp_lag, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>dfp[, <span class="fu">paste</span>(<span class="st">&quot;growth&quot;</span>, <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(<span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender), <span class="cf">function</span>(colname) {</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    dfp[, colname] <span class="sc">-</span> dfp[, <span class="fu">paste</span>(<span class="st">&quot;lag&quot;</span>, colname, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)]</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>dfp[, <span class="fu">paste</span>(<span class="st">&quot;growth_lg&quot;</span>, <span class="fu">c</span>(variables<span class="sc">$</span>health, <span class="st">&quot;asfr_adol_wpp&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lapply</span>(<span class="fu">c</span>(variables<span class="sc">$</span>health, <span class="st">&quot;asfr_adol_wpp&quot;</span>), <span class="cf">function</span>(colname) {</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    dfp[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, colname, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="sc">-</span> dfp[, <span class="fu">paste</span>(<span class="st">&quot;lag_lg&quot;</span>, colname, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)]</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  })</span></code></pre></div>
 </div>
 <div id="model-interaction-functions" class="section level2">
 <h2>Model &amp; Interaction Functions</h2>
@@ -1405,11 +1381,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
