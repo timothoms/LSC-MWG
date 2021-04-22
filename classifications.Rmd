@@ -1,59 +1,16 @@
 ---
 title: "Classifications"
+params: 
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
-library(tidyverse)
-knitr::knit_hooks$set(webgl = rgl::hook_webgl)
-knitr::knit_hooks$set(optipng = knitr::hook_optipng)
-knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
-knitr::opts_chunk$set(echo = TRUE, cache = FALSE, fig.width = 7, fig.height = 5, out.width = "67%", out.height = "67%", optipng = '-o7', rownames.print = FALSE, rows.print = 10, cols.min.print = 8)
-options(width = 240)
+source("_R/setup.R")
 ```
 
 ```{r startup}
 IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_data.RData", verbose = TRUE)
-```
-
-## Coding performance measures
-
-```{r coding_perf}
-data <- data %>% dplyr::arrange(country, year) %>% 
-  mutate(period = cut(year, seq(1960, 2020, 5), right = TRUE))
-data <- data %>% group_by(country, period) %>% 
-  mutate(pc_rgdpe_avg = mean(pc_rgdpe_pwt, na.rm = TRUE))
-data$pc_rgdpe_avg[is.nan(data$pc_rgdpe_avg)] <- NA
-names(variables$health) <- variables$health <- c("life_exp_wpp", "imr_wpp")
-names(variables$gender) <- variables$gender <- c("mys_ratio_hdr", "asfr_adol_wpp")
-take_logs <- c("pc_rgdpe_avg", "life_exp_wpp", "mys_ratio_hdr")
-take_logs_negative <- c("imr_wpp", "asfr_adol_wpp")
-data[, paste("lg", take_logs, sep = "_")] <- lapply(data[, take_logs], log)
-data[, paste("lg", take_logs_negative, sep = "_")] <- lapply(data[, take_logs_negative], function(col) { -log(-col) })
-## summary(data[, c(take_logs_negative, paste("lg", take_logs_negative, sep = "_"))]) 
-CodePerformance <- function(y_var, x_vars, df) {
-  x_vars <- paste(x_vars, collapse = " + ")
-  equation <- paste(y_var, "~", x_vars)
-  df <- na.omit(get_all_vars(formula = equation, data = df, country = country, year = year))
-  mod <- lm(formula = equation, data = df)
-  df$predicted <- predict(mod)
-  df[, paste("perf", y_var, sep = "_")] <- df[, y_var] - df$predicted
-  return(df[, c("country", "year", paste("perf", y_var, sep = "_"))])
-}
-names(vars) <- vars <- c(variables$health, variables$gender)
-names(years) <- years <- c(seq(1965, 2015, 5), 2018)
-performance_measures <- lapply(vars, function(var) {
-  results <- lapply(years, function(year) {
-    dat <- data[data$year == year, c("country", "year", "lg_pc_rgdpe_avg", var)]
-      if(nrow(na.omit(dat)) > 0) {
-        CodePerformance(y_var = var, x_vars = "lg_pc_rgdpe_avg", df = dat)
-      } 
-  })
-  results <- results[!unlist(lapply(results, is.null))]
-  do.call(rbind, results)
-})
-performance_measures <- Reduce(f = function(...) merge(..., by = c("country", "year"), all = TRUE), x = performance_measures)
-data <- merge(data, performance_measures, by = c("country", "year"), all.x = TRUE)
 ```
 
 ## Classification function
@@ -93,8 +50,8 @@ Classification <- function(health, gender,
     return(col)
   })
   df <- df[, c("country", "year", "period", names(df)[str_detect(names(df), fixed("quintile"))])]
-  ## combis <- expand.grid(health = health, gender = gender, stringsAsFactors = FALSE)
-  ## combis <- split(combis, seq(nrow(combis)))
+  # combis <- expand.grid(health = health, gender = gender, stringsAsFactors = FALSE)
+  # combis <- split(combis, seq(nrow(combis)))
   df$health_q1 <- rowSums(df[, paste(health, "quintile", sep = "_")] == 1, na.rm = TRUE)
   df$health_q2 <- rowSums(df[, paste(health, "quintile", sep = "_")] == 2, na.rm = TRUE)
   df$health_q3 <- rowSums(df[, paste(health, "quintile", sep = "_")] == 3, na.rm = TRUE)
@@ -145,7 +102,7 @@ Classification <- function(health, gender,
                             paste, collapse = "; ")
   table_to_return[is.na(table_to_return)] <- ""
   dimnames(table_to_return) <- lapply(dimnames(table_to_return), function(name) { paste("Q", name, sep = "") })
-  ### from here, this is the old way, to create the fuzzy table, not needed anymore but useful for comparison
+  ## from here, this is the old way, to create the fuzzy table, not needed anymore but useful for comparison
   df$H1G1 <- df$health_q1 * df$gender_q1
   df$H2G1 <- df$health_q2 * df$gender_q1
   df$H3G1 <- df$health_q3 * df$gender_q1
@@ -188,7 +145,7 @@ Classification <- function(health, gender,
   countries <- sort(unique(unlist(lapply(classifications, function(x) { x$ctry }))))
   classifications <- lapply(classifications, function(class) { class$class })
   classifications <- lapply(classifications, paste, collapse = "; ")
-  ## print(matrix(names(classifications), 5, 5, dimnames = list(health = qs, gender = qs)))
+  # print(matrix(names(classifications), 5, 5, dimnames = list(health = qs, gender = qs)))
   fuzzy_table <- matrix(classifications, 5, 5, dimnames = list(health = qs, gender = qs))
   cat("Number of countries classified: ", number_of_countries, "\n")
   if(number_of_countries != length(countries)) {
@@ -226,7 +183,7 @@ kableExtra::kable(result_perf$table, format = "html") %>%
   kableExtra::group_rows("Health", 1, 5)
 ```
 
-### Merging the classifications into the dataset for analyses
+### Merging the classifications into the dataset
 
 ```{r merging}
 variables$class <- c("health_valid", "gender_valid", "health_class", "gender_class", 
@@ -241,7 +198,7 @@ df$class_vv[df$health_class > 3 & df$gender_class > 3] <- "upp"
 df$class_vv[!(df$health_class < 3 & df$gender_class < 3) & !(df$health_class > 3 & df$gender_class > 3)] <- "mid"
 df$class_vv[df$class_vv == "mid" & df$health_class > df$gender_class] <- "H > G"
 df$class_vv[df$class_vv == "mid" & df$health_class < df$gender_class] <- "G > H"
-addmargins(table(df$class_vv, df$class))
+# addmargins(table(df$class_vv, df$class))
 df$class_low <- ifelse(df$class_vv == "low", 1, 0)
 df$class_upp <- ifelse(df$class_vv == "upp", 1, 0)
 variables$class_core <- c("country", "class", "health_class", "gender_class", "class_vv")
@@ -479,7 +436,7 @@ variables$outcomes <- c(variables$health_full, variables$gender_full, variables$
 parallel::mclapply(variables$outcomes, GrowthRatesTtest)
 ```
 
-## Preparing cross-sectional dataset for analyses
+## Preparing cross-sectional dataset
 ```{r reg_prep}
 covariates <- c("pc_rgdpe_avg", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")
 vars <- unlist(lapply(covariates, function(var) { names(df)[str_detect(names(df), var)] }))
@@ -496,12 +453,9 @@ new2015 <- df[df$year == 2015, c(include,
   paste(variables$conflict_incidence, "cumulative1996", sep = "_"),
   paste(variables$political, "cumulative1991", sep = "_"),
   paste(variables$political, "cumulative1996", sep = "_"))]
-names(new1990)[names(new1990) != "country"] <- paste(names(new1990)[names(new1990) != "country"], 
-                                                     "1990", sep = "_")
-names(new1995)[names(new1995) != "country"] <- paste(names(new1995)[names(new1995) != "country"], 
-                                                     "1995", sep = "_")
-names(new2015)[names(new2015) != "country"] <- paste(names(new2015)[names(new2015) != "country"], 
-                                                     "2015", sep = "_")
+names(new1990)[names(new1990) != "country"] <- paste(names(new1990)[names(new1990) != "country"], "1990", sep = "_")
+names(new1995)[names(new1995) != "country"] <- paste(names(new1995)[names(new1995) != "country"], "1995", sep = "_")
+names(new2015)[names(new2015) != "country"] <- paste(names(new2015)[names(new2015) != "country"], "2015", sep = "_")
 new <- merge(new1990, new1995, by = c("country"), all = TRUE)
 new <- merge(new, new2015, by = c("country"), all = TRUE)
 ## growth vars 
@@ -515,7 +469,6 @@ new$life_exp_wpp_growth1995_2015 <- new$life_exp_wpp_2015 - new$life_exp_wpp_199
 new$imr_wpp_growth1995_2015 <- new$imr_wpp_2015 - new$imr_wpp_1995
 new$mys_ratio_hdr_growth1995_2015 <- new$mys_ratio_hdr_2015 - new$mys_ratio_hdr_1995
 new$asfr_adol_wpp_growth1995_2015 <- new$asfr_adol_wpp_2015 - new$asfr_adol_wpp_1995
-# summary(new[, paste(covariates, "_growth1995_2015", sep = "")])
 ## logged version of pcGDP growth vars; need to account for negative values
 new$lg_pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 < 0)] <- log(-new$pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 < 0)])
 new$lg_pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 >= 0)] <- log(new$pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 >= 0)])
@@ -544,8 +497,8 @@ performance_measures <- unlist(lapply(c(1990, 1995), function(year) {
 }), recursive = FALSE)
 performance_measures <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = performance_measures)
 new <- merge(new, performance_measures, by = "country", all = TRUE)
-filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional_", lubridate::today(), ".csv", sep = "" )
-write.csv(new, file = filepath)
+# filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional_", lubridate::today(), ".csv", sep = "" )
+# write.csv(new, file = filepath)
 ```
 
 ## Performance Rankings in classification groups
@@ -555,9 +508,8 @@ Performance <- function(category, year, vars) {
   countries <- unique(df$country[df$year == year & df$class_vv %in% category])
   countries <- countries[!is.na(countries)]
   lapply(vars, function(var) {
-    var <- paste(var, "_growth", year, "_2015", sep = "")  
-    # other <- c("deaths_all_ucdp_rate_cumulative")
-    # other <- paste(other, year + 1, "_2015", sep = "")
+    var <- paste(var, "_growth", year, "_2015", sep = "")
+    # other <- paste(c("deaths_all_ucdp_rate_cumulative"), year + 1, "_2015", sep = "")
     other <- NULL
     select_vars <- c("country", var, paste("perf", var, sep = "_"), other)
     # select_vars[!select_vars %in% names(new)]
@@ -587,6 +539,6 @@ Performance(category = "G > H", year = 1995, vars = c(variables$health, variable
 Performance(category = "upp", year = 1995, vars = c(variables$health, variables$gender))
 ```
 
-```{r saving, include = FALSE}
+```{r saving}
 save(data, codebook, categories, variables, df, new, file = "_data/LSCMWG_working_class.RData")
 ```

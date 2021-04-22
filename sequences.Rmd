@@ -1,14 +1,11 @@
 ---
 title: "Mapping trajectories"
+params: 
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
-library(tidyverse)
-knitr::knit_hooks$set(webgl = rgl::hook_webgl)
-knitr::knit_hooks$set(optipng = knitr::hook_optipng)
-knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
-knitr::opts_chunk$set(echo = TRUE, cache = FALSE, fig.width = 7, fig.height = 5, out.width = "67%", out.height = "67%", optipng = '-o7')
-options(width = 240, max.print = 5000)
+source("_R/setup.R")
 ```
 
 ```{r descriptives, cols.print = 12, cols.min.print = 12}

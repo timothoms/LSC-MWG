@@ -1,14 +1,11 @@
 ---
 title: "Country Cases"
+params: 
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
-library(tidyverse)
-knitr::knit_hooks$set(webgl = rgl::hook_webgl)
-knitr::knit_hooks$set(optipng = knitr::hook_optipng)
-knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
-knitr::opts_chunk$set(echo = TRUE, cache = FALSE, fig.width = 7, fig.height = 5, out.width = "67%", out.height = "67%", optipng = '-o7')
-options(width = 240)
+source("_R/setup.R")
 ```
 
 ## Dataset 
@@ -26,8 +23,8 @@ MakeFigure <- function(variable, countries = c("Afghanistan", "Mozambique", "El 
   dat <- data[data$country %in% countries, c("year", "country", variable)]
   first_year <- min(dat$year[!is.na(dat[, variable])])
   ggplot(dat, aes(x = year, y = !!sym(variable), group = country, color = country)) + 
-    stat_summary(fun="mean", geom="line", na.rm = TRUE, size = 1) + 
-    stat_summary(fun="mean", geom="point", na.rm = TRUE, size = 3) + 
+    stat_summary(fun = "mean", geom = "line", na.rm = TRUE, size = 1) + 
+    stat_summary(fun = "mean", geom = "point", na.rm = TRUE, size = 3) + 
     xlim(first_year, 2019) + theme_bw() + ggtitle(paste(variable))
 }
 ```

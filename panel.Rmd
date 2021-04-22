@@ -1,15 +1,14 @@
 ---
 title: "Panel Regressions"
+params: 
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
-library(tidyverse)
+source("_R/setup.R")
 library(plm)
-knitr::knit_hooks$set(webgl = rgl::hook_webgl)
-knitr::knit_hooks$set(optipng = knitr::hook_optipng)
-knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE, fig.width = 12, fig.height = 12, out.width = "100%", out.height = "100%", optipng = '-o7', rownames.print = FALSE, rows.print = 10, cols.min.print = 8)
-options(width = 240)
+knitr::opts_chunk$set(cache = TRUE, fig.width = 12, fig.height = 12,
+                      out.width = "100%", out.height = "100%")
 ```
 
 ## Data Preparation
@@ -41,7 +40,6 @@ viol_vars <- c("conflict_internal", "war_internal", "conflict_non_state",
 viol_vars_log <- c("deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
                    "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate")
 dfp[, paste("lg", viol_vars_log, sep = "_")] <- lapply(dfp[, viol_vars_log], function(col) { log(col + 1) })
-# summary(dfp[, paste("lg", viol_vars_log, sep = "_")])
 dfp$health_class_low <- NA
 dfp$health_class_low[dfp$health_class < 3] <- 1
 dfp$health_class_low[dfp$health_class >= 3] <- 0
@@ -68,8 +66,6 @@ dfp[, paste("growth_lg", c(variables$health, "asfr_adol_wpp"), sep = "_")] <-
   lapply(c(variables$health, "asfr_adol_wpp"), function(colname) {
     dfp[, paste("lg", colname, sep = "_")] - dfp[, paste("lag_lg", colname, sep = "_")]
   })
-# summary(dfp[, paste("growth_lg", c(variables$health, "asfr_adol_wpp"), sep = "_")])
-# table(dfp$lag_class_vv)
 ```
 
 ## Model & Interaction Functions

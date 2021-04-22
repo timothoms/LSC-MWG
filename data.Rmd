@@ -1,14 +1,12 @@
 ---
 title: "Data & Correlations"
+params:
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
-library(tidyverse)
-knitr::knit_hooks$set(webgl = rgl::hook_webgl)
-knitr::knit_hooks$set(optipng = knitr::hook_optipng)
-knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
-knitr::opts_chunk$set(echo = TRUE, cache = FALSE, fig.width = 12, fig.height = 10, out.width = "100%", out.height = "100%", optipng = '-o7', rownames.print = FALSE, rows.print = 10, cols.min.print = 8)
-options(width = 240)
+source("_R/setup.R")
+knitr::opts_chunk$set(fig.width = 12, fig.height = 10, out.width = "100%", out.height = "100%")
 ```
 
 ## Variables
@@ -124,11 +122,51 @@ variables$negative <- c("imr_wpp", "ufmr_wpp", "mmr_unicef", "daly_ihme", "asfr_
                         "latentmean_fariss", "v2cltort", "v2clkill", "latentmean_fariss_cumulative1991", 
                         "latentmean_fariss_cumulative1996", "v2cltort_cumulative1991", 
                         "v2cltort_cumulative1996", "v2clkill_cumulative1991", "v2clkill_cumulative1996")
-summary(data[, c(variables$negative[1:7])])
+summary(data[, c(variables$negative[1:9])])
 data[, variables$negative] <- lapply(data[, variables$negative], '-')
-summary(data[, c(variables$negative[1:7])])
+summary(data[, c(variables$negative[1:9])])
 ```
 
-```{r saving, include = FALSE}
+## Coding performance measures for later use
+
+```{r coding_perf}
+data <- data %>% dplyr::arrange(country, year) %>% 
+  mutate(period = cut(year, seq(1960, 2020, 5), right = TRUE))
+data <- data %>% group_by(country, period) %>% 
+  mutate(pc_rgdpe_avg = mean(pc_rgdpe_pwt, na.rm = TRUE))
+data$pc_rgdpe_avg[is.nan(data$pc_rgdpe_avg)] <- NA
+names(variables$health) <- variables$health <- c("life_exp_wpp", "imr_wpp")
+names(variables$gender) <- variables$gender <- c("mys_ratio_hdr", "asfr_adol_wpp")
+take_logs <- c("pc_rgdpe_avg", "life_exp_wpp", "mys_ratio_hdr")
+take_logs_negative <- c("imr_wpp", "asfr_adol_wpp")
+data[, paste("lg", take_logs, sep = "_")] <- lapply(data[, take_logs], log)
+data[, paste("lg", take_logs_negative, sep = "_")] <- lapply(data[, take_logs_negative], function(col) { -log(-col) })
+summary(data[, c(take_logs_negative, paste("lg", take_logs_negative, sep = "_"))])
+CodePerformance <- function(y_var, x_vars, df) {
+  x_vars <- paste(x_vars, collapse = " + ")
+  equation <- paste(y_var, "~", x_vars)
+  df <- na.omit(get_all_vars(formula = equation, data = df, country = country, year = year))
+  mod <- lm(formula = equation, data = df)
+  df$predicted <- predict(mod)
+  df[, paste("perf", y_var, sep = "_")] <- df[, y_var] - df$predicted
+  return(df[, c("country", "year", paste("perf", y_var, sep = "_"))])
+}
+names(vars) <- vars <- c(variables$health, variables$gender)
+names(years) <- years <- c(seq(1965, 2015, 5), 2018)
+performance_measures <- lapply(vars, function(var) {
+  results <- lapply(years, function(year) {
+    dat <- data[data$year == year, c("country", "year", "lg_pc_rgdpe_avg", var)]
+      if(nrow(na.omit(dat)) > 0) {
+        CodePerformance(y_var = var, x_vars = "lg_pc_rgdpe_avg", df = dat)
+      } 
+  })
+  results <- results[!unlist(lapply(results, is.null))]
+  do.call(rbind, results)
+})
+performance_measures <- Reduce(f = function(...) merge(..., by = c("country", "year"), all = TRUE), x = performance_measures)
+data <- merge(data, performance_measures, by = c("country", "year"), all.x = TRUE)
+```
+
+```{r saving}
 save(data, codebook, categories, variables, file = "_data/LSCMWG_working_data.RData")
 ```

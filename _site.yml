@@ -29,8 +29,5 @@ output:
     css: styles.css
     theme: flatly
     highlight: pygments
-    # code_folding: show
-    # self_contained: false
-    # lib_dir: libs
 editor_options:
   chunk_output_type: console
