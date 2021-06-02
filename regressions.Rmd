@@ -10,11 +10,8 @@ source("_R/setup.R")
 
 ```{r startup}
 IsTrue <- function(x) { !is.na(x) & x }
-load("_data/LSCMWG_working_class.RData", verbose = TRUE)
+load("_data/LSCMWG_working_class.RData")
 df <- new
-```
-
-```{r model function}
 RunModel <- function(equation, data = df) {
   fit <- eval(bquote(lm(.(equation), data = data)))
   print(list(
@@ -133,7 +130,7 @@ RunModel(deaths_civilians_int_rate_cumulative1996_2015 ~ mys_ratio_hdr_1995)
 RunModel(deaths_civilians_osv_rate_cumulative1996_2015 ~ mys_ratio_hdr_1995 + deaths_civilians_osv_rate_1995)
 ```
 
-## Non-regression evidence of virtuous and vicious circles
+## Non-regression evidence
 
 ```{r descriptives}
 hist(df$life_exp_wpp_growth1995_2015) 

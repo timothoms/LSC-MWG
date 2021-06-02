@@ -10,12 +10,12 @@ source("_R/setup.R")
 
 ```{r startup}
 IsTrue <- function(x) { !is.na(x) & x }
-load("_data/LSCMWG_working_data.RData", verbose = TRUE)
+load("_data/LSCMWG_working_data.RData")
 ```
 
-## Classification function
+## Classification for 1990 with two variables each on the health and gender dimensions
 
-```{r classification_function}
+```{r classification}
 Classification <- function(health, gender, 
   df = data, 
   year_to_show = 1990, 
@@ -154,10 +154,6 @@ Classification <- function(health, gender,
   df <- df[, !names(df) %in% vars]
   return(list(df = df, n = number_of_countries, table = table_to_return, fuzzy = fuzzy_table))  
 }
-```
-
-## Classification with two variables each on the health and gender dimensions
-```{r base}
 result <- Classification(health = variables$health, gender = variables$gender)
 kableExtra::kable(result$table, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
@@ -217,15 +213,15 @@ filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Data
 write_csv(df, file = filepath)
 ```
 
+### Subset of 1990 classifications data for which the "floor" rule was applied
+```{r flagged}
+flagged
+```
+
 ```{r toy, echo = FALSE, eval = FALSE}
 temp <- expand.grid(health = paste("H", 1:5, sep = ""), gender = paste("G", 1:5, sep = ""))
 temp$cell <- paste(temp$health, temp$gender, sep = "")
 tapply(temp$cell, INDEX = list(health = temp$health, gender = temp$gender), I)
-```
-
-### Subset of 1990 classifications data for which the "floor" rule was applied
-```{r flagged}
-flagged
 ```
 
 <!-- ### Classification trajectories (in 5-year increments based on global distributions in same time period) -->
@@ -436,7 +432,7 @@ variables$outcomes <- c(variables$health_full, variables$gender_full, variables$
 parallel::mclapply(variables$outcomes, GrowthRatesTtest)
 ```
 
-## Preparing cross-sectional dataset
+## Preparing cross-sectional dataset for later analyses
 ```{r reg_prep}
 covariates <- c("pc_rgdpe_avg", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")
 vars <- unlist(lapply(covariates, function(var) { names(df)[str_detect(names(df), var)] }))
@@ -501,7 +497,7 @@ new <- merge(new, performance_measures, by = "country", all = TRUE)
 # write.csv(new, file = filepath)
 ```
 
-## Performance Rankings in classification groups
+## Performance Rankings within classification groups
 
 ```{r performance_function, message = FALSE, warning = FALSE}
 Performance <- function(category, year, vars) {

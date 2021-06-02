@@ -6,16 +6,17 @@ params:
 
 ```{r setup, include = FALSE}
 source("_R/setup.R")
+knitr::opts_chunk$set(cache = TRUE)
 ```
 
-```{r descriptives, cols.print = 12, cols.min.print = 12}
+```{r descriptives, rows.print = 15, cols.print = 12, cols.min.print = 12}
 IsTrue <- function(x) { !is.na(x) & x }
-load("_data/LSCMWG_working_class.RData", verbose = TRUE)
+load("_data/LSCMWG_working_class.RData")
 df <- unique(df[, c("country", "period", "health_class", "gender_class", "class", "class_vv")])
 df$period <- str_sub(df$period, 7, 10)
 df <- df[!is.na(df$class) & df$period != 2020, ]
-table(df$class_vv)
-noquote(tapply(X = df$class_vv, INDEX = list(health = df$health_class, gender = df$gender_class), function(set) { paste(unique(set), collapse = "; ") }))
+# table(df$class_vv)
+# noquote(tapply(X = df$class_vv, INDEX = list(health = df$health_class, gender = df$gender_class), function(set) { paste(unique(set), collapse = "; ") }))
 df_new <- pivot_wider(df[, c("country", "period", "class_vv")], names_from = period, values_from = class_vv)
 df_new[, -1] <- lapply(df_new[, -1], function(col) {
   col[is.na(col)] <- ""
@@ -27,7 +28,7 @@ df_new[, -1] <- lapply(df_new[, -1], function(col) {
   col[is.na(col)] <- ""
   return(col)
 })
-as.data.frame(df_new)
+# as.data.frame(df_new)
 ```
 
 ```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold"}

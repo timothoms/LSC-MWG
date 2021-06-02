@@ -8,17 +8,12 @@ params:
 source("_R/setup.R")
 ```
 
-## Dataset 
-
-All the figures below are based on a large global dataset (and accompanying codebook) which I assembled from commonly used quantitative indicators on health, gender equality and several types of violence. (The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Metrics Working Group, or at this [link](https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing); access via logging into the shared folder provides more functionality. The dataset is available in the shared Dropbox folder of the Working Group.) 
+The figures below show trends for select countries, based on a large global dataset (and accompanying codebook) which I assembled from commonly used quantitative indicators on health, gender equality and several types of violence. (The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Metrics Working Group, or at this [link](https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing); access via logging into the shared folder provides more functionality. The dataset is available in the shared Dropbox folder of the Working Group.) 
 
 ```{r startup}
 IsTrue <- function(x) { !is.na(x) & x }
-load("_data/LSCMWG_working_data.RData", verbose = TRUE)
-load("_data/dataset_LSCMWG.RData", verbose = TRUE)
-```
-
-```{r figure_function}
+load("_data/LSCMWG_working_data.RData")
+load("_data/dataset_LSCMWG.RData")
 MakeFigure <- function(variable, countries = c("Afghanistan", "Mozambique", "El Salvador")) {
   dat <- data[data$country %in% countries, c("year", "country", variable)]
   first_year <- min(dat$year[!is.na(dat[, variable])])

@@ -11,11 +11,9 @@ knitr::opts_chunk$set(cache = TRUE, fig.width = 12, fig.height = 12,
                       out.width = "100%", out.height = "100%")
 ```
 
-## Data Preparation
-
 ```{r prelim}
 IsTrue <- function(x) { !is.na(x) & x }
-load("_data/LSCMWG_working_class.RData", verbose = TRUE)
+load("_data/LSCMWG_working_class.RData")
 vars <- c("pc_rgdpe_pwt", "pop_wpp", unlist(variables[c("health_full", "gender_full", "conflict_incidence", 
                                                         "death_rates", "measurement_models", "political")], 
                                             use.names = FALSE), 
@@ -34,7 +32,7 @@ take_logs_negative <- c("imr_wpp", "asfr_adol_wpp")
 dfp[, paste("lg", take_logs, sep = "_")] <- lapply(dfp[, take_logs], log)
 dfp[, paste("lg", take_logs_negative, sep = "_")] <- lapply(dfp[, take_logs_negative], 
                                                             function(col) { -log(-col) })
-summary(dfp[, c(take_logs, take_logs_negative)])
+# summary(dfp[, c(take_logs, take_logs_negative)])
 viol_vars <- c("conflict_internal", "war_internal", "conflict_non_state", 
                "conflict_one_sided", "latentmean_fariss", "v2cltort", "v2clkill")
 viol_vars_log <- c("deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
@@ -66,11 +64,8 @@ dfp[, paste("growth_lg", c(variables$health, "asfr_adol_wpp"), sep = "_")] <-
   lapply(c(variables$health, "asfr_adol_wpp"), function(colname) {
     dfp[, paste("lg", colname, sep = "_")] - dfp[, paste("lag_lg", colname, sep = "_")]
   })
-```
 
-## Model & Interaction Functions
-
-```{r functions}
+# functions
 source("~/Dropbox/Analyses/functions/RegressionFig.R")
 source("~/Dropbox/Analyses/functions/InteractionEffect.R")
 RunModels <- function(equations,
@@ -200,7 +195,9 @@ IntPlot <- function(fit, eff_var, int_vars,
 
 ## Health
 
-### DV: Life Expectancy
+### DV: Life Expectancy {.tabset .tabset-fade .tabset-pills}
+
+#### Base variables
 
 ```{r life_exp, rows.print = 15, cols.min.print = 5}
 results_life_exp <- RunModels(pdfname = "life_exp_wpp", equations = c(
@@ -210,6 +207,8 @@ results_life_exp <- RunModels(pdfname = "life_exp_wpp", equations = c(
 )
 results_life_exp$tests
 ```
+
+#### Conflict
 
 ```{r life_exp_incidence, rows.print = 15, cols.min.print = 5}
 results_life_exp <- RunModels(equations = c(
@@ -230,6 +229,8 @@ IntPlot(fit = results_life_exp$ests$fegls$m4$fit,
         title = "Interaction Effect of One-Sided Violence on Life Expectancy", 
         pdfname = "int_life_exp_osv")
 ```
+
+#### Conflict & OSV Deaths
 
 ```{r life_exp_state_deaths, rows.print = 15, cols.min.print = 5}
 results_life_exp <- RunModels(equations = c(
@@ -252,6 +253,8 @@ IntPlot(fit = results_life_exp$ests$fegls$m4$fit,
         pdfname = "int_life_exp_civilians")
 ```
 
+#### Deaths due to societal violence
+
 ```{r life_exp_nonstate_deaths, rows.print = 15, cols.min.print = 5}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -263,6 +266,8 @@ results_life_exp <- RunModels(equations = c(
 )
 results_life_exp$tests
 ```
+
+#### Repression
 
 ```{r life_exp_repression, rows.print = 15, cols.min.print = 5}
 results_life_exp <- RunModels(equations = c(
@@ -294,7 +299,9 @@ IntPlot(fit = results_life_exp$ests$fegls$m4$fit,
         pdfname = "int_life_exp_killings")
 ```
 
-### DV: Infant Mortality Rate
+### DV: Infant Mortality Rate {.tabset .tabset-fade .tabset-pills}
+
+#### Base variables
 
 ```{r imr, rows.print = 15, cols.min.print = 5}
 results_imr <- RunModels(pdfname = "imr_wpp", equations = c(
@@ -304,6 +311,8 @@ results_imr <- RunModels(pdfname = "imr_wpp", equations = c(
 )
 results_imr$tests
 ```
+
+#### Conflict
 
 ```{r imr_incidence, rows.print = 15, cols.min.print = 5}
 results_imr <- RunModels(equations = c(
@@ -325,6 +334,8 @@ IntPlot(fit = results_imr$ests$fegls$m2$fit,
         pdfname = "int_imr_conflict")
 ```
 
+#### Conflict & OSV Deaths
+
 ```{r imr_state_deaths, rows.print = 15, cols.min.print = 5}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -336,6 +347,8 @@ results_imr <- RunModels(equations = c(
 )
 results_imr$tests
 ```
+
+#### Deaths due to societal violence
 
 ```{r imr_nonstate_deaths, rows.print = 15, cols.min.print = 5}
 results_imr <- RunModels(equations = c(
@@ -356,6 +369,8 @@ IntPlot(fit = results_imr$ests$fe$m6$fit,
         title = "Interaction Effect of Homicides on Infant Mortality (FE)", 
         pdfname = "int_imr_hom")
 ```
+
+#### Repression
 
 ```{r imr_repression, rows.print = 15, cols.min.print = 5}
 results_imr <- RunModels(equations = c(
@@ -404,7 +419,9 @@ IntPlot(fit = results_imr$ests$fegls$m6$fit,
 
 ## Gender
 
-### DV: Mean Years of School, ratio of female to male
+### DV: Mean Years of School, ratio of female to male {.tabset .tabset-fade .tabset-pills}
+
+#### Base variables
 
 ```{r mys, rows.print = 15, cols.min.print = 5}
 results_mys_ratio <- RunModels(pdfname = "mys_ratio_hdr", equations = c(
@@ -414,6 +431,8 @@ results_mys_ratio <- RunModels(pdfname = "mys_ratio_hdr", equations = c(
 )
 results_mys_ratio$tests
 ```
+
+#### Conflict
 
 ```{r mys_incidence, rows.print = 15, cols.min.print = 5}
 results_mys_ratio <- RunModels(equations = c(
@@ -436,6 +455,8 @@ IntPlot(fit = results_mys_ratio$ests$fegls$m4$fit,
         pdfname = "int_mys_osv")
 ```
 
+#### Conflict & OSV Deaths
+
 ```{r mys_state_deaths, rows.print = 15, cols.min.print = 5}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -447,6 +468,8 @@ results_mys_ratio <- RunModels(equations = c(
 ))
 results_mys_ratio$tests
 ```
+
+#### Deaths due to societal violence
 
 ```{r mys_nonstate_deaths, rows.print = 15, cols.min.print = 5}
 results_mys_ratio <- RunModels(equations = c(
@@ -468,6 +491,8 @@ IntPlot(fit = results_mys_ratio$ests$fe$m4$fit,
         title = "Interaction Effect of Non-State Conflict Civilian Deaths\non Mean Years of Schooling", 
         pdfname = "int_mys_lpi")
 ```
+
+#### Repression
 
 ```{r mys_repression, rows.print = 15, cols.min.print = 5}
 results_mys_ratio <- RunModels(equations = c(
@@ -499,7 +524,9 @@ IntPlot(fit = results_mys_ratio$ests$fe$m6$fit,
         pdfname = "int_mys_torture_fe")
 ```
 
-### DV: Adolescent Fertility Rate
+### DV: Adolescent Fertility Rate {.tabset .tabset-fade .tabset-pills}
+
+#### Base variables
 
 ```{r asfr, rows.print = 15, cols.min.print = 5}
 results_asfr <- RunModels(pdfname = "asfr_adol_wpp", equations = c(
@@ -509,6 +536,8 @@ results_asfr <- RunModels(pdfname = "asfr_adol_wpp", equations = c(
 )
 results_asfr$tests
 ```
+
+#### Conflict
 
 ```{r asfr_incidence, rows.print = 15, cols.min.print = 5}
 results_asfr <- RunModels(equations = c(
@@ -534,6 +563,8 @@ IntPlot(fit = results_asfr$ests$fegls$m4$fit,
         title = "Interaction Effect of One-Sided Violence on Adolescent Fertility Rate", 
         pdfname = "int_asfr_osv")
 ```
+
+#### Conflict & OSV Deaths
 
 ```{r asfr_state_deaths, rows.print = 15, cols.min.print = 5}
 results_asfr <- RunModels(equations = c(
@@ -562,6 +593,8 @@ IntPlot(fit = results_asfr$ests$fegls$m4$fit,
         pdfname = "int_asfr_cvilians")
 ```
 
+#### Deaths due to societal violence
+
 ```{r asfr_nonstate_deaths, rows.print = 15, cols.min.print = 5}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -573,6 +606,8 @@ results_asfr <- RunModels(equations = c(
 )
 results_asfr$tests
 ```
+
+#### Repression
 
 ```{r asfr_repression, rows.print = 15, cols.min.print = 5}
 results_asfr <- RunModels(equations = c(
@@ -594,7 +629,7 @@ IntPlot(fit = results_asfr$ests$fegls$m6$fit,
         pdfname = "int_asfr_torture")
 ```
 
-## Violence
+## Violence {.tabset .tabset-fade .tabset-pills}
 
 ### DV: Internal Conflict
 

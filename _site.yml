@@ -15,8 +15,6 @@ navbar:
     href: regressions.html
   - text: "Panel Models"
     href: panel.html
-  - text: "Sequences"
-    href: sequences.html
   - text: "Cases"
     href: cases.html
 output:
@@ -29,5 +27,6 @@ output:
     css: styles.css
     theme: flatly
     highlight: pygments
+    code_folding: hide
 editor_options:
   chunk_output_type: console
