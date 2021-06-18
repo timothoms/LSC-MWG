@@ -1,12 +1,12 @@
 ---
 title: "Mapping trajectories"
 params: 
-  optimize: true
+  cache: false
+  optimize: false
 ---
 
 ```{r setup, include = FALSE}
-source("_R/setup.R")
-knitr::opts_chunk$set(cache = TRUE)
+source("setup.R")
 ```
 
 ```{r descriptives, rows.print = 15, cols.print = 12, cols.min.print = 12}

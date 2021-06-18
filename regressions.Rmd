@@ -1,11 +1,12 @@
 ---
-title: "Cross-sectional Regressions"
+title: "Cross-sectional regressions"
 params: 
+  cache: true
   optimize: true
 ---
 
 ```{r setup, include = FALSE}
-source("_R/setup.R")
+source("setup.R")
 ```
 
 ```{r startup}
@@ -22,18 +23,21 @@ RunModel <- function(equation, data = df) {
   invisible(fit)
 }
 ```
+### {.tabset .tabset-fade .tabset-pills}
 
-## Life expectancy regressions 
+#### Life expectancy regressions {.tabset .tabset-fade .tabset-pills}
 
-```{r life}
-## Column 1:
+##### Column 1
+```{r life_col1}
 fit <- RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1996_2015)
 df$samplelife <- ifelse(df$country %in% 
                         na.omit(get_all_vars(fit$call$formula, data = df, country = country))[, "country"], 1, 0)
 # auxilliary checks
 # RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1996_2015)
+```
 
-## Column 2: (no lag DV)
+##### Column 2 (no lag DV)
+```{r life_col2}
 RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
 # auxilliary checks
 # RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
@@ -44,18 +48,25 @@ RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + conf
 # RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
 # RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
 # RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_int_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
+```
 
-## Column 3:(prediction)
+##### Column 3 (prediction)
+```{r life_col3}
 RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_osv_rate_1995)
 # auxilliary checks
 # RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_int_rate_1995)
 # RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + conflict_internal_cumulative1989_1995)
+```
 
-## Column 4: performance version
-RunModel(perf_life_exp_wpp_growth1995_2015 ~ perf_imr_wpp_1995 + perf_asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + pc_rgdpe_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
+##### Column 4 (performance version)
+```{r life_col4}
+RunModel(perf_life_exp_wpp_growth1995_2015 ~ perf_imr_wpp_1995 + perf_asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
 # auxilliary checks
-# RunModel(perf_life_exp_wpp_growth1995_2015 ~ perf_imr_wpp_1995 + perf_asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + pc_rgdpe_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
+# RunModel(perf_life_exp_wpp_growth1995_2015 ~ perf_imr_wpp_1995 + perf_asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
+```
 
+##### no health variables (not reported)
+```{r life_supp}
 ## no health variables (not reported)
 RunModel(life_exp_wpp_growth1995_2015 ~ mys_ratio_hdr_1995 + deaths_civilians_int_rate_cumulative1996_2015)
 cor(df[df$samplelife == 1, c("life_exp_wpp_1995", "imr_wpp_1995")])
@@ -63,24 +74,27 @@ cor(df[df$samplelife == 1, c("v2x_polyarchy_cumulative1996_2015", "v2x_polyarchy
 cor(df[df$samplelife == 1, c("perf_life_exp_wpp_growth1995_2015", "life_exp_wpp_1995")])
 ```
 
-## IMR regressions
+#### IMR regressions {.tabset .tabset-fade .tabset-pills}
 
-```{r imr}
-## base model
-fit <- RunModel(imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + pc_rgdpe_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
+##### Base model
+```{r imr_base}
+fit <- RunModel(imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
 car::vif(fit)
 RunModel(imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)
-RunModel(imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + pc_rgdpe_avg_1995 + v2x_polyarchy_cumulative1991_1995)
-cor(df[df$samplelife == 1, c("pc_rgdpe_avg_1995", "pc_rgdpe_avg_growth1995_2015")])
-## Prediction model
+RunModel(imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + pc_rgdpe_pwt_avg_1995 + v2x_polyarchy_cumulative1991_1995)
+cor(df[df$samplelife == 1, c("pc_rgdpe_pwt_avg_1995", "pc_rgdpe_avg_growth1995_2015")])
+```
+
+##### Prediction model
+```{r imr_prediction}
 RunModel(imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995)
 RunModel(imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995, data = df[df$samplelife == 1, ])
 ```
 
-## MYS regressions
+#### MYS regressions {.tabset .tabset-fade .tabset-pills}
 
-```{r mys}
-## Column 1: MYS base
+##### Column 1 (base model)
+```{r mys_col1}
 fit <- RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_osv_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015)
 df$samplemys <- ifelse(df$country %in% na.omit(get_all_vars(fit$call$formula, data = df, country = country))[, "country"], 1, 0)
 ## (checks)
@@ -98,76 +112,110 @@ cor(df[df$samplemys == 1, c("deaths_civilians_osv_rate_1995", "deaths_civilians_
 # RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_int_rate_1995 + conflict_internal_cumulative1996_2015)
 # RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015)
 # RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + deaths_civilians_int_rate_cumulative1996_2015)
+```
 
-## Column 2 MYS predict
+##### Column 2 (prediction model)
+```{r mys_col2}
 RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_osv_rate_1995)
 # auxilliary checks
 # RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_int_rate_1995)
 # RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + conflict_internal_cumulative1989_1995)
 ```
 
-## ASFR regressions
+#### ASFR regressions {.tabset .tabset-fade .tabset-pills}
 
-```{r asfr}
-## column 3 ASFR base
+##### Column 3 (base model)
+```{r asfr_col3}
 RunModel(asfr_adol_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_partip_cumulative1996_2015)
-## Column 4 ASFR predict
+```
+
+##### Column 4 (prediction model)
+```{r asfr_col4}
 RunModel(asfr_adol_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_partip_cumulative1991_1995)
 ```
 
-## Conflict regressions
+#### Conflict regressions {.tabset .tabset-fade .tabset-pills}
 
-```{r conflict}
-## column 1
+##### Column 1
+```{r conflict_col1}
 RunModel(conflict_internal_cumulative1996_2015 ~ life_exp_wpp_1995 + conflict_internal_cumulative1989_1995)
-## column 2
+```
+
+##### Column 2
+```{r conflict_col2}
 RunModel(conflict_internal_cumulative1996_2015 ~ imr_wpp_1995 + conflict_internal_cumulative1989_1995)
-## column 3
+```
+
+##### Column 3
+```{r conflict_col3}
 RunModel(conflict_internal_cumulative1996_2015 ~ mys_ratio_hdr_1995 + conflict_internal_cumulative1989_1995)
-## column 4
+```
+
+##### Column 4
+```{r conflict_col4}
 RunModel(deaths_civilians_int_rate_cumulative1996_2015 ~ mys_ratio_hdr_1995)
-## column 5
+```
+
+##### Column 5
+```{r conflict_col5}
 RunModel(deaths_civilians_osv_rate_cumulative1996_2015 ~ mys_ratio_hdr_1995 + deaths_civilians_osv_rate_1995)
 ```
 
-## Non-regression evidence
+#### Non-regression evidence {.tabset .tabset-fade .tabset-pills}
 
-```{r descriptives}
+##### Life expectancy
+
+```{r descriptives_life}
 hist(df$life_exp_wpp_growth1995_2015) 
 summary(df$life_exp_wpp_growth1995_2015)
 summary(df$class_low_1995)
 summary(df$class_low_1995[df$life_exp_wpp_growth1995_2015 < 2.3])
 summary(df$class_upp_1995)
 summary(df$class_upp_1995[df$life_exp_wpp_growth1995_2015 < 2.3])
+```
 
+##### IMR
+```{r descriptives_imr}
 hist(df$imr_wpp_growth1995_2015)
 summary(df$imr_wpp_growth1995_2015)
 summary(df$class_low_1995)
 summary(df$class_low_1995[df$imr_wpp_growth1995_2015 < 2.71])
 summary(df$class_upp_1995)
 summary(df$class_upp_1995[df$imr_wpp_growth1995_2015 < 2.71])
+```
 
+##### MYS
+```{r descriptives_mys}
 hist(df$mys_ratio_hdr_growth1995_2015)
 summary(df$mys_ratio_hdr_growth1995_2015)
 summary(df$class_low_1995)
 summary(df$class_low_1995[df$mys_ratio_hdr_growth1995_2015 < -0.00437])
 summary(df$class_upp_1995)
 summary(df$class_upp_1995[df$mys_ratio_hdr_growth1995_2015 < -0.00437])
+```
 
+##### ASFR
+```{r descriptives_asfr}
 hist(df$asfr_adol_wpp_growth1995_2015)
 summary(df$asfr_adol_wpp_growth1995_2015)
 summary(df$class_low_1995)
 summary(df$class_low_1995[df$asfr_adol_wpp_growth1995_2015 < 2.7085])
 summary(df$class_upp_1995)
 summary(df$class_upp_1995[df$asfr_adol_wpp_growth1995_2015 < 2.7085])
+```
 
+##### GDP growth
+```{r descriptives_gdp}
 hist(df$pc_rgdpe_avg_growth1995_2015)
 summary(df$pc_rgdpe_avg_growth1995_2015) 
 summary(df$class_low_1995)
 summary(df$class_low_1995[df$pc_rgdpe_avg_growth1995_2015 < 144]) 
 summary(df$class_upp_1995)
 summary(df$class_upp_1995[df$pc_rgdpe_avg_growth1995_2015 < 144])
+```
 
+##### Polyarchy
+```{r descriptives_polyarchy}
 df$authority <- df$v2x_polyarchy_cumulative1996_2015 - df$v2x_polyarchy_cumulative1991_1995
 hist(df$authority)
 summary(df$authority)

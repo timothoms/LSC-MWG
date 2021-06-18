@@ -6,7 +6,7 @@ navbar:
   title: "LSC-MWG"
   left:
   - text: "Introduction"
-    href: intro.html
+    href: index.html
   - text: "Data"
     href: data.html
   - text: "Classifications"
@@ -15,12 +15,13 @@ navbar:
     href: regressions.html
   - text: "Panel Models"
     href: panel.html
-  - text: "Cases"
-    href: cases.html
+  right:
+    icon: fa-github
+    href: https://github.com/timothoms/LSC-MWG
 output:
   html_document:
     toc: true
-    toc_depth: 3
+    toc_depth: 2
     df_print: "paged"
     fig_width: 8
     fig_height: 8

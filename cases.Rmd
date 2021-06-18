@@ -1,11 +1,12 @@
 ---
 title: "Country Cases"
 params: 
+  cache: false
   optimize: true
 ---
 
 ```{r setup, include = FALSE}
-source("_R/setup.R")
+source("setup.R")
 ```
 
 The figures below show trends for select countries, based on a large global dataset (and accompanying codebook) which I assembled from commonly used quantitative indicators on health, gender equality and several types of violence. (The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Metrics Working Group, or at this [link](https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing); access via logging into the shared folder provides more functionality. The dataset is available in the shared Dropbox folder of the Working Group.) 
