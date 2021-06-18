@@ -1,11 +1,12 @@
 ---
 title: "Classifications"
 params: 
+  cache: true
   optimize: true
 ---
 
 ```{r setup, include = FALSE}
-source("_R/setup.R")
+source("setup.R")
 ```
 
 ```{r startup}
@@ -13,7 +14,9 @@ IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_data.RData")
 ```
 
-## Classification for 1990 with two variables each on the health and gender dimensions
+### {.tabset .tabset-fade .tabset-pills}
+
+#### Classification with two variables on each dimensions for 1990
 
 ```{r classification}
 Classification <- function(health, gender, 
@@ -24,6 +27,7 @@ Classification <- function(health, gender,
   qs <- paste("q", 1:5, sep = "") 
   vars = c(health, gender)
   df <- df[, c("country", "year", "period", vars)]
+  ## creating 5-year averages
   df <- df %>% group_by(country, period) %>% 
     mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}_avg"), .keep = "all")
   df <- df[df$year %in% c(seq(1965, 2015, 5), 2018), ]
@@ -37,6 +41,7 @@ Classification <- function(health, gender,
   df <- df %>% mutate(across(paste(vars, "avg", sep = "_"), 
                       ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[5], .names = "{col}_q80"))
   df <- ungroup(df)
+
   df[, paste(vars, "quintile", sep = "_")] <- parallel::mclapply(vars, function(var) {
     col <- rep(NA, nrow(df))
     col[df[, paste(var, "avg", sep = "_")] < df[, paste(var, "avg_q20", sep = "_")]] <- 1
@@ -49,7 +54,7 @@ Classification <- function(health, gender,
     col[df[, paste(var, "avg", sep = "_")] >= df[, paste(var, "avg_q80", sep = "_")]] <- 5
     return(col)
   })
-  df <- df[, c("country", "year", "period", names(df)[str_detect(names(df), fixed("quintile"))])]
+# df <- df[, c("country", "year", "period", names(df)[str_detect(names(df), fixed("quintile"))])]
   # combis <- expand.grid(health = health, gender = gender, stringsAsFactors = FALSE)
   # combis <- split(combis, seq(nrow(combis)))
   df$health_q1 <- rowSums(df[, paste(health, "quintile", sep = "_")] == 1, na.rm = TRUE)
@@ -67,8 +72,10 @@ Classification <- function(health, gender,
   df$health_valid <- rowSums(df[, health_vars])
   df$gender_valid <- rowSums(df[, gender_vars])
   df$valid <- df$health_valid * df$gender_valid
-  to_keep <- c("country", "year", "period", "valid", "health_valid", "gender_valid", health_vars, gender_vars)
-  df <- df[df$valid > 0, to_keep]
+  # unique(df$country[df$valid  == 0])
+  df <- df[df$valid > 0, ]
+  df <- df[, !names(df) %in% unlist(lapply(c("q20", "q40", "q60", "q80", "quintile", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp"), function(x) names(df)[str_detect(names(df), x)]))]
+  # df <- df[, !names(df) %in% c("life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")]
   health_true <- df[, health_vars] == apply(df[, health_vars], MARGIN = 1, FUN = max)
   gender_true <- df[, gender_vars] == apply(df[, gender_vars], MARGIN = 1, FUN = max)
   health_help <- health_true * matrix(1:5, nrow = nrow(health_true), ncol = 5, byrow = TRUE)
@@ -91,6 +98,7 @@ Classification <- function(health, gender,
   }))
   df$combi <- df$health_n * df$gender_n
   df$class <- paste("H", df$health_class, "G", df$gender_class, sep = "")
+  df$class_alt <- paste("H", df$health_class_alt, "G", df$gender_class_alt, sep = "")
   df$class_num <-df$health_class * df$gender_class
   test <- table(df[df$year == year_to_show & df$valid >= min_to_include, c("health_class", "gender_class")])
   print(test)
@@ -161,7 +169,13 @@ kableExtra::kable(result$table, format = "html") %>%
   kableExtra::group_rows("Health", 1, 5)
 ```
 
-### This is the fuzzy version of the above classification (only for illustration, not for analyses)
+```{r toy, echo = FALSE, eval = FALSE}
+temp <- expand.grid(health = paste("H", 1:5, sep = ""), gender = paste("G", 1:5, sep = ""))
+temp$cell <- paste(temp$health, temp$gender, sep = "")
+tapply(temp$cell, INDEX = list(health = temp$health, gender = temp$gender), I)
+```
+
+#### Fuzzy version of classification (for illustration only)
 ```{r fuzzy}
 kableExtra::kable(result$fuzzy, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
@@ -179,12 +193,12 @@ kableExtra::kable(result_perf$table, format = "html") %>%
   kableExtra::group_rows("Health", 1, 5)
 ```
 
-### Merging the classifications into the dataset
+#### Merging classifications into dataset
 
 ```{r merging}
 variables$class <- c("health_valid", "gender_valid", "health_class", "gender_class", 
                      "health_class_alt", "gender_class_alt", "health_flag", "gender_flag", 
-                     "health_n", "gender_n", "class", "support")
+                     "health_n", "gender_n", "class", "class_alt", "support")
 df <- as.data.frame(result$df[, c("country", "year", "period", "class_num", variables$class)])
 flagged <- df[df$year == 1990 & (df$health_flag == 1 | df$gender_flag == 1), 
               c("country", "class_num", variables$class)]
@@ -192,11 +206,21 @@ df$class_vv <- NA
 df$class_vv[df$health_class < 3 & df$gender_class < 3] <- "low"
 df$class_vv[df$health_class > 3 & df$gender_class > 3] <- "upp"
 df$class_vv[!(df$health_class < 3 & df$gender_class < 3) & !(df$health_class > 3 & df$gender_class > 3)] <- "mid"
-df$class_vv[df$class_vv == "mid" & df$health_class > df$gender_class] <- "H > G"
-df$class_vv[df$class_vv == "mid" & df$health_class < df$gender_class] <- "G > H"
+df$class_vv[df$class_vv == "mid" & df$health_class > df$gender_class] <- "H>G"
+df$class_vv[df$class_vv == "mid" & df$health_class < df$gender_class] <- "G>H"
+## alt
+df$class_vv_alt <- NA
+df$class_vv_alt[df$health_class_alt < 3 & df$gender_class_alt < 3] <- "low"
+df$class_vv_alt[df$health_class_alt > 3 & df$gender_class_alt > 3] <- "upp"
+df$class_vv_alt[!(df$health_class_alt < 3 & df$gender_class_alt < 3) & !(df$health_class_alt > 3 & df$gender_class_alt > 3)] <- "mid"
+df$class_vv_alt[df$class_vv_alt == "mid" & df$health_class_alt > df$gender_class_alt] <- "H>G"
+df$class_vv_alt[df$class_vv_alt == "mid" & df$health_class_alt < df$gender_class_alt] <- "G>H"
 # addmargins(table(df$class_vv, df$class))
 df$class_low <- ifelse(df$class_vv == "low", 1, 0)
 df$class_upp <- ifelse(df$class_vv == "upp", 1, 0)
+df$class_mid <- ifelse(df$class_vv == "mid", 1, 0)
+df$class_HG <- ifelse(df$class_vv == "H>G", 1, 0)
+df$class_GH <- ifelse(df$class_vv == "G>H", 1, 0)
 variables$class_core <- c("country", "class", "health_class", "gender_class", "class_vv")
 class1990 <- df[df$year == 1990, variables$class_core]
 names(class1990) <- c("country", paste(c("class", "health", "gender", "class_vv"), 1990, sep = ""))
@@ -208,20 +232,13 @@ df <- merge(df, class1995, by = "country", all.x = TRUE)
 df <- df[order(df$country, df$year), 
          c("country", "year", "period", names(df)[!names(df) %in% c("country", "year", "period")])]
 df <- df[df$year != 1960 & df$year != 2019, ]
-filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class_",
-                  lubridate::today(), ".csv", sep = "" )
+filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class", ".csv", sep = "" )
 write_csv(df, file = filepath)
 ```
 
-### Subset of 1990 classifications data for which the "floor" rule was applied
+#### Subset of 1990 classifications for which "floor" rule was applied
 ```{r flagged}
 flagged
-```
-
-```{r toy, echo = FALSE, eval = FALSE}
-temp <- expand.grid(health = paste("H", 1:5, sep = ""), gender = paste("G", 1:5, sep = ""))
-temp$cell <- paste(temp$health, temp$gender, sep = "")
-tapply(temp$cell, INDEX = list(health = temp$health, gender = temp$gender), I)
 ```
 
 <!-- ### Classification trajectories (in 5-year increments based on global distributions in same time period) -->
@@ -233,7 +250,24 @@ ggplot(data = df[df$year %in% seq(1965, 2015, 5), ]) +
   scale_x_continuous(breaks = seq(1970, 2010, by = 20))
 ```
 
-### Which countries move more than 2 cells in the classifications?
+<!-- ### Descriptives of control variables by 1990 classification: mean (SD) [currently not shown] -->
+```{r descriptives, echo = FALSE, eval = FALSE}
+Descriptives <- function(cell, digits = 2) {
+  mean <- mean(cell, na.rm = TRUE)
+  sd <- sd(cell, na.rm = TRUE)
+  ifelse(!is.na(mean), paste(round(mean, digits), " (", round(sd, digits), ")", sep = ""), "")
+}
+table_to_show <- lapply(variables$controls, function(var) {
+  to_return <- tapply(df[, var], 
+                      INDEX = list(health = df$health1990, gender = df$gender1990), 
+                      FUN =  Descriptives)
+  to_return[is.na(to_return)] <- ""
+  return(to_return)
+})
+noquote(table_to_show)
+```
+
+#### Which countries move more than 2 cells?
 ```{r movers}
 names(years) <- years <- c(1990, 1995, 2015)
 dat <- lapply(years, function(year) {
@@ -250,7 +284,7 @@ better
 worse
 ```
 
-### Removing countries with untrustworthy statistics 
+#### Removing countries with untrustworthy statistics 
 
 All data is subject to measurement error. This is particularly problematic if measurement is systematically biased. Without other data to validate a given measure, this is a very difficult to problem to overcome. We only use data from reputable sources, such as academic centre and international organizations, but some self-reported data are still suspect. The World Bank and some NGOs have attempted to rate the capacity of National Statistical System, and some countries are not inlcuded in their rankings because assessments could be not be made based on available information. For instance, the ODIN rankings from 2015 to 2018 do not include the Central African Republic, Eritrea, Equatorial Guinea, and North Korea. Interestingly, among these, only North Korea is relatively highly ranked on the gender and health dimensions according to these data, which is simply not believable. Therefore, we remove only North Korea from the analyses.
 
@@ -258,38 +292,10 @@ All data is subject to measurement error. This is particularly problematic if me
 df <- df[df$country != "North Korea", ]
 ```
 
-<!-- ### Descriptives of control variables by 1990 classification: mean (SD) [currently not shown] -->
-```{r descriptives, eval = FALSE, echo = FALSE}
-Descriptives <- function(cell, digits = 2) {
-  mean <- mean(cell, na.rm = TRUE)
-  sd <- sd(cell, na.rm = TRUE)
-  ifelse(!is.na(mean), paste(round(mean, digits), " (", round(sd, digits), ")", sep = ""), "")
-}
-table_to_show <- lapply(variables$controls, function(var) {
-  to_return <- tapply(df[, var], 
-                      INDEX = list(health = df$health1990, gender = df$gender1990), 
-                      FUN =  Descriptives)
-  to_return[is.na(to_return)] <- ""
-  return(to_return)
-})
-noquote(table_to_show)
-```
+#### Trends by classification groups over time {.tabset .tabset-fade .tabset-pills}
 
-<!-- ### Change within classification categories & trajectories from 1995 classifications -->
-```{r trajectories, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE, results = 'hide'}
-lapply(c(variables$health_full, variables$gender_full), function(var) {
-  dat <- df[df$class1995 %in% c("H1G1", "H1G2", "H2G1", "H2G2", "H4G4", "H4G5", "H5G4", "H5G5"), ]
-  ggplot(dat, aes(x = year, y = !!sym(var), group = class1995, color = class1995)) + 
-    stat_summary(fun = "mean", geom = "line", na.rm = TRUE, size = 1) + 
-    xlim(1965, 2018) + 
-    theme_bw() + 
-    ggtitle(paste(var, "average by 1995 classification over time"))
-})
-```
-
-```{r pdfs, echo = FALSE, eval = FALSE}
+```{r trends}
 ### making trend figures for the Dec 9 presentation
-## data prep
 df_new <- df[df$year %in% 1965:2018, 
              c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")]
 df_new <- df_new %>% group_by(year) %>% mutate(avg_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
@@ -311,41 +317,81 @@ df_upp <- df_upp %>% group_by(year) %>% mutate(upp_imr_wpp = -mean(imr_wpp, na.r
 df_upp <- df_upp %>% group_by(year) %>% mutate(upp_mys_ratio_hdr = mean(mys_ratio_hdr, na.rm = TRUE))
 df_upp <- df_upp %>% group_by(year) %>% mutate(upp_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
 df_upp <- unique(df_upp[, c("year", "upp_life_exp_wpp", "upp_imr_wpp", "upp_mys_ratio_hdr", "upp_asfr_adol_wpp")])
+df_mid <- df[df$year %in% 1965:2018 & df$class_vv == "mid", 
+             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")]
+df_mid <- df_mid %>% group_by(year) %>% mutate(mid_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
+df_mid <- df_mid %>% group_by(year) %>% mutate(mid_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
+df_mid <- df_mid %>% group_by(year) %>% mutate(mid_mys_ratio_hdr = mean(mys_ratio_hdr, na.rm = TRUE))
+df_mid <- df_mid %>% group_by(year) %>% mutate(mid_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
+df_mid <- unique(df_mid[, c("year", "mid_life_exp_wpp", "mid_imr_wpp", "mid_mys_ratio_hdr", "mid_asfr_adol_wpp")])
+df_Hlop <- df[df$year %in% 1965:2018 & df$class_vv == "H>G", 
+             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")]
+df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
+df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
+df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_mys_ratio_hdr = mean(mys_ratio_hdr, na.rm = TRUE))
+df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
+df_Hlop <- unique(df_Hlop[, c("year", "HG_life_exp_wpp", "HG_imr_wpp", "HG_mys_ratio_hdr", "HG_asfr_adol_wpp")])
+df_Glop <- df[df$year %in% 1965:2018 & df$class_vv == "G>H", 
+             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")]
+df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
+df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
+df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_mys_ratio_hdr = mean(mys_ratio_hdr, na.rm = TRUE))
+df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
+df_Glop <- unique(df_Glop[, c("year", "GH_life_exp_wpp", "GH_imr_wpp", "GH_mys_ratio_hdr", "GH_asfr_adol_wpp")])
 df_new <- merge(df_new, df_low, by = "year", all = TRUE)
+df_new <- merge(df_new, df_mid, by = "year", all = TRUE)
+df_new <- merge(df_new, df_Hlop, by = "year", all = TRUE)
+df_new <- merge(df_new, df_Glop, by = "year", all = TRUE)
 df_new <- merge(df_new, df_upp, by = "year", all = TRUE)
-## figures
-pdf(file = paste("pdfs/trend_life_exp_wpp.pdf", sep = ""), width = 16, height = 9)
-dat <- na.omit(df_new[, c("year", "avg_life_exp_wpp", "low_life_exp_wpp", "upp_life_exp_wpp")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "Life Expectancy", lwd = 2, lty = "solid", col = c("black", "red", "blue"))
-legend("bottomright", legend = c("Global Average", "low classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red", "blue"))
-dev.off()
-pdf(file = paste("pdfs/trend_imr_wpp.pdf", sep = ""), width = 16, height = 9)
-dat <- na.omit(df_new[, c("year", "avg_imr_wpp", "low_imr_wpp", "upp_imr_wpp")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "Infant Mortality Rate", lwd = 2, lty = "solid", col = c("black", "red", "blue"))
-legend("topright", legend = c("Global Average", "low classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red", "blue"))
-dev.off()
-pdf(file = paste("pdfs/trend_mys_ratio_hdr.pdf", sep = ""), width = 16, height = 9)
-dat <- na.omit(df_new[, c("year", "avg_mys_ratio_hdr", "low_mys_ratio_hdr", "upp_mys_ratio_hdr")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "Mean Years of Schooling", lwd = 2, lty = "solid", col = c("black", "red", "blue"))
-legend("bottomright", legend = c("Global Average", "low classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red", "blue"))
-dev.off()
-pdf(file = paste("pdfs/trend_asfr_adol_wpp.pdf", sep = ""), width = 16, height = 9)
-dat <- na.omit(df_new[, c("year", "avg_asfr_adol_wpp", "low_asfr_adol_wpp", "upp_asfr_adol_wpp")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "Adolescent Fertility Rate", lwd = 2, lty = "solid", col = c("black", "red", "blue"))
-legend("topright", legend = c("Global Average", "low classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red", "blue"))
-dev.off()
 ```
 
-### Trends by classification group
+##### Life expectancy
+```{r pdf_life, fig.width = 12, fig.height = 8}
+# pdf(file = paste("_summary/trend_life_exp_wpp.pdf", sep = ""), width = 16, height = 9)
+dat <- na.omit(df_new[, c("year", "avg_life_exp_wpp", "low_life_exp_wpp", "HG_life_exp_wpp", "GH_life_exp_wpp", "mid_life_exp_wpp", "upp_life_exp_wpp")])
+matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
+        main = "Life Expectancy", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
+legend("bottomright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
+       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
+# dev.off()
+```
 
+##### IMR
+```{r pdf_imr, fig.width = 12, fig.height = 8}
+# pdf(file = paste("_summary/trend_imr_wpp.pdf", sep = ""), width = 16, height = 9)
+dat <- na.omit(df_new[, c("year", "avg_imr_wpp", "low_imr_wpp", "HG_imr_wpp", "GH_imr_wpp", "mid_imr_wpp", "upp_imr_wpp")])
+matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
+        main = "Infant Mortality Rate", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
+legend("topright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
+       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
+# dev.off()
+```
+
+##### MYS
+```{r pdf_mys, fig.width = 12, fig.height = 8}
+# pdf(file = paste("_summary/trend_mys_ratio_hdr.pdf", sep = ""), width = 16, height = 9)
+dat <- na.omit(df_new[, c("year", "avg_mys_ratio_hdr", "low_mys_ratio_hdr", "HG_mys_ratio_hdr", "GH_mys_ratio_hdr", "mid_mys_ratio_hdr", "upp_mys_ratio_hdr")])
+matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
+        main = "Mean Years of Schooling", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
+legend("bottomright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
+       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
+# dev.off()
+```
+
+##### ASFR
+```{r pdf_asfr, fig.width = 12, fig.height = 8}
+# pdf(file = paste("_summary/trend_asfr_adol_wpp.pdf", sep = ""), width = 16, height = 9)
+dat <- na.omit(df_new[, c("year", "avg_asfr_adol_wpp", "low_asfr_adol_wpp", "HG_asfr_adol_wpp", "GH_asfr_adol_wpp", "mid_asfr_adol_wpp", "upp_asfr_adol_wpp")])
+matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
+        main = "Adolescent Fertility Rate", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
+legend("topright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
+       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
+# dev.off()
+```
+
+#### Trends by 1995 classification groups {.tabset .tabset-fade .tabset-pills}
+
+##### Health & gender
 ```{r categories, message = FALSE, results = 'hide'}
 summary(as.factor(df$class_vv1990))
 summary(as.factor(df$class_vv1995))
@@ -359,8 +405,7 @@ lapply(c(variables$health_full, variables$gender_full), function(var) {
 })
 ```
 
-### Cumulative death rate trends by 1995 classification groups
-
+##### Cumulative death rates
 ```{r deaths, message = FALSE, results = 'hide'}
 lapply(variables$death_rates, function(var) {
   dat <- df[!is.na(df$class_vv1995) & df$class_vv1995 != "mid", ]
@@ -373,8 +418,7 @@ lapply(variables$death_rates, function(var) {
 })
 ```
 
-### Cumulative repression trends by 1995 classification groups
-
+##### Cumulative repression
 ```{r violence, message = FALSE, results = 'hide'}
 lapply(variables$measurement_models, function(var) {
   dat <- df[!is.na(df$class_vv1995) & df$class_vv1995 != "mid", ]
@@ -387,7 +431,7 @@ lapply(variables$measurement_models, function(var) {
 })
 ```
 
-### Conflict incidence by 1995 classification groups
+##### Conflict incidence
 
 ```{r incidence, message = FALSE, warning = FALSE, results = 'hide'}
 lapply(variables$conflict_incidence, function(var) {
@@ -403,9 +447,8 @@ lapply(variables$conflict_incidence, function(var) {
 })
 ```
 
-### Mean growth rates by classification with t-test (alt H: mean different from global)
-
-```{r growth_rates}
+<!-- #### Mean growth rates by classification with t-test (alt H: mean different from global) -->
+```{r growth_rates, echo = FALSE, eval = FALSE}
 GrowthRatesTtest <- function(var, min_obs = 2) { 
   dat1995 <- df[df$year == 1995, c("country", "class", "health_class", "gender_class", var)]
   dat2015 <- df[df$year == 2015, c("country", var)]
@@ -432,11 +475,12 @@ variables$outcomes <- c(variables$health_full, variables$gender_full, variables$
 parallel::mclapply(variables$outcomes, GrowthRatesTtest)
 ```
 
-## Preparing cross-sectional dataset for later analyses
+#### Preparing cross-sectional dataset
 ```{r reg_prep}
-covariates <- c("pc_rgdpe_avg", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")
+covariates <- c("pc_rgdpe_pwt", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "asfr_adol_wpp")
+covariates <- c(covariates, "oda_provided_const_wdi", "oda_received_perc_gov_exp_wdi", "oda_aid_received_const_wdi", "oda_received_const_wdi", "oda_received_perc_imports_wdi", "aid_received_const_wdi")
 vars <- unlist(lapply(covariates, function(var) { names(df)[str_detect(names(df), var)] }))
-vars <- vars[vars != "pasfr_adol_wpp"]
+vars <- unique(vars[vars != "pasfr_adol_wpp"])
 include <- c("country", "class", "class_vv", "class_low", "class_upp", vars)
 new1990 <- df[df$year == 1990, c(include, variables$death_rates, variables$measurement_models)]
 new1995 <- df[df$year == 1995, c(include, variables$death_rates, variables$measurement_models, 
@@ -455,21 +499,32 @@ names(new2015)[names(new2015) != "country"] <- paste(names(new2015)[names(new201
 new <- merge(new1990, new1995, by = c("country"), all = TRUE)
 new <- merge(new, new2015, by = c("country"), all = TRUE)
 ## growth vars 
-new$pc_rgdpe_avg_growth1990_2015 <- new$pc_rgdpe_avg_2015 - new$pc_rgdpe_avg_1990
-new$life_exp_wpp_growth1990_2015 <- new$life_exp_wpp_2015 - new$life_exp_wpp_1990
-new$imr_wpp_growth1990_2015 <- new$imr_wpp_2015 - new$imr_wpp_1990
-new$mys_ratio_hdr_growth1990_2015 <- new$mys_ratio_hdr_2015 - new$mys_ratio_hdr_1990
-new$asfr_adol_wpp_growth1990_2015 <- new$asfr_adol_wpp_2015 - new$asfr_adol_wpp_1990
-new$pc_rgdpe_avg_growth1995_2015 <- new$pc_rgdpe_avg_2015 - new$pc_rgdpe_avg_1995
-new$life_exp_wpp_growth1995_2015 <- new$life_exp_wpp_2015 - new$life_exp_wpp_1995
-new$imr_wpp_growth1995_2015 <- new$imr_wpp_2015 - new$imr_wpp_1995
-new$mys_ratio_hdr_growth1995_2015 <- new$mys_ratio_hdr_2015 - new$mys_ratio_hdr_1995
-new$asfr_adol_wpp_growth1995_2015 <- new$asfr_adol_wpp_2015 - new$asfr_adol_wpp_1995
+new$pc_rgdpe_avg_growth1990_2015  <- new$pc_rgdpe_pwt_avg_2015 - new$pc_rgdpe_pwt_avg_1990
+new$pc_rgdpe_avg_growth1995_2015  <- new$pc_rgdpe_pwt_avg_2015 - new$pc_rgdpe_pwt_avg_1995
+new$life_exp_wpp_growth1990_2015  <- new$life_exp_wpp_2015     - new$life_exp_wpp_1990
+new$life_exp_wpp_avg_growth1990_2015  <- new$life_exp_wpp_avg_2015     - new$life_exp_wpp_avg_1990
+new$life_exp_wpp_growth1995_2015  <- new$life_exp_wpp_2015     - new$life_exp_wpp_1995
+new$life_exp_wpp_avg_growth1995_2015  <- new$life_exp_wpp_avg_2015     - new$life_exp_wpp_avg_1995
+new$imr_wpp_growth1990_2015       <- new$imr_wpp_2015          - new$imr_wpp_1990
+new$imr_wpp_avg_growth1990_2015       <- new$imr_wpp_avg_2015          - new$imr_wpp_avg_1990
+new$imr_wpp_growth1995_2015       <- new$imr_wpp_2015          - new$imr_wpp_1995
+new$imr_wpp_avg_growth1995_2015       <- new$imr_wpp_avg_2015          - new$imr_wpp_avg_1995
+new$mys_ratio_hdr_growth1990_2015 <- new$mys_ratio_hdr_2015    - new$mys_ratio_hdr_1990
+new$mys_ratio_hdr_avg_growth1990_2015 <- new$mys_ratio_hdr_avg_2015    - new$mys_ratio_hdr_avg_1990
+new$asfr_adol_wpp_growth1990_2015 <- new$asfr_adol_wpp_2015    - new$asfr_adol_wpp_1990
+new$asfr_adol_wpp_avg_growth1990_2015 <- new$asfr_adol_wpp_avg_2015    - new$asfr_adol_wpp_avg_1990
+new$asfr_adol_wpp_growth1995_2015 <- new$asfr_adol_wpp_2015    - new$asfr_adol_wpp_1995
+new$asfr_adol_wpp_avg_growth1995_2015 <- new$asfr_adol_wpp_avg_2015    - new$asfr_adol_wpp_avg_1995
+new$mys_ratio_hdr_growth1995_2015 <- new$mys_ratio_hdr_2015    - new$mys_ratio_hdr_1995
+new$mys_ratio_hdr_avg_growth1995_2015 <- new$mys_ratio_hdr_avg_2015    - new$mys_ratio_hdr_avg_1995
+summary(new[, c("mys_ratio_hdr_growth1990_2015", "mys_ratio_hdr_avg_growth1990_2015")])
+summary(new[, c("mys_ratio_hdr_growth1995_2015", "mys_ratio_hdr_avg_growth1995_2015")])
 ## logged version of pcGDP growth vars; need to account for negative values
 new$lg_pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 < 0)] <- log(-new$pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 < 0)])
 new$lg_pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 >= 0)] <- log(new$pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 >= 0)])
 new$lg_pc_rgdpe_avg_growth1995_2015[IsTrue(new$pc_rgdpe_avg_growth1995_2015 < 0)] <- log(-new$pc_rgdpe_avg_growth1995_2015[IsTrue(new$pc_rgdpe_avg_growth1995_2015 < 0)])
 new$lg_pc_rgdpe_avg_growth1995_2015[IsTrue(new$pc_rgdpe_avg_growth1995_2015 >= 0)] <- log(new$pc_rgdpe_avg_growth1995_2015[IsTrue(new$pc_rgdpe_avg_growth1995_2015 >= 0)])
+## performance versions of growth measures 
 CodePerformance <- function(y_var, x_vars, show = FALSE, prefix = "perf") {
   x_vars <- paste(x_vars, collapse = " + ")
   equation <- paste(y_var, " ~ ", x_vars, sep = "")
@@ -481,23 +536,23 @@ CodePerformance <- function(y_var, x_vars, show = FALSE, prefix = "perf") {
   return(invisible(df[, c("country", paste(prefix, y_var, sep = "_"))]))
 }
 performance_measures <- unlist(lapply(c(1990, 1995), function(year) {
-  unlist(lapply(covariates[2:5], function(var) {
+  unlist(lapply(c(covariates[2:5], paste(covariates[2:5], "avg", sep = "_")), function(var) {
     return(list(
       CodePerformance(y_var = paste(var, "_growth", year, "_2015", sep = ""), 
-                      x_vars = paste(c(paste("lg", var, sep = "_"), "lg_pc_rgdpe_avg"), year, sep = "_")),
+                      x_vars = paste(c(paste("lg", var, sep = "_"), "lg_pc_rgdpe_pwt_avg"), year, sep = "_")),
       CodePerformance(y_var = paste(var, "_growth", year, "_2015", sep = ""), 
-                      x_vars = c(paste(c(paste("lg", var, sep = "_"), "lg_pc_rgdpe_avg"), year, sep = "_"),
+                      x_vars = c(paste(c(paste("lg", var, sep = "_"), "lg_pc_rgdpe_pwt_avg"), year, sep = "_"),
                                  paste("lg_pc_rgdpe_avg_growth", year, "_2015", sep = "")), prefix = "perfv2")
     ))
   }), recursive = FALSE)
 }), recursive = FALSE)
 performance_measures <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = performance_measures)
 new <- merge(new, performance_measures, by = "country", all = TRUE)
-# filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional_", lubridate::today(), ".csv", sep = "" )
-# write.csv(new, file = filepath)
+filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional", ".csv", sep = "" )
+write.csv(new, file = filepath)
 ```
 
-## Performance Rankings within classification groups
+#### Performance Rankings within classification groups {.tabset .tabset-fade .tabset-pills}
 
 ```{r performance_function, message = FALSE, warning = FALSE}
 Performance <- function(category, year, vars) {
@@ -515,22 +570,22 @@ Performance <- function(category, year, vars) {
 }
 ```
 
-### Low classification 
+##### Low classification 
 ```{r performance_low}
 Performance(category = "low", year = 1995, vars = c(variables$health, variables$gender))
 ```
 
-### H > G classification 
+##### H > G classification 
 ```{r performance_H}
-Performance(category = "H > G", year = 1995, vars = c(variables$health, variables$gender))
+Performance(category = "H>G", year = 1995, vars = c(variables$health, variables$gender))
 ```
 
-### G > H classification 
+##### G > H classification 
 ```{r performance_G}
-Performance(category = "G > H", year = 1995, vars = c(variables$health, variables$gender))
+Performance(category = "G>H", year = 1995, vars = c(variables$health, variables$gender))
 ```
 
-### High classification 
+##### High classification 
 ```{r performance_high}
 Performance(category = "upp", year = 1995, vars = c(variables$health, variables$gender))
 ```

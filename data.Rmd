@@ -1,7 +1,7 @@
 ---
 title: "Data & Correlations"
 params:
-  optimize: true
+  optimize: false
 ---
 
 ```{r setup, include = FALSE}
@@ -128,21 +128,28 @@ summary(data[, c(variables$negative[1:6])])
 summary(data[, c(variables$negative[7:9])])
 ```
 
-## Coding performance measures for later use
+## Averaging key variables and coding performance measures for later use
 
 ```{r coding_perf}
 data <- data %>% dplyr::arrange(country, year) %>% 
   mutate(period = cut(year, seq(1960, 2020, 5), right = TRUE))
-data <- data %>% group_by(country, period) %>% 
-  mutate(pc_rgdpe_avg = mean(pc_rgdpe_pwt, na.rm = TRUE))
-data$pc_rgdpe_avg[is.nan(data$pc_rgdpe_avg)] <- NA
 names(variables$health) <- variables$health <- c("life_exp_wpp", "imr_wpp")
 names(variables$gender) <- variables$gender <- c("mys_ratio_hdr", "asfr_adol_wpp")
-take_logs <- c("pc_rgdpe_avg", "life_exp_wpp", "mys_ratio_hdr")
+vars <- c(variables$health, variables$gender, "pc_rgdpe_pwt")
+data <- data %>% group_by(country, period) %>% 
+  mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}_avg"), .keep = "all")
+data[, paste(vars, "avg", sep = "_")] <- lapply(data[, paste(vars, "avg", sep = "_")], function(col) {
+  col[is.nan(col)] <- NA
+  return(col)
+})
+take_logs <- c("pc_rgdpe_pwt", "life_exp_wpp", "mys_ratio_hdr")
+take_logs <- c(take_logs, paste(take_logs, "avg", sep = "_"))
 take_logs_negative <- c("imr_wpp", "asfr_adol_wpp")
+take_logs_negative <- c(take_logs_negative, paste(take_logs_negative, "avg", sep = "_"))
+summary(data[, c(take_logs, take_logs_negative)])
 data[, paste("lg", take_logs, sep = "_")] <- lapply(data[, take_logs], log)
 data[, paste("lg", take_logs_negative, sep = "_")] <- lapply(data[, take_logs_negative], function(col) { -log(-col) })
-# summary(data[, c(take_logs_negative, paste("lg", take_logs_negative, sep = "_"))])
+summary(data[, paste ("lg", c(take_logs, take_logs_negative), sep = "_")])
 CodePerformance <- function(y_var, x_vars, df) {
   x_vars <- paste(x_vars, collapse = " + ")
   equation <- paste(y_var, "~", x_vars)
@@ -152,13 +159,14 @@ CodePerformance <- function(y_var, x_vars, df) {
   df[, paste("perf", y_var, sep = "_")] <- df[, y_var] - df$predicted
   return(df[, c("country", "year", paste("perf", y_var, sep = "_"))])
 }
-names(vars) <- vars <- c(variables$health, variables$gender)
+vars <- c(variables$health, variables$gender)
+names(vars) <- vars <- c(vars, paste(vars, "avg", sep = "_"))
 names(years) <- years <- c(seq(1965, 2015, 5), 2018)
 performance_measures <- lapply(vars, function(var) {
   results <- lapply(years, function(year) {
-    dat <- data[data$year == year, c("country", "year", "lg_pc_rgdpe_avg", var)]
+    dat <- data[data$year == year, c("country", "year", "lg_pc_rgdpe_pwt_avg", var)]
       if(nrow(na.omit(dat)) > 0) {
-        CodePerformance(y_var = var, x_vars = "lg_pc_rgdpe_avg", df = dat)
+        CodePerformance(y_var = var, x_vars = "lg_pc_rgdpe_pwt_avg", df = dat)
       } 
   })
   results <- results[!unlist(lapply(results, is.null))]
