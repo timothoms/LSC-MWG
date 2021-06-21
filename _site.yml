@@ -26,6 +26,8 @@ output:
     fig_width: 8
     fig_height: 8
     css: styles.css
+    includes:
+      after_body: "include_footer.html"
     theme: flatly
     highlight: pygments
     code_folding: hide
