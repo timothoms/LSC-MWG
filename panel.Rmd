@@ -63,17 +63,7 @@ dfp_lag$year <- dfp_lag$year + 5*number_of_lags
 dfp_lag$year[dfp_lag$year == 2020] <- 2018
 dfp <- merge(dfp, dfp_lag, by = c("country", "year"), all.x = TRUE)
 dfp <- dfp[dfp$year >= 1965 + 5*number_of_lags, ]
-
-
-
-
-
-table(dfp$year)
-
-
-
-
-
+dfp <- dfp[dfp$year >= params$begin & dfp$year <= params$end, ]
 dfp[, paste("growth", c(variables$health, variables$gender), sep = "_")] <- 
   lapply(c(variables$health, variables$gender), function(colname) {
     dfp[, colname] - dfp[, paste("lag", colname, sep = "_")]
@@ -213,11 +203,13 @@ IntPlot <- function(fit, eff_var, int_vars,
 # dfp$lag_class_vv <- relevel(as.factor(dfp$lag_class_vv), ref = "upp")
 ```
 
-## Health {.tabset .tabset-fade .tabset-pills}
+### {.tabset .tabset-fade .tabset-pills}
 
-### DV: Life Expectancy {.tabset .tabset-fade .tabset-pills}
+#### Health {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+##### DV: Life Expectancy {.tabset .tabset-fade .tabset-pills}
+
+###### Base models
 ```{r life_exp}
 results_life_exp <- RunModels(pdfname = "life_exp_wpp", equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
@@ -230,7 +222,7 @@ results_life_exp <- RunModels(pdfname = "life_exp_wpp", equations = c(
 results_life_exp$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r life_exp_incidence}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -250,7 +242,7 @@ IntPlot(fit = results_life_exp$ests$fegls$m4$fit,
         pdfname = "int_life_exp_osv")
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r life_exp_incidence_class}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -263,7 +255,7 @@ results_life_exp <- RunModels(equations = c(
 results_life_exp$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r life_exp_state_deaths}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -285,7 +277,7 @@ IntPlot(fit = results_life_exp$ests$fegls$m4$fit,
         pdfname = "int_life_exp_civilians")
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r life_exp_state_deaths_class}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -298,7 +290,7 @@ results_life_exp <- RunModels(equations = c(
 results_life_exp$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r life_exp_nonstate_deaths}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -311,7 +303,7 @@ results_life_exp <- RunModels(equations = c(
 results_life_exp$tests
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r life_exp_nonstate_deaths_class}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -324,7 +316,7 @@ results_life_exp <- RunModels(equations = c(
 results_life_exp$tests
 ```
 
-#### State repression
+###### State repression
 ```{r life_exp_repression}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -354,7 +346,7 @@ IntPlot(fit = results_life_exp$ests$fegls$m4$fit,
         pdfname = "int_life_exp_killings")
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r life_exp_repression_class}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -367,7 +359,7 @@ results_life_exp <- RunModels(equations = c(
 results_life_exp$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r life_exp_violence}
 results_life_exp <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -379,9 +371,9 @@ results_life_exp <- RunModels(equations = c(
 results_life_exp$tests
 ```
 
-### DV: Infant Mortality Rate (IMR) {.tabset .tabset-fade .tabset-pills}
+##### DV: Infant Mortality Rate (IMR) {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+###### Base models
 ```{r imr}
 results_imr <- RunModels(pdfname = "imr_wpp", equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
@@ -394,7 +386,7 @@ results_imr <- RunModels(pdfname = "imr_wpp", equations = c(
 results_imr$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r imr_incidence}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -414,7 +406,7 @@ IntPlot(fit = results_imr$ests$fegls$m2$fit,
         pdfname = "int_imr_conflict")
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r imr_incidence_class}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -427,7 +419,7 @@ results_imr <- RunModels(equations = c(
 results_imr$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r imr_state_deaths}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -440,7 +432,7 @@ results_imr <- RunModels(equations = c(
 results_imr$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r imr_state_deaths_class}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -453,7 +445,7 @@ results_imr <- RunModels(equations = c(
 results_imr$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r imr_nonstate_deaths}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -473,7 +465,7 @@ IntPlot(fit = results_imr$ests$fe$m6$fit,
         pdfname = "int_imr_hom")
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r imr_nonstate_deaths_class}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -486,7 +478,7 @@ results_imr <- RunModels(equations = c(
 results_imr$tests
 ```
 
-#### State repression
+###### State repression
 ```{r imr_repression}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -531,7 +523,7 @@ IntPlot(fit = results_imr$ests$fegls$m6$fit,
         pdfname = "int_imr_torture")
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r imr_repression_class}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -544,7 +536,7 @@ results_imr <- RunModels(equations = c(
 results_imr$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r imr_violence}
 results_imr <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -556,9 +548,9 @@ results_imr <- RunModels(equations = c(
 results_imr$tests
 ```
 
-### NEW DV: Under-five Mortality Rate (UFMR) {.tabset .tabset-fade .tabset-pills}
+##### NEW DV: Under-five Mortality Rate (UFMR) {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+###### Base models
 ```{r ufmr}
 results_ufmr <- RunModels(pdfname = "ufmr_wpp", equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
@@ -571,7 +563,7 @@ results_ufmr <- RunModels(pdfname = "ufmr_wpp", equations = c(
 results_ufmr$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r ufmr_incidence}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -584,7 +576,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r ufmr_incidence_class}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -597,7 +589,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r ufmr_state_deaths}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -610,7 +602,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r ufmr_state_deaths_class}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -623,7 +615,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r ufmr_nonstate_deaths}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -636,7 +628,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r ufmr_nonstate_deaths_class}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -649,7 +641,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### State repression
+###### State repression
 ```{r ufmr_repression}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -662,7 +654,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r ufmr_repression_class}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -675,7 +667,7 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r ufmr_violence}
 results_ufmr <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -687,9 +679,9 @@ results_ufmr <- RunModels(equations = c(
 results_ufmr$tests
 ```
 
-### NEW DV: Disability-adjusted life years (DALYs) {.tabset .tabset-fade .tabset-pills}
+##### NEW DV: Disability-adjusted life years (DALYs) {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+###### Base models
 ```{r daly}
 results_daly <- RunModels(pdfname = "daly_ihme", equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
@@ -702,7 +694,7 @@ results_daly <- RunModels(pdfname = "daly_ihme", equations = c(
 results_daly$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r daly_incidence}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -715,7 +707,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r daly_incidence_class}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -728,7 +720,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r daly_state_deaths}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -741,7 +733,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r daly_state_deaths_class}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -754,7 +746,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r daly_nonstate_deaths}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -767,7 +759,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r daly_nonstate_deaths_class}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -780,7 +772,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### State repression
+###### State repression
 ```{r daly_repression}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -793,7 +785,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r daly_repression_class}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -806,7 +798,7 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r daly_violence}
 results_daly <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -818,11 +810,11 @@ results_daly <- RunModels(equations = c(
 results_daly$tests
 ```
 
-## Gender {.tabset .tabset-fade .tabset-pills}
+#### Gender {.tabset .tabset-fade .tabset-pills}
 
-### DV: Mean Years of School, ratio of female to male {.tabset .tabset-fade .tabset-pills}
+##### DV: Mean Years of School, ratio of female to male {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+###### Base models
 ```{r mys}
 results_mys_ratio <- RunModels(pdfname = "mys_ratio_hdr", equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -835,7 +827,7 @@ results_mys_ratio <- RunModels(pdfname = "mys_ratio_hdr", equations = c(
 results_mys_ratio$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r mys_incidence}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -856,7 +848,7 @@ IntPlot(fit = results_mys_ratio$ests$fegls$m4$fit,
         pdfname = "int_mys_osv")
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r mys_incidence_class}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -869,7 +861,7 @@ results_mys_ratio <- RunModels(equations = c(
 results_mys_ratio$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r mys_state_deaths}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -882,7 +874,7 @@ results_mys_ratio <- RunModels(equations = c(
 results_mys_ratio$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r mys_state_deaths_class}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -895,7 +887,7 @@ results_mys_ratio <- RunModels(equations = c(
 results_mys_ratio$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r mys_nonstate_deaths}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -916,7 +908,7 @@ IntPlot(fit = results_mys_ratio$ests$fe$m4$fit,
         pdfname = "int_mys_lpi")
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r mys_nonstate_deaths_class}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -929,7 +921,7 @@ results_mys_ratio <- RunModels(equations = c(
 results_mys_ratio$tests
 ```
 
-#### State repression
+###### State repression
 ```{r mys_repression}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -959,7 +951,7 @@ IntPlot(fit = results_mys_ratio$ests$fe$m6$fit,
         pdfname = "int_mys_torture_fe")
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r mys_repression_class}
 results_mys_ratio <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -972,7 +964,7 @@ results_mys_ratio <- RunModels(equations = c(
 results_mys_ratio$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r mys_violence}
 results_mys <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -984,9 +976,9 @@ results_mys <- RunModels(equations = c(
 results_mys$tests
 ```
 
-### DV: Adolescent Fertility Rate {.tabset .tabset-fade .tabset-pills}
+##### DV: Adolescent Fertility Rate {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+###### Base models
 ```{r asfr}
 results_asfr <- RunModels(pdfname = "asfr_adol_wpp", equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -999,7 +991,7 @@ results_asfr <- RunModels(pdfname = "asfr_adol_wpp", equations = c(
 results_asfr$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r asfr_incidence}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -1024,7 +1016,7 @@ IntPlot(fit = results_asfr$ests$fegls$m4$fit,
         pdfname = "int_asfr_osv")
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r asfr_incidence_class}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -1037,7 +1029,7 @@ results_asfr <- RunModels(equations = c(
 results_asfr$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r asfr_state_deaths}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -1064,7 +1056,7 @@ IntPlot(fit = results_asfr$ests$fegls$m4$fit,
         pdfname = "int_asfr_cvilians")
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r asfr_state_deaths_class}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -1077,7 +1069,7 @@ results_asfr <- RunModels(equations = c(
 results_asfr$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r asfr_nonstate_deaths}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -1090,7 +1082,7 @@ results_asfr <- RunModels(equations = c(
 results_asfr$tests
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r asfr_nonstate_deaths_class}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -1103,7 +1095,7 @@ results_asfr <- RunModels(equations = c(
 results_asfr$tests
 ```
 
-#### State repression
+###### State repression
 ```{r asfr_repression}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -1123,7 +1115,7 @@ IntPlot(fit = results_asfr$ests$fegls$m6$fit,
         pdfname = "int_asfr_torture")
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r asfr_repression_class}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -1136,7 +1128,7 @@ results_asfr <- RunModels(equations = c(
 results_asfr$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r asfr_violence}
 results_asfr <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -1148,9 +1140,9 @@ results_asfr <- RunModels(equations = c(
 results_asfr$tests
 ```
 
-### NEW DV: Labour participation ratio {.tabset .tabset-fade .tabset-pills}
+##### NEW DV: Labour participation ratio {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+###### Base models
 ```{r labor}
 results_labor <- RunModels(pdfname = "labor_mod_ratio15_ilo", equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1163,7 +1155,7 @@ results_labor <- RunModels(pdfname = "labor_mod_ratio15_ilo", equations = c(
 results_labor$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r labor_incidence}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -1176,7 +1168,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r labor_incidence_class}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -1189,7 +1181,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r labor_state_deaths}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -1202,7 +1194,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r labor_state_deaths_class}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -1215,7 +1207,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r labor_nonstate_deaths}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -1228,7 +1220,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r labor_nonstate_deaths_class}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -1241,7 +1233,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### State repression
+###### State repression
 ```{r labor_repression}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -1254,7 +1246,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r labor_repression_class}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -1267,7 +1259,7 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r labor_violence}
 results_labor <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -1279,9 +1271,9 @@ results_labor <- RunModels(equations = c(
 results_labor$tests
 ```
 
-### NEW DV: Gender inequality index (GII) {.tabset .tabset-fade .tabset-pills}
+##### NEW DV: Gender inequality index (GII) {.tabset .tabset-fade .tabset-pills}
 
-#### Base models
+###### Base models
 ```{r gii}
 results_gii <- RunModels(pdfname = "gii_hdr", equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1294,7 +1286,7 @@ results_gii <- RunModels(pdfname = "gii_hdr", equations = c(
 results_gii$tests
 ```
 
-#### UCDP conflict incidence
+###### UCDP conflict incidence
 ```{r gii_incidence}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_conflict_internal,
@@ -1307,7 +1299,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### UCDP conflict incidence (NEW)
+###### UCDP conflict incidence (NEW)
 ```{r gii_incidence_class}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_conflict_internal,
@@ -1320,7 +1312,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths
+###### UCDP state-based conflict and OSV deaths
 ```{r gii_state_deaths}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -1333,7 +1325,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### UCDP state-based conflict and OSV deaths (NEW)
+###### UCDP state-based conflict and OSV deaths (NEW)
 ```{r gii_state_deaths_class}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_int_rate,
@@ -1346,7 +1338,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### Societal violence deaths
+###### Societal violence deaths
 ```{r gii_nonstate_deaths}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -1359,7 +1351,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### Societal violence deaths (NEW)
+###### Societal violence deaths (NEW)
 ```{r gii_nonstate_deaths_class}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_lg_deaths_all_nsc_rate,
@@ -1372,7 +1364,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### State repression
+###### State repression
 ```{r gii_repression}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_upp + lag_latentmean_fariss,
@@ -1385,7 +1377,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### State repression (NEW)
+###### State repression (NEW)
 ```{r gii_repression_class}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp + lag_latentmean_fariss,
@@ -1398,7 +1390,7 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-#### Violence controls (NEW)
+###### Violence controls (NEW)
 ```{r gii_violence}
 results_gii <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
@@ -1410,9 +1402,9 @@ results_gii <- RunModels(equations = c(
 results_gii$tests
 ```
 
-## Violence {.tabset .tabset-fade .tabset-pills}
+#### Violence {.tabset .tabset-fade .tabset-pills}
 
-### Correlations
+##### Correlations
 
 ```{r violence, message = FALSE, warning = FALSE, results = 'hide'}
 vars_viol <- c("conflict_internal", "conflict_one_sided", "conflict_non_state", "lg_deaths_all_int_rate", "lg_deaths_civilians_osv_rate", "lg_deaths_all_nsc_rate", "lg_hom_odcwho_rate", "latentmean_fariss", "v2clkill")
@@ -1422,7 +1414,7 @@ GGally::ggpairs(dfp[, vars_viol], mapping = aes(stroke = 0, alpha = 0.25)) +
   ggtitle("Different types of violence")
 ```
 
-### DV: Internal Conflict
+##### DV: Internal Conflict
 ```{r conflict}
 results_conflict <- RunModels(pdfname = "viol_conflict_internal", labelspace = 20, equations = c(
   conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1435,7 +1427,7 @@ results_conflict <- RunModels(pdfname = "viol_conflict_internal", labelspace = 2
 results_conflict$tests
 ```
 
-### DV: Internal Conflict (NEW)
+##### DV: Internal Conflict (NEW)
 ```{r conflict_class}
 results_conflict <- RunModels(pdfname = "viol_conflict_internal", labelspace = 20, equations = c(
   conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1452,7 +1444,7 @@ results_conflict <- RunModels(pdfname = "viol_conflict_internal", labelspace = 2
 results_conflict$tests
 ```
 
-### DV: Internal War
+##### DV: Internal War
 ```{r war}
 results_war <- RunModels(pdfname = "viol_war_internal", labelspace = 20, equations = c(
   war_internal ~ lag_war_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1472,7 +1464,7 @@ IntPlot(fit = results_war$ests$fegls$m6$fit,
         pdfname = "int_war")
 ```
 
-### DV: Internal War (NEW)
+##### DV: Internal War (NEW)
 ```{r war_class}
 results_war <- RunModels(pdfname = "viol_war_internal", labelspace = 20, equations = c(
   war_internal ~ lag_war_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1489,7 +1481,7 @@ results_war <- RunModels(pdfname = "viol_war_internal", labelspace = 20, equatio
 results_war$tests
 ```
 
-### DV: Internal Conflict Deaths
+##### DV: Internal Conflict Deaths
 ```{r conflict_deaths}
 results_intd <- RunModels(pdfname = "viol_deaths_all_int_rate", labelspace = 20, equations = c(
   deaths_all_int_rate ~ lag_lg_deaths_all_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1510,7 +1502,7 @@ IntPlot(fit = results_intd$ests$fegls$m6$fit,
         pdfname = "int_conflict_deaths")
 ```
 
-### DV: Internal Conflict Deaths (NEW)
+##### DV: Internal Conflict Deaths (NEW)
 ```{r conflict_deaths_class}
 results_intd <- RunModels(pdfname = "viol_deaths_all_int_rate", labelspace = 20, equations = c(
   deaths_all_int_rate ~ lag_lg_deaths_all_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1527,7 +1519,7 @@ results_intd <- RunModels(pdfname = "viol_deaths_all_int_rate", labelspace = 20,
 results_intd$tests
 ```
 
-### DV: Internal Conflict Civilian Deaths
+##### DV: Internal Conflict Civilian Deaths
 ```{r conflict_deaths_civ}
 results_civ <- RunModels(pdfname = "viol_deaths_civilians_int_rate", labelspace = 20, equations = c(
   deaths_civilians_int_rate ~ lag_lg_deaths_civilians_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1554,7 +1546,7 @@ IntPlot(fit = results_civ$ests$fegls$m6$fit,
         pdfname = "int_deaths_civ_fegls")
 ```
 
-### DV: Internal Conflict Civilian Deaths (NEW)
+##### DV: Internal Conflict Civilian Deaths (NEW)
 ```{r conflict_deaths_civ_class}
 results_civ <- RunModels(pdfname = "viol_deaths_civilians_int_rate", labelspace = 20, equations = c(
   deaths_civilians_int_rate ~ lag_lg_deaths_civilians_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1571,7 +1563,7 @@ results_civ <- RunModels(pdfname = "viol_deaths_civilians_int_rate", labelspace 
 results_civ$tests
 ```
 
-### DV: One-Sided Violence
+##### DV: One-Sided Violence
 ```{r osv}
 results_osv <- RunModels(labelspace = 20, equations = c(
   conflict_one_sided ~ lag_conflict_one_sided + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1584,7 +1576,7 @@ results_osv <- RunModels(labelspace = 20, equations = c(
 results_osv$tests
 ```
 
-### DV: One-Sided Violence (NEW)
+##### DV: One-Sided Violence (NEW)
 ```{r osv_class}
 results_osv <- RunModels(labelspace = 20, equations = c(
   conflict_one_sided ~ lag_conflict_one_sided + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1601,7 +1593,7 @@ results_osv <- RunModels(labelspace = 20, equations = c(
 results_osv$tests
 ```
 
-### DV: OSV Civilian Deaths
+##### DV: OSV Civilian Deaths
 ```{r osv_deaths}
 results_osvd <- RunModels(pdfname = "viol_deaths_civilians_osv_rate", labelspace = 20, equations = c(
   deaths_civilians_osv_rate ~ lag_lg_deaths_civilians_osv_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1614,7 +1606,7 @@ results_osvd <- RunModels(pdfname = "viol_deaths_civilians_osv_rate", labelspace
 results_osvd$tests
 ```
 
-### DV: OSV Civilian Deaths (NEW)
+##### DV: OSV Civilian Deaths (NEW)
 ```{r osv_deaths_class}
 results_osvd <- RunModels(pdfname = "viol_deaths_civilians_osv_rate", labelspace = 20, equations = c(
   deaths_civilians_osv_rate ~ lag_lg_deaths_civilians_osv_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1631,7 +1623,7 @@ results_osvd <- RunModels(pdfname = "viol_deaths_civilians_osv_rate", labelspace
 results_osvd$tests
 ```
 
-### DV: Non-State Conflict
+##### DV: Non-State Conflict
 
 ```{r nsc}
 results_nsc <- RunModels(pdfname = "viol_conflict_non_state", labelspace = 20, equations = c(
@@ -1645,7 +1637,7 @@ results_nsc <- RunModels(pdfname = "viol_conflict_non_state", labelspace = 20, e
 results_nsc$tests
 ```
 
-### DV: Non-State Conflict (NEW)
+##### DV: Non-State Conflict (NEW)
 
 ```{r nsc_class}
 results_nsc <- RunModels(pdfname = "viol_conflict_non_state", labelspace = 20, equations = c(
@@ -1663,7 +1655,7 @@ results_nsc <- RunModels(pdfname = "viol_conflict_non_state", labelspace = 20, e
 results_nsc$tests
 ```
 
-### DV: NSC Deaths
+##### DV: NSC Deaths
 ```{r nsc_deaths}
 results_nscd <- RunModels(pdfname = "viol_deaths_all_nsc_rate", labelspace = 20, equations = c(
   deaths_all_nsc_rate ~ lag_lg_deaths_all_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1690,7 +1682,7 @@ IntPlot(fit = results_nscd$ests$fegls$m6$fit,
         pdfname = "int_nsc_deaths_fegls")
 ```
 
-### DV: NSC Deaths (NEW)
+##### DV: NSC Deaths (NEW)
 ```{r nsc_deaths_class}
 results_nscd <- RunModels(pdfname = "viol_deaths_all_nsc_rate", labelspace = 20, equations = c(
   deaths_all_nsc_rate ~ lag_lg_deaths_all_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1707,7 +1699,7 @@ results_nscd <- RunModels(pdfname = "viol_deaths_all_nsc_rate", labelspace = 20,
 results_nscd$tests
 ```
 
-### DV: NSC Civilian Deaths
+##### DV: NSC Civilian Deaths
 ```{r nsc_deaths_civ}
 results_nscd_civ <- RunModels(pdfname = "viol_deaths_civilians_nsc_rate", labelspace = 20, equations = c(
   deaths_civilians_nsc_rate ~ lag_lg_deaths_civilians_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1720,7 +1712,7 @@ results_nscd_civ <- RunModels(pdfname = "viol_deaths_civilians_nsc_rate", labels
 results_nscd_civ$tests
 ```
 
-### DV: NSC Civilian Deaths (NEW)
+##### DV: NSC Civilian Deaths (NEW)
 ```{r nsc_deaths_civ_class}
 results_nscd_civ <- RunModels(pdfname = "viol_deaths_civilians_nsc_rate", labelspace = 20, equations = c(
   deaths_civilians_nsc_rate ~ lag_lg_deaths_civilians_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1737,7 +1729,7 @@ results_nscd_civ <- RunModels(pdfname = "viol_deaths_civilians_nsc_rate", labels
 results_nscd_civ$tests
 ```
 
-### DV: Latent Physical Integrity
+##### DV: Latent Physical Integrity
 ```{r lpi}
 results_lpi <- RunModels(pdfname = "viol_latentmean_fariss", labelspace = 20, equations = c(
   latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1757,7 +1749,7 @@ IntPlot(fit = results_lpi$ests$fegls$m6$fit,
         pdfname = "int_lpi")
 ```
 
-### DV: Latent Physical Integrity (NEW)
+##### DV: Latent Physical Integrity (NEW)
 ```{r lpi_class}
 results_lpi <- RunModels(pdfname = "viol_latentmean_fariss", labelspace = 20, equations = c(
   latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1773,7 +1765,7 @@ results_lpi <- RunModels(pdfname = "viol_latentmean_fariss", labelspace = 20, eq
 results_lpi$tests
 ```
 
-### DV: Torture
+##### DV: Torture
 ```{r torture}
 results_tort <- RunModels(labelspace = 20, equations = c(
   v2cltort ~ lag_v2cltort + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1786,7 +1778,7 @@ results_tort <- RunModels(labelspace = 20, equations = c(
 results_tort$tests
 ```
 
-### DV: Torture (NEW)
+##### DV: Torture (NEW)
 ```{r torture_class}
 results_tort <- RunModels(labelspace = 20, equations = c(
   v2cltort ~ lag_v2cltort + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1802,7 +1794,7 @@ results_tort <- RunModels(labelspace = 20, equations = c(
 results_tort$tests
 ```
 
-### DV: Extra-Judicial Killings
+##### DV: Extra-Judicial Killings
 ```{r killings}
 results_kill <- RunModels(pdfname = "viol_v2clkill", labelspace = 20, equations = c(
   v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1822,7 +1814,7 @@ IntPlot(fit = results_kill$ests$fegls$m6$fit,
         pdfname = "int_killings")
 ```
 
-### DV: Extra-Judicial Killings (NEW)
+##### DV: Extra-Judicial Killings (NEW)
 ```{r killings_class}
 results_kill <- RunModels(pdfname = "viol_v2clkill", labelspace = 20, equations = c(
   v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
@@ -1838,7 +1830,7 @@ results_kill <- RunModels(pdfname = "viol_v2clkill", labelspace = 20, equations 
 results_kill$tests
 ```
 
-### DV: Homicides
+##### DV: Homicides
 ```{r homicides}
 results_hom <- RunModels(pdfname = "viol_hom_odcwho_rate", labelspace = 20, equations = c(
   hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
@@ -1865,7 +1857,7 @@ IntPlot(fit = results_hom$ests$fegls$m6$fit,
         pdfname = "int_homicides_fegls")
 ```
 
-### DV: Homicides (NEW)
+##### DV: Homicides (NEW)
 ```{r homicides_class}
 results_hom <- RunModels(pdfname = "viol_hom_odcwho_rate", labelspace = 20, equations = c(
   hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_low + lag_class_HG + lag_class_GH + lag_class_mid,
