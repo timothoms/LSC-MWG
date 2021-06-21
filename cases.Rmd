@@ -25,17 +25,19 @@ MakeFigure <- function(variable, countries = c("Afghanistan", "Mozambique", "El 
 }
 ```
 
-## Health
+### {.tabset .tabset-fade .tabset-pills}
+
+#### Health
 ```{r health, results = 'hide'}
 lapply(variables$health_full, MakeFigure)
 ```
 
-## Gender
+#### Gender
 ```{r gender, results = 'hide'}
 lapply(variables$gender_full, MakeFigure)
 ```
 
-## Violence
+#### Violence
 ```{r violence, results = 'hide'}
 lapply(c("Afghanistan", "Mozambique", "El Salvador"), function(country) {
   dat <- data[data$country == country, ]
