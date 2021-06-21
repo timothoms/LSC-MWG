@@ -1,7 +1,7 @@
 ---
 title: "Cross-sectional regressions"
 params: 
-  cache: true
+  cache: false
   optimize: true
 ---
 
@@ -23,6 +23,7 @@ RunModel <- function(equation, data = df) {
   invisible(fit)
 }
 ```
+
 ### {.tabset .tabset-fade .tabset-pills}
 
 #### Life expectancy regressions {.tabset .tabset-fade .tabset-pills}
