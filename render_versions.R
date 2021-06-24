@@ -12,6 +12,3 @@ rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/panel.Rmd', outp
                   output_file = "panel3lags.html",
                   params = list(set_title = "Panel Regressions (3 lags)", cache = FALSE, lags = 3, incl_new = FALSE))
 
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/panel.Rmd', output_dir = "docs",
-                  output_file = "panel4lags.html",
-                  params = list(set_title = "Panel Regressions (4 lags)", cache = FALSE, lags = 4, incl_new = FALSE))

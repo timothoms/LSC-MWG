@@ -23,8 +23,6 @@ navbar:
       href: panel2lags.html
     - text: "1980-2018, 3 lags"
       href: panel3lags.html
-    - text: "1985-2018, 4 lags"
-      href: panel4lags.html
     - text: "Summary"
       href: summary.html
   right:
@@ -43,5 +41,6 @@ output:
     theme: flatly
     highlight: pygments
     code_folding: hide
+    self_contained: false
 editor_options:
   chunk_output_type: console
