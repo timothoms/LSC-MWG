@@ -13,7 +13,7 @@
 
 <title>Country Cases</title>
 
-<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -33,6 +33,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -341,7 +343,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="intro.html">Introduction</a>
+  <a href="index.html">Introduction</a>
 </li>
 <li>
   <a href="data.html">Data</a>
@@ -355,12 +357,14 @@ $(document).ready(function () {
 <li>
   <a href="panel.html">Panel Models</a>
 </li>
-<li>
-  <a href="cases.html">Cases</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/timothoms/LSC-MWG/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -382,13 +386,6 @@ $(document).ready(function () {
 
 </div>
 
-<div id="TOC">
-<ul>
-<li><a href="#health">Health</a></li>
-<li><a href="#gender">Gender</a></li>
-<li><a href="#violence">Violence</a></li>
-</ul>
-</div>
 
 <p>The figures below show trends for select countries, based on a large global dataset (and accompanying codebook) which I assembled from commonly used quantitative indicators on health, gender equality and several types of violence. (The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Metrics Working Group, or at this <a href="https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing">link</a>; access via logging into the shared folder provides more functionality. The dataset is available in the shared Dropbox folder of the Working Group.)</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>IsTrue <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> x }</span>
@@ -402,18 +399,20 @@ $(document).ready(function () {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">fun =</span> <span class="st">&quot;mean&quot;</span>, <span class="at">geom =</span> <span class="st">&quot;point&quot;</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span> </span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(first_year, <span class="dv">2019</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="fu">paste</span>(variable))</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div id="health" class="section level2">
-<h2>Health</h2>
+<div id="section" class="section level3 tabset tabset-fade tabset-pills">
+<h3 class="tabset tabset-fade tabset-pills"></h3>
+<div id="health" class="section level4">
+<h4>Health</h4>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(variables<span class="sc">$</span>health_full, MakeFigure)</span></code></pre></div>
 <p><img src="cases_files/figure-html/health-1.png" width="67%" height="67%" /><img src="cases_files/figure-html/health-2.png" width="67%" height="67%" /><img src="cases_files/figure-html/health-3.png" width="67%" height="67%" /><img src="cases_files/figure-html/health-4.png" width="67%" height="67%" /></p>
 </div>
-<div id="gender" class="section level2">
-<h2>Gender</h2>
+<div id="gender" class="section level4">
+<h4>Gender</h4>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(variables<span class="sc">$</span>gender_full, MakeFigure)</span></code></pre></div>
 <p><img src="cases_files/figure-html/gender-1.png" width="67%" height="67%" /><img src="cases_files/figure-html/gender-2.png" width="67%" height="67%" /><img src="cases_files/figure-html/gender-3.png" width="67%" height="67%" /><img src="cases_files/figure-html/gender-4.png" width="67%" height="67%" /><img src="cases_files/figure-html/gender-5.png" width="67%" height="67%" /><img src="cases_files/figure-html/gender-6.png" width="67%" height="67%" /></p>
 </div>
-<div id="violence" class="section level2">
-<h2>Violence</h2>
+<div id="violence" class="section level4">
+<h4>Violence</h4>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;Afghanistan&quot;</span>, <span class="st">&quot;Mozambique&quot;</span>, <span class="st">&quot;El Salvador&quot;</span>), <span class="cf">function</span>(country) {</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> data[data<span class="sc">$</span>country <span class="sc">==</span> country, ]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> <span class="fu">select</span>(year, deaths_all_ext_rate, deaths_civilians_ext_rate, deaths_all_int_rate,</span>
@@ -429,7 +428,9 @@ $(document).ready(function () {
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
 <p><img src="cases_files/figure-html/violence-1.png" width="67%" height="67%" /><img src="cases_files/figure-html/violence-2.png" width="67%" height="67%" /><img src="cases_files/figure-html/violence-3.png" width="67%" height="67%" /></p>
 </div>
+</div>
 
+<script type="text/javascript" src="links.js"></script>
 
 
 

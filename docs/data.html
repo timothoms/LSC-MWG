@@ -13,7 +13,7 @@
 
 <title>Data &amp; Correlations</title>
 
-<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -33,6 +33,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -341,7 +343,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="intro.html">Introduction</a>
+  <a href="index.html">Introduction</a>
 </li>
 <li>
   <a href="data.html">Data</a>
@@ -355,12 +357,14 @@ $(document).ready(function () {
 <li>
   <a href="panel.html">Panel Models</a>
 </li>
-<li>
-  <a href="cases.html">Cases</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/timothoms/LSC-MWG/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -382,17 +386,11 @@ $(document).ready(function () {
 
 </div>
 
-<div id="TOC">
-<ul>
-<li><a href="#country-data-coverage-of-measures-over-time">Country data coverage of measures over time</a></li>
-<li><a href="#within-category-correlations">Within-category correlations</a></li>
-<li><a href="#across-category-correlations">Across-category correlations</a></li>
-<li><a href="#which-countries-have-such-high-ratios-of-years-of-schooling-in-favor-of-women">Which countries have such high ratios of years of schooling in favor of women?</a></li>
-<li><a href="#inverting-variables-for-comparable-interpretation-within-categories">Inverting variables for comparable interpretation within categories</a></li>
-<li><a href="#coding-performance-measures-for-later-use">Coding performance measures for later use</a></li>
-</ul>
-</div>
 
+<div id="section" class="section level3 tabset tabset-fade tabset-pills">
+<h3 class="tabset tabset-fade tabset-pills"></h3>
+<div id="dataset" class="section level4">
+<h4>Dataset</h4>
 <p>All the analyses are based on a large global dataset (and accompanying codebook) which we assembled from commonly used quantitative indicators on health, gender equality and several types of violence. The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Lancet Commission Metrics Working Group, or at this <a href="https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing">link</a> (access via logging into the shared folder provides more functionality). The dataset is also available in the shared Dropbox folder of the Working Group.) We begin by considering the following measures within the categories of health outcomes, gender inequalities, state-based violent conflict, one-sided violence, and societal violence. The code also sets up vectors of variable names for later use.)</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;_data/dataset_LSCMWG.RData&quot;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>link <span class="ot">&lt;-</span> <span class="st">&quot;https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing&quot;</span></span>
@@ -432,8 +430,10 @@ $(document).ready(function () {
 <span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(set) <span class="ot">&lt;-</span> set </span>
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(set)</span>
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<div id="country-data-coverage-of-measures-over-time" class="section level2">
-<h2>Country data coverage of measures over time</h2>
+</div>
+<div id="country-data-coverage-over-time" class="section level4">
+<h4>Country data coverage over time</h4>
+<p>Due to data availability, the time period for our analyses will be primarily from 1990 until 2015 or 2018.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(categories, <span class="cf">function</span>(cat) {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cat, <span class="cf">function</span>(col_name) { </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(data<span class="sc">$</span>year, <span class="sc">!</span><span class="fu">is.na</span>(data[, col_name]))[, <span class="dv">2</span>] </span>
@@ -663,7 +663,7 @@ $(document).ready(function () {
 ## 1987       0       0            0             0           154           157       0
 ## 1988       0       0            0             0           154           153       0
 ## 1989       0       0            0             0           154           153       0
-## 1990       0       0          135           156           156           155     156
+## 1990       0       0            0           156           156           155     156
 ## 1991       0       0            0             0           173           172       0
 ## 1992       0       0            0             0           176           178       0
 ## 1993       0       0            0             0           179           178       0
@@ -675,7 +675,7 @@ $(document).ready(function () {
 ## 1999       0       0          153             0           180           181       0
 ## 2000     145     119          157           181           180           182     181
 ## 2001       0       0          167             0           180           181       0
-## 2002       0       0          160             0           181           184       0
+## 2002       0       0          161             0           181           184       0
 ## 2003       0       0          174             0           181           183       0
 ## 2004       0       0          181             0           181           182       0
 ## 2005     156     144          185           182           181           184     182
@@ -686,12 +686,12 @@ $(document).ready(function () {
 ## 2010     160     149          187           184           183           186     184
 ## 2011     162     150          187             0           183           186       0
 ## 2012     163     153          188             0           183           187       0
-## 2013     163     150          186             0           183           185       0
-## 2014     164     152          187             0           183           185       0
+## 2013     163     150          183             0           183           185       0
+## 2014     164     152          186             0           183           185       0
 ## 2015     164     158          188           185           183           186     185
 ## 2016     164     162          191             0           183           185       0
-## 2017     165     160          192             0           183           185       0
-## 2018     165     162          192           185           183           185     185
+## 2017     165     160          189             0           183           185       0
+## 2018     165     162          190           185           183           185     185
 ## 2019       0       0          192             0             0             0       0
 ## 
 ## $gender_labor
@@ -736,8 +736,8 @@ $(document).ready(function () {
 ## 1997                   176                   175                    85                    84
 ## 1998                   176                   175                    88                    87
 ## 1999                   176                   175                    87                    86
-## 2000                   176                   175                    99                    99
-## 2001                   176                   175                    97                    97
+## 2000                   176                   175                    99                    98
+## 2001                   176                   175                    97                    96
 ## 2002                   177                   176                    96                    95
 ## 2003                   177                   176                    99                    98
 ## 2004                   177                   176                   100                    99
@@ -745,17 +745,17 @@ $(document).ready(function () {
 ## 2006                   179                   178                   106                   105
 ## 2007                   179                   178                   103                   102
 ## 2008                   179                   178                   103                   102
-## 2009                   179                   178                   112                   111
-## 2010                   179                   178                   115                   114
-## 2011                   180                   178                   113                   110
+## 2009                   179                   178                   112                   113
+## 2010                   179                   178                   115                   115
+## 2011                   180                   178                   113                   112
 ## 2012                   180                   178                   118                   117
 ## 2013                   180                   178                   118                   117
-## 2014                   180                   178                   123                   122
-## 2015                   180                   178                   114                   113
-## 2016                   180                   178                   112                   111
-## 2017                   180                   178                   111                   110
-## 2018                   180                   178                    98                    93
-## 2019                   180                   178                    64                    11
+## 2014                   180                   178                   123                   123
+## 2015                   180                   178                   114                   112
+## 2016                   180                   178                   112                   112
+## 2017                   180                   178                   111                   113
+## 2018                   180                   178                    98                   102
+## 2019                   180                   178                    64                    86
 ## 
 ## $gender_educ
 ##      eys_ratio_hdr eys_ratio_uis lit_adult_ratio_uis lit_rate_ratio_wdi mys_ratio_hdr mys_ratio_uis
@@ -783,7 +783,7 @@ $(document).ready(function () {
 ## 1981             0            98                  16                 16             0            21
 ## 1982             0            95                   7                  7             0             7
 ## 1983             0            96                   2                  2             0             4
-## 1984             0           100                   7                  7             0             4
+## 1984             0           100                   7                  8             0             4
 ## 1985             0            96                   6                  6             0             6
 ## 1986             0           104                   4                  4             0             8
 ## 1987             0            98                   3                  3             0             2
@@ -799,54 +799,54 @@ $(document).ready(function () {
 ## 1997             0            71                   3                  3             0             0
 ## 1998             0            84                   6                  6             0             3
 ## 1999             0           134                   8                  8             0             4
-## 2000           166           131                  43                 43           154            16
-## 2001             0           127                  28                 28             0            22
-## 2002             0           129                  19                 19             0            16
+## 2000           166           131                  43                 44           154            16
+## 2001             0           127                  28                 29             0            22
+## 2002             0           129                  19                 20             0            16
 ## 2003             0           124                  10                 10             0            11
-## 2004             0           136                  24                 24             0            29
-## 2005           171           139                  20                 20           165            33
-## 2006             0           134                  26                 26             0            50
-## 2007             0           138                  35                 35             0            53
-## 2008             0           136                  32                 32             0            62
-## 2009             0           133                  34                 34             0            63
-## 2010           178           135                  48                 48           168            74
-## 2011           180           138                  57                 57           170            76
-## 2012           180           131                  45                 45           170            67
+## 2004             0           136                  24                 25             0            29
+## 2005           171           139                  20                 22           165            33
+## 2006             0           134                  26                 28             0            50
+## 2007             0           138                  35                 36             0            53
+## 2008             0           136                  32                 33             0            62
+## 2009             0           133                  34                 35             0            63
+## 2010           178           135                  48                 51           168            74
+## 2011           180           138                  57                 58           170            76
+## 2012           180           131                  45                 46           170            67
 ## 2013           180           117                  34                 34           170            58
 ## 2014           180           128                  52                 52           171            68
 ## 2015           181           131                  42                 42           171            64
-## 2016           181           126                  34                 34           171            61
+## 2016           181           126                  34                 35           171            61
 ## 2017           182           123                  32                 32           171            48
-## 2018           182            64                  77                 76           171            35
-## 2019             0             4                   0                  0             0             0
+## 2018           182            64                  77                 77           171            35
+## 2019             0             4                   0                  1             0             0
 ## 
 ## $health
 ##      daly_ihme imr_wdi imr_wpp life_exp_wdi life_exp_wpp ufmr_wdi ufmr_wpp physicians_pc_wdi daly_ratio_ihme mmr_unicef
-## 1960         0      66     101          100          101       66      101                85               0          0
-## 1961         0      72       0          105            0       72        0                18               0          0
-## 1962         0      78       0          111            0       78        0                16               0          0
-## 1963         0      85       0          111            0       85        0                16               0          0
-## 1964         0      90       0          114            0       90        0                16               0          0
-## 1965         0      95     119          118          119       95      119                98               0          0
-## 1966         0     101       0          123            0      101        0                19               0          0
-## 1967         0     102       0          123            0      102        0                17               0          0
-## 1968         0     106       0          126            0      106        0                17               0          0
-## 1969         0     110       0          126            0      110        0                17               0          0
-## 1970         0     112     128          128          128      112      128               112               0          0
-## 1971         0     117       0          133            0      117        0                25               0          0
-## 1972         0     119       0          133            0      119        0                21               0          0
-## 1973         0     120       0          134            0      120        0                22               0          0
-## 1974         0     123       0          136            0      123        0                20               0          0
-## 1975         0     129     143          143          143      129      143                80               0          0
-## 1976         0     131       0          144            0      131        0                25               0          0
-## 1977         0     132       0          145            0      132        0                26               0          0
-## 1978         0     139       0          146            0      139        0                24               0          0
-## 1979         0     143       0          149            0      143        0                34               0          0
-## 1980         0     145     151          151          151      145      151                68               0          0
-## 1981         0     146       0          153            0      146        0                91               0          0
-## 1982         0     148       0          154            0      148        0                43               0          0
-## 1983         0     151       0          153            0      151        0                36               0          0
-## 1984         0     152       0          153            0      152        0                72               0          0
+## 1960         0      74     101          100          101       74      101                85               0          0
+## 1961         0      78       0          105            0       78        0                18               0          0
+## 1962         0      87       0          111            0       87        0                16               0          0
+## 1963         0      89       0          111            0       89        0                16               0          0
+## 1964         0      93       0          114            0       93        0                16               0          0
+## 1965         0      98     119          118          119       98      119                98               0          0
+## 1966         0     103       0          123            0      103        0                19               0          0
+## 1967         0     104       0          123            0      104        0                17               0          0
+## 1968         0     108       0          126            0      108        0                17               0          0
+## 1969         0     112       0          126            0      112        0                17               0          0
+## 1970         0     114     128          128          128      114      128               112               0          0
+## 1971         0     121       0          133            0      121        0                25               0          0
+## 1972         0     123       0          133            0      123        0                21               0          0
+## 1973         0     124       0          134            0      124        0                22               0          0
+## 1974         0     127       0          136            0      127        0                20               0          0
+## 1975         0     133     143          143          143      133      143                80               0          0
+## 1976         0     135       0          144            0      135        0                25               0          0
+## 1977         0     136       0          145            0      136        0                26               0          0
+## 1978         0     143       0          146            0      143        0                24               0          0
+## 1979         0     146       0          149            0      146        0                34               0          0
+## 1980         0     148     151          151          151      148      151                68               0          0
+## 1981         0     150       0          153            0      150        0                91               0          0
+## 1982         0     152       0          154            0      152        0                43               0          0
+## 1983         0     154       0          153            0      154        0                36               0          0
+## 1984         0     154       0          153            0      154        0                72               0          0
 ## 1985         0     160     153          153          153      160      153                57               0          0
 ## 1986         0     162       0          154            0      162        0                50               0          0
 ## 1987         0     162       0          157            0      162        0                37               0          0
@@ -881,11 +881,10 @@ $(document).ready(function () {
 ## 2016       188     192       0          185            0      192        0               113             188          0
 ## 2017       188     192       0          185            0      192        0               104             188        184
 ## 2018         0     192     185          185          185      192      185                61               0          0
-## 2019         0       0       0            0            0        0        0                 0               0          0</code></pre>
-<p>Due to data availability, the time period for our analyses will be primarily from 1990 until 2015 or 2018.</p>
+## 2019         0     192       0            0            0      192        0                 0               0          0</code></pre>
 </div>
-<div id="within-category-correlations" class="section level2">
-<h2>Within-category correlations</h2>
+<div id="within-category-correlations" class="section level4">
+<h4>Within-category correlations</h4>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">names</span>(categories), <span class="cf">function</span>(category) {</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data[, categories[[category]]], <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">stroke =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)) <span class="sc">+</span> </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
@@ -894,8 +893,8 @@ $(document).ready(function () {
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
 <p><img src="data_files/figure-html/within-1.png" width="100%" height="100%" /><img src="data_files/figure-html/within-2.png" width="100%" height="100%" /><img src="data_files/figure-html/within-3.png" width="100%" height="100%" /><img src="data_files/figure-html/within-4.png" width="100%" height="100%" /><img src="data_files/figure-html/within-5.png" width="100%" height="100%" /><img src="data_files/figure-html/within-6.png" width="100%" height="100%" /><img src="data_files/figure-html/within-7.png" width="100%" height="100%" /></p>
 </div>
-<div id="across-category-correlations" class="section level2">
-<h2>Across-category correlations</h2>
+<div id="across-category-correlations" class="section level4">
+<h4>Across-category correlations</h4>
 <p>Based on theoretical relevance and representativeness (see within-category correlations), we show correlations of certain of these variables across the categories:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>variables_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;physicians_pc_wdi&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;pc_rgdpe_pwt&quot;</span>,</span>
@@ -906,8 +905,8 @@ $(document).ready(function () {
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>))</span></code></pre></div>
 <p><img src="data_files/figure-html/across-1.png" width="100%" height="100%" /></p>
 </div>
-<div id="which-countries-have-such-high-ratios-of-years-of-schooling-in-favor-of-women" class="section level2">
-<h2>Which countries have such high ratios of years of schooling in favor of women?</h2>
+<div id="which-countries-have-such-high-ratios-of-years-of-schooling-in-favor-of-women" class="section level4">
+<h4>Which countries have such high ratios of years of schooling in favor of women?</h4>
 <p>We noticed that some of the education ratios (female to male) are surprisingly high, and want to know which country-years account for this.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>ed <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;mys_ratio_uis&quot;</span>, <span class="st">&quot;eys_ratio_hdr&quot;</span>, <span class="st">&quot;eys_ratio_uis&quot;</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, variables<span class="sc">$</span>ed])</span></code></pre></div>
@@ -928,91 +927,99 @@ $(document).ready(function () {
   </script>
 </div>
 </div>
-<div id="inverting-variables-for-comparable-interpretation-within-categories" class="section level2">
-<h2>Inverting variables for comparable interpretation within categories</h2>
+<div id="inverting-variables-for-comparable-interpretations" class="section level4">
+<h4>Inverting variables for comparable interpretations</h4>
 <p>Since we are dealing with a wide range of measures, we need to ensure that they reflect the same “direction” of effects. We do this by coding the negative of some variables, so that higher values indicate better outcomes for the health and gender categories and higher values indicate worse outcomes for the violence categories.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;mmr_unicef&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, </span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;latentmean_fariss_cumulative1991&quot;</span>, </span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss_cumulative1996&quot;</span>, <span class="st">&quot;v2cltort_cumulative1991&quot;</span>, </span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;v2cltort_cumulative1996&quot;</span>, <span class="st">&quot;v2clkill_cumulative1991&quot;</span>, <span class="st">&quot;v2clkill_cumulative1996&quot;</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])])</span></code></pre></div>
-<pre><code>##     imr_wpp           ufmr_wpp         mmr_unicef     daly_ihme      asfr_adol_wpp        tfr_wpp     
-##  Min.   :  1.254   Min.   :  1.765   Min.   :   2   Min.   : 15334   Min.   :  0.283   Min.   :1.051  
-##  1st Qu.: 15.363   1st Qu.: 18.328   1st Qu.:  17   1st Qu.: 27130   1st Qu.: 29.676   1st Qu.:2.170  
-##  Median : 40.161   Median : 50.881   Median :  65   Median : 32776   Median : 69.553   Median :3.782  
-##  Mean   : 56.186   Mean   : 84.469   Mean   : 202   Mean   : 43276   Mean   : 78.652   Mean   :4.065  
-##  3rd Qu.: 85.913   3rd Qu.:129.686   3rd Qu.: 277   3rd Qu.: 50724   3rd Qu.:117.050   3rd Qu.:5.955  
-##  Max.   :319.239   Max.   :465.517   Max.   :2480   Max.   :788016   Max.   :242.574   Max.   :8.800  
-##  NA&#39;s   :8259      NA&#39;s   :8259      NA&#39;s   :9396   NA&#39;s   :5145     NA&#39;s   :8259      NA&#39;s   :8259</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
-<pre><code>##  latentmean_fariss    v2cltort          v2clkill      
-##  Min.   :-3.767    Min.   :-3.2680   Min.   :-3.5870  
-##  1st Qu.:-1.097    1st Qu.:-0.9450   1st Qu.:-0.6980  
-##  Median :-0.074    Median : 0.3440   Median : 0.7360  
-##  Mean   : 0.091    Mean   : 0.3197   Mean   : 0.5478  
-##  3rd Qu.: 1.187    3rd Qu.: 1.6570   3rd Qu.: 1.9530  
-##  Max.   : 5.140    Max.   : 3.3210   Max.   : 3.2090  
-##  NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data[, variables<span class="sc">$</span>negative] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, variables<span class="sc">$</span>negative], <span class="st">&#39;-&#39;</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])])</span></code></pre></div>
-<pre><code>##     imr_wpp            ufmr_wpp          mmr_unicef      daly_ihme       asfr_adol_wpp         tfr_wpp      
-##  Min.   :-319.239   Min.   :-465.517   Min.   :-2480   Min.   :-788016   Min.   :-242.574   Min.   :-8.800  
-##  1st Qu.: -85.913   1st Qu.:-129.686   1st Qu.: -277   1st Qu.: -50724   1st Qu.:-117.050   1st Qu.:-5.955  
-##  Median : -40.161   Median : -50.881   Median :  -65   Median : -32776   Median : -69.553   Median :-3.782  
-##  Mean   : -56.186   Mean   : -84.469   Mean   : -202   Mean   : -43276   Mean   : -78.652   Mean   :-4.065  
-##  3rd Qu.: -15.363   3rd Qu.: -18.328   3rd Qu.:  -17   3rd Qu.: -27130   3rd Qu.: -29.676   3rd Qu.:-2.170  
-##  Max.   :  -1.254   Max.   :  -1.765   Max.   :   -2   Max.   : -15334   Max.   :  -0.283   Max.   :-1.051  
-##  NA&#39;s   :8259       NA&#39;s   :8259       NA&#39;s   :9396    NA&#39;s   :5145      NA&#39;s   :8259       NA&#39;s   :8259</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">7</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
-<pre><code>##  latentmean_fariss    v2cltort          v2clkill      
-##  Min.   :-5.140    Min.   :-3.3210   Min.   :-3.2090  
-##  1st Qu.:-1.187    1st Qu.:-1.6570   1st Qu.:-1.9530  
-##  Median : 0.074    Median :-0.3440   Median :-0.7360  
-##  Mean   :-0.091    Mean   :-0.3197   Mean   :-0.5478  
-##  3rd Qu.: 1.097    3rd Qu.: 0.9450   3rd Qu.: 0.6980  
-##  Max.   : 3.767    Max.   : 3.2680   Max.   : 3.5870  
-##  NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<pre><code>##     imr_wpp           ufmr_wpp         mmr_unicef     daly_ihme      asfr_adol_wpp        tfr_wpp      latentmean_fariss    v2cltort          v2clkill      
+##  Min.   :  1.254   Min.   :  1.765   Min.   :   2   Min.   : 15334   Min.   :  0.283   Min.   :1.051   Min.   :-3.767    Min.   :-3.2680   Min.   :-3.5870  
+##  1st Qu.: 15.363   1st Qu.: 18.328   1st Qu.:  17   1st Qu.: 27130   1st Qu.: 29.676   1st Qu.:2.170   1st Qu.:-1.097    1st Qu.:-0.9450   1st Qu.:-0.6980  
+##  Median : 40.161   Median : 50.881   Median :  65   Median : 32776   Median : 69.553   Median :3.782   Median :-0.074    Median : 0.3440   Median : 0.7360  
+##  Mean   : 56.186   Mean   : 84.469   Mean   : 202   Mean   : 43276   Mean   : 78.652   Mean   :4.065   Mean   : 0.091    Mean   : 0.3197   Mean   : 0.5478  
+##  3rd Qu.: 85.913   3rd Qu.:129.686   3rd Qu.: 277   3rd Qu.: 50724   3rd Qu.:117.050   3rd Qu.:5.955   3rd Qu.: 1.187    3rd Qu.: 1.6570   3rd Qu.: 1.9530  
+##  Max.   :319.239   Max.   :465.517   Max.   :2480   Max.   :788016   Max.   :242.574   Max.   :8.800   Max.   : 5.140    Max.   : 3.3210   Max.   : 3.2090  
+##  NA&#39;s   :8259      NA&#39;s   :8259      NA&#39;s   :9396   NA&#39;s   :5145     NA&#39;s   :8259      NA&#39;s   :8259    NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data[, variables<span class="sc">$</span>negative] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, variables<span class="sc">$</span>negative], <span class="st">&#39;-&#39;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<pre><code>##     imr_wpp            ufmr_wpp          mmr_unicef      daly_ihme       asfr_adol_wpp         tfr_wpp       latentmean_fariss    v2cltort          v2clkill      
+##  Min.   :-319.239   Min.   :-465.517   Min.   :-2480   Min.   :-788016   Min.   :-242.574   Min.   :-8.800   Min.   :-5.140    Min.   :-3.3210   Min.   :-3.2090  
+##  1st Qu.: -85.913   1st Qu.:-129.686   1st Qu.: -277   1st Qu.: -50724   1st Qu.:-117.050   1st Qu.:-5.955   1st Qu.:-1.187    1st Qu.:-1.6570   1st Qu.:-1.9530  
+##  Median : -40.161   Median : -50.881   Median :  -65   Median : -32776   Median : -69.553   Median :-3.782   Median : 0.074    Median :-0.3440   Median :-0.7360  
+##  Mean   : -56.186   Mean   : -84.469   Mean   : -202   Mean   : -43276   Mean   : -78.652   Mean   :-4.065   Mean   :-0.091    Mean   :-0.3197   Mean   :-0.5478  
+##  3rd Qu.: -15.363   3rd Qu.: -18.328   3rd Qu.:  -17   3rd Qu.: -27130   3rd Qu.: -29.676   3rd Qu.:-2.170   3rd Qu.: 1.097    3rd Qu.: 0.9450   3rd Qu.: 0.6980  
+##  Max.   :  -1.254   Max.   :  -1.765   Max.   :   -2   Max.   : -15334   Max.   :  -0.283   Max.   :-1.051   Max.   : 3.767    Max.   : 3.2680   Max.   : 3.5870  
+##  NA&#39;s   :8259       NA&#39;s   :8259       NA&#39;s   :9396    NA&#39;s   :5145      NA&#39;s   :8259       NA&#39;s   :8259     NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
 </div>
-<div id="coding-performance-measures-for-later-use" class="section level2">
-<h2>Coding performance measures for later use</h2>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, year) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">cut</span>(year, <span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2020</span>, <span class="dv">5</span>), <span class="at">right =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(country, period) <span class="sc">%&gt;%</span> </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pc_rgdpe_avg =</span> <span class="fu">mean</span>(pc_rgdpe_pwt, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>pc_rgdpe_avg[<span class="fu">is.nan</span>(data<span class="sc">$</span>pc_rgdpe_avg)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>health) <span class="ot">&lt;-</span> variables<span class="sc">$</span>health <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>gender) <span class="ot">&lt;-</span> variables<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_avg&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs], log)</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs_negative, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs_negative], <span class="cf">function</span>(col) { <span class="sc">-</span><span class="fu">log</span>(<span class="sc">-</span>col) })</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co"># summary(data[, c(take_logs_negative, paste(&quot;lg&quot;, take_logs_negative, sep = &quot;_&quot;))])</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>CodePerformance <span class="ot">&lt;-</span> <span class="cf">function</span>(y_var, x_vars, df) {</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  x_vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(x_vars, <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  equation <span class="ot">&lt;-</span> <span class="fu">paste</span>(y_var, <span class="st">&quot;~&quot;</span>, x_vars)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df, <span class="at">country =</span> country, <span class="at">year =</span> year))</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df)</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod)</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  df[, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> df[, y_var] <span class="sc">-</span> df<span class="sc">$</span>predicted</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))])</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender)</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1965</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>)</span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vars, <span class="cf">function</span>(var) {</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    dat <span class="ot">&lt;-</span> data[data<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;lg_pc_rgdpe_avg&quot;</span>, var)]</span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">nrow</span>(<span class="fu">na.omit</span>(dat)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">CodePerformance</span>(<span class="at">y_var =</span> var, <span class="at">x_vars =</span> <span class="st">&quot;lg_pc_rgdpe_avg&quot;</span>, <span class="at">df =</span> dat)</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>      } </span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> results[<span class="sc">!</span><span class="fu">unlist</span>(<span class="fu">lapply</span>(results, is.null))]</span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, results)</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> performance_measures)</span>
-<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, performance_measures, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(data, codebook, categories, variables, <span class="at">file =</span> <span class="st">&quot;_data/LSCMWG_working_data.RData&quot;</span>)</span></code></pre></div>
+<div id="variable-transformations-and-coding-performance-measures" class="section level4">
+<h4>Variable transformations and coding performance measures</h4>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">cut</span>(year, <span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2020</span>, <span class="dv">5</span>), <span class="at">right =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>health) <span class="ot">&lt;-</span> variables<span class="sc">$</span>health <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>gender) <span class="ot">&lt;-</span> variables<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender, <span class="st">&quot;pc_rgdpe_pwt&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(country, period) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars), <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.names =</span> <span class="st">&quot;{col}_avg&quot;</span>), <span class="at">.keep =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)], <span class="cf">function</span>(col) {</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  col[<span class="fu">is.nan</span>(col)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(col)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs, <span class="fu">paste</span>(take_logs, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs_negative, <span class="fu">paste</span>(take_logs_negative, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative))])</span></code></pre></div>
+<pre><code>##  asfr_adol_wpp      asfr_adol_wpp_avg     imr_wpp          imr_wpp_avg        life_exp_wpp   life_exp_wpp_avg mys_ratio_hdr   mys_ratio_hdr_avg  pc_rgdpe_pwt      pc_rgdpe_pwt_avg  
+##  Min.   :-242.574   Min.   :-242.574   Min.   :-319.239   Min.   :-319.239   Min.   :14.49   Min.   :14.49    Min.   :0.104   Min.   :0.104     Min.   :   226.3   Min.   :   423.4  
+##  1st Qu.:-117.050   1st Qu.:-114.743   1st Qu.: -85.913   1st Qu.: -81.977   1st Qu.:55.06   1st Qu.:55.78    1st Qu.:0.734   1st Qu.:0.694     1st Qu.:  2255.1   1st Qu.:  2283.9  
+##  Median : -69.553   Median : -68.097   Median : -40.161   Median : -38.269   Median :66.91   Median :67.30    Median :0.935   Median :0.919     Median :  5664.2   Median :  5863.5  
+##  Mean   : -78.652   Mean   : -77.720   Mean   : -56.186   Mean   : -53.855   Mean   :63.73   Mean   :64.16    Mean   :0.857   Mean   :0.835     Mean   : 11675.4   Mean   : 11907.5  
+##  3rd Qu.: -29.676   3rd Qu.: -29.279   3rd Qu.: -15.363   3rd Qu.: -14.938   3rd Qu.:72.89   3rd Qu.:73.07    3rd Qu.:1.000   3rd Qu.:0.990     3rd Qu.: 14680.7   3rd Qu.: 15047.4  
+##  Max.   :  -0.283   Max.   :  -0.283   Max.   :  -1.254   Max.   :  -1.254   Max.   :84.43   Max.   :84.43    Max.   :1.529   Max.   :1.529     Max.   :253103.4   Max.   :230063.7  
+##  NA&#39;s   :8259       NA&#39;s   :773        NA&#39;s   :8259       NA&#39;s   :773        NA&#39;s   :8259    NA&#39;s   :773      NA&#39;s   :8188    NA&#39;s   :5009      NA&#39;s   :1909       NA&#39;s   :1499</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs], log)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs_negative, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs_negative], <span class="cf">function</span>(col) { <span class="sc">-</span><span class="fu">log</span>(<span class="sc">-</span>col) })</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">paste</span> (<span class="st">&quot;lg&quot;</span>, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative)), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)])</span></code></pre></div>
+<pre><code>##  lg_asfr_adol_wpp lg_asfr_adol_wpp_avg   lg_imr_wpp     lg_imr_wpp_avg    lg_life_exp_wpp lg_life_exp_wpp_avg lg_mys_ratio_hdr lg_mys_ratio_hdr_avg lg_pc_rgdpe_pwt  lg_pc_rgdpe_pwt_avg
+##  Min.   :-5.491   Min.   :-5.491       Min.   :-5.766   Min.   :-5.7659   Min.   :2.673   Min.   :2.674       Min.   :-2.262   Min.   :-2.262       Min.   : 5.422   Min.   : 6.048     
+##  1st Qu.:-4.763   1st Qu.:-4.743       1st Qu.:-4.453   1st Qu.:-4.4064   1st Qu.:4.008   1st Qu.:4.021       1st Qu.:-0.309   1st Qu.:-0.366       1st Qu.: 7.721   1st Qu.: 7.734     
+##  Median :-4.242   Median :-4.221       Median :-3.693   Median :-3.6446   Median :4.203   Median :4.209       Median :-0.068   Median :-0.085       Median : 8.642   Median : 8.677     
+##  Mean   :-3.996   Mean   :-3.983       Mean   :-3.521   Mean   :-3.4863   Mean   :4.135   Mean   :4.143       Mean   :-0.194   Mean   :-0.227       Mean   : 8.662   Mean   : 8.686     
+##  3rd Qu.:-3.390   3rd Qu.:-3.377       3rd Qu.:-2.732   3rd Qu.:-2.7039   3rd Qu.:4.289   3rd Qu.:4.291       3rd Qu.: 0.000   3rd Qu.:-0.010       3rd Qu.: 9.594   3rd Qu.: 9.619     
+##  Max.   : 1.262   Max.   : 1.262       Max.   :-0.226   Max.   :-0.2263   Max.   :4.436   Max.   :4.436       Max.   : 0.425   Max.   : 0.425       Max.   :12.442   Max.   :12.346     
+##  NA&#39;s   :8259     NA&#39;s   :773          NA&#39;s   :8259     NA&#39;s   :773       NA&#39;s   :8259    NA&#39;s   :773         NA&#39;s   :8188     NA&#39;s   :5009         NA&#39;s   :1909     NA&#39;s   :1499</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>CodePerformance <span class="ot">&lt;-</span> <span class="cf">function</span>(y_var, x_vars, df) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  x_vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(x_vars, <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  equation <span class="ot">&lt;-</span> <span class="fu">paste</span>(y_var, <span class="st">&quot;~&quot;</span>, x_vars)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df, <span class="at">country =</span> country, <span class="at">year =</span> year))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  df[, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> df[, y_var] <span class="sc">-</span> df<span class="sc">$</span>predicted</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))])</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">c</span>(vars, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1965</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vars, <span class="cf">function</span>(var) {</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    dat <span class="ot">&lt;-</span> data[data<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, var)]</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">nrow</span>(<span class="fu">na.omit</span>(dat)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">CodePerformance</span>(<span class="at">y_var =</span> var, <span class="at">x_vars =</span> <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, <span class="at">df =</span> dat)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> results[<span class="sc">!</span><span class="fu">unlist</span>(<span class="fu">lapply</span>(results, is.null))]</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, results)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> performance_measures)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, performance_measures, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(data, codebook, categories, variables, <span class="at">file =</span> <span class="st">&quot;_data/LSCMWG_working_data.RData&quot;</span>)</span></code></pre></div>
+</div>
 </div>
 
+<script type="text/javascript" src="links.js"></script>
 
 
 
