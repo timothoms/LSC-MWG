@@ -5,9 +5,10 @@ html_document:
   fig_width: 8
   fig_height: 8
   self_contained: false
+  lib_dir: "docs/site_libs"
   theme: flatly
   highlight: pygments
   code_folding: hide
-  css: styles.css
+  css: "styles.css"
   includes:
     after_body: "_html/include_footer.html"
