@@ -42,5 +42,6 @@ output:
     highlight: pygments
     code_folding: hide
     self_contained: false
+    lib_dir: docs/site_libs
 editor_options:
   chunk_output_type: console
