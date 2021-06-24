@@ -10,14 +10,15 @@ params:
 title: "`r params$set_title`"
 ---
 
-```{r include = FALSE}
+```{r global, include = FALSE}
 source("setup.R")
-library(plm)
-knitr::opts_chunk$set(fig.width = 12, fig.height = 12, rows.print = 15, cols.min.print = 5, out.width = "100%", out.height = "100%")
+knitr::opts_chunk$set(fig.width = 12, fig.height = 12, rows.print = 12, 
+                      out.width = "100%", out.height = "100%")
 ```
 
 
 ```{r prelim}
+library(plm)
 IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_class.RData")
 vars <- c("pc_rgdpe_pwt", "pop_wpp", unlist(variables[c("health_full", "gender_full", "conflict_incidence", 
