@@ -14,7 +14,19 @@ navbar:
   - text: "Cross-sectional Models"
     href: regressions.html
   - text: "Panel Models"
-    href: panel.html
+    menu:
+    - text: "1970-2018, 1 lag"
+      href: panel.html
+    - text: "1995-2015, 1 lag"
+      href: panel1995.html
+    - text: "1975-2018, 2 lags"
+      href: panel2lags.html
+    - text: "1980-2018, 3 lags"
+      href: panel3lags.html
+    - text: "1985-2018, 4 lags"
+      href: panel4lags.html
+    - text: "Summary"
+      href: summary.html
   right:
   - icon: fa-github fa-lg
     href: https://github.com/timothoms/LSC-MWG/
