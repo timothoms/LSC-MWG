@@ -1,0 +1,159 @@
+---
+title: "Summary of Panel Analyses" 
+output:
+  html_document:
+    code_folding: null
+---
+
+### {.tabset .tabset-fade .tabset-pills}
+
+#### Research questions
+
+The large-N analyses carried out by the Lancet Commission Metrics Working Group have begun to build an evidence base for broad statistical relationships between gender, health, and violence outcomes. Based on the virtuous and vicious cycles framework proposing that health, gender, and violence variables interact with each other to produce reinforcing cycles, these analyses are guided by the following research questions: 
+
+- While accounting for the overall improvements that most countries have experienced in health and gender outcomes in recent decades, do those countries that score low in earlier periods improve less than the global average and/or high performers, or do they perhaps even decline?
+- While accounting for possible ceiling effects, do those countries that score high in earlier periods a) maintain stable and high levels and b) avoid violence?
+- Do countries that experience higher levels of violence a) improve less on gender equality and health outcomes than those with less violence, or b) do their gender and health outcomes perhaps even deteriorate?
+- Are countries that score low on health and gender outcomes more prone to violence than those that score higher? 
+
+These questions imply considerable complexity due to many directions of statistical effects: between gender and health outcomes: from gender and health outcomes to violence; and from violence to gender and health outcomes. Our analyses test these questions in probabilistic terms, not in deterministic fashion. While there are many other factors influencing health, gender and violence outcomes, we do not develop full causal models of each outcome, but examine whether associations between the three categories of outcomes are consistent with the theoretical framework of virtuous and vicious cycles.
+
+#### Data & Methods {.tabset .tabset-fade .tabset-pills}
+
+##### Data
+
+Guided by the indicator mapping carried out by the Metrics Working Group, we identified a wide range of health, gender and violence measures as candidates for the analyses, and assembled a comprehensive cross-national time-series dataset with the best available data on relevant indicators and other important covariates, such as GDP per capita and political institutional variables. (A detailed codebook for the dataset is available at this [link](https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing).) Many health and gender measures in particular are subject to many missing data points across countries and over time, and this missingness is unlikely to be random and thus presents a potential threat to inferences. Therefore, based on our analysis of the quality and coverage of these data, and based on within-category correlations, we chose two representative and commonly accepted variables each for the health and gender dimensions. To measure violence, we chose more indicators in order to capture different types of violence, including state-based conflict, repression and societal violence. The following variables are included in the panel analyses:
+
+| category             | variable                                                 | source  |
+|----------------------|----------------------------------------------------------|---------|
+| health               | life expectancy                                          | WPP     |
+| health               | _infant mortality rate_                                  | WPP     |
+| gender               | mean years of schooling ratio                            | HDR     |
+| gender               | _adolescent fertility rate_                              | WPP     |
+| state-based conflict | internal conflict incidence                              | UCDP    |
+| state-based conflict | internal war incidence                                   | UCDP    |
+| state-based conflict | internal conflict deaths (rate per population)           | UCDP    |
+| state-based conflict | internal conflict civilian deaths (rate per population)  | UCDP    |
+| state repression     | one-sided violence (OSV) incidence                       | UCDP    |
+| state repression     | one-sided violence (OSV) deaths (rate per population)    | UCDP    |
+| state repression     | _latent physical integrity measure_                      | Fariss  |
+| state repression     | _state torture_                                          | V-Dem   |
+| state repression     | _extra-judicial killings_                                | V-Dem   |
+| societal violence    | non-state conflict (NSC) incidence                       | UCDP    |
+| societal violence    | non-state conflict (NSC) deaths (rate per population)    | UCDP    |
+| societal violence    | non-state conflict civilian deaths (rate per population) | UCDP    |
+| societal violence    | homicides (rate per population)                          | ODC/WHO |
+
+As data availability and quality generally improves after 1990 and more violence variables exist for this period, the period of analyses is primarily 1990-2015 or 2018. All variables are aggregated to five-year averages because three of the key health and gender variables are provided as such averages by the World Populations Prospects Database.
+
+It is important to note that, for easier comparisons of results across variables within each category, we have inverted some variables such that higher values of the health and gender variables always indicate "better" outcomes, while higher values of the violence variables always mean higher levels of violence. (The affected variables are indicated by _italics_ in the table above.) 
+
+##### Classifications
+
+To help us operationalize the vicious and virtuous cycles hypotheses, we developed a classification of countries based on the four health and gender outcomes, creating groups of countries for comparison. We divided each of the four measures into quintiles at any given point in time and aggregated them along the gender and health dimensions, to produce a 5x5 matrix. We selected the bottom four cells as our low classification and the top four as our high classification. Using this classification, we make the assumption that if there are virtuous and vicious cycles present in the data, then they surely would be observed for these two groups. (In the analyses presented here, we use only these groups, but the other groups resulting from this classification procedure could be analysed in extensions of this research.)
+
+Initial bivariate graphical analyses of the health, gender, and violence variables within classification groups show clear trends over time across measures. First, there is considerable global improvement in the health and gender measures in all classification groups. Second, average improvements are greatest in the low classification, and tend to be less pronounced in the high classification. This suggests ceiling effects for better performers that need to be accounted for in the analyses. 
+Third, low performers on the health and gender dimensions tend to have the most violence on average over time (across different measures and different types of violence), and high performers have much less violence on average. (In a partial exception, average homicide rates are highest in intermediate classification groups rather than in the low classification, but the high classification clearly has the lowest homicide rates.)
+
+##### Panel Methods
+
+We conducted multivariate cross-sectional and panel models. The cross-sectional analyses examine the longer-term growth rates in outcomes (over 20-25 years, from 1990 or 1995 to 2015). **[Note: A summary of the cross-sectional analyses will be added later.]**
+
+The panel models examine short-term changes from one five-year period to the next, over as many periods as data availability allows; they use so-called "wide" panels of many countries but only a small number of time periods (between 6 and 11 periods). The dependent variables of the analyses are the individual health, gender, and violence variables. We test the vicious and virtuous cycles hypotheses by including lagged gender or health variables, or the low and high classification and the violence variables, as independent variables. All the panel models include covariates for logged GDP per capita, logged population size, and participatory democracy, in order to account for socio-economic and institutional conditions. (We also tried other political regime variables, but only included participatory democracy in the final models because the others did not show statistical associations with the outcome variables.) We further include the lagged dependent variable in each model in order to account for trends, autocorrelation and ceiling effects. 
+
+Analysis of observational data requires careful attention to omitted variable biases and endogeneity of various kinds. These issues become even more pressing concerns in panel data than in cross-sectional data, because of the lack of independence of observations within countries over time, leading to issues of correlated unit (country) effects, heteroscedasticity and serial correlation. These are clearly problems in our models and data, as evidenced by a variety of econometric tests developed for panel data, which we carried out for each regression equation to decide which estimators are most defensible. This is important as the choice of estimator often leads to very different results. Based on the results of these tests across models, we chose the fixed effects (or "within") ordinary least squares estimator (OLS run on demeaned within-country data), and more preferably, the fixed effects general (or unrestricted) feasible generalized least squares (GGLS) estimator. 
+
+#### Findings {.tabset .tabset-fade .tabset-pills}
+
+The summary tables show the outcome variables (DVs) in colums and covariates (IVs) in the rows, with the following symbols indicating their statistical effects, based on all models (each cell in the table represents a separate model): 
+
+| Legend |                                                               |
+|--------|---------------------------------------------------------------|
+| $+$    | statistically significant positive effect                     |
+| $-$    | statistically significant negative effect                     |
+| $[]$   | statistical effect contradicting theoretical expectations     |
+| $()$   | statistical effect not found in the preferred model (FE GGLS) |
+| ~      | statistically significant interaction term but overall interaction effect is not statistically significant |
+| na     | variable not included in the model                            |
+
+##### Summary
+
+The panel analyses find more support for vicious than virtuous cycles, and that these are more applicable to violence than gender and health outcomes. 
+
+There is some evidence that health and gender outcomes reinforce each other, but the evidence is stronger for health than gender outcomes. Both the mean years of schooling (MYS) ratio in favor of females and the adolescent fertility rate (AFR) are positively associated with increased life expectancy, but only MYS is positively associated with improvements in the infant mortality rate (IMR). Recall here that both the IMR and AFR were inverted for the purpose of the analyses. This means that the higher the MYS ratio, the better the IMR. The AFR, which was also inverted, is negatively associated with the inverted IMR: this means that improvement in the AFR is associated with worsening in the IMR. For the gender outcomes, life expectancy and the IMR are associated with an improved AFR, but they have no statistical effects on MYS. When considering our classification, which operationalizes the vicious and virtuous cycles hypotheses with worst and best combinations of health and gender outcomes, the findings are clear and consistent: the low classification is associated with worse health and gender outcomes across all four variables, but the high classification is never statistically significant. This provides support for vicious cycles between health and gender but not virtuous cycles. 
+
+Few of the violence variables have statistical effects on the gender and health outcomes that are  consistent with the vicious and virtuous cycles hypotheses. In fact, many models suggest that violence is associated with better health and gender outcomes, as indicated by $[+]$ in the table, and contradicting our theoretical framework. (The findings for the AFR are particularly noteworthy in this respect.) A few results are consistent with the vicious and virtuous cycles hypotheses, such as the associations of internal war with a worse AFR; internal conflict deaths and one-sided violence with worse infant mortality; the latent physical integrity measure with lower MYS ratios; and, unsurprisingly, homicides and extra-judicial killings with lower life expectancy. However, overall, the health and gender models only support a vicious cycle between health and gender, but do not provide much or consistent evidence for a three-way vicious cycle. Moreover, many models turn up null results.
+
+The analyses of various violence outcomes more clearly support the theoretical framework, though there are again several contradictory results with respect to the relationship between individual health and gender variables and violence variables, and many null results. Supporting the theoretical framework, higher life expectancy is associated with less one-sided violence episodes (but more deaths from such violence) and possibly with less state torture; improved infant mortality is associated with less internal conflict and possibly less one-sided violence and physical integrity violations; higher MYS ratios are associated with less internal conflict, one-sided violence deaths and physical integrity violations. While an improved AFR is associated with less internal conflict, it is also associated with more state violence and homicides. Like the analyses of health and gender outcomes, these results are not strongly supportive.
+
+However, the evidence is much more consistent and supportive of vicious cycles when using our classifications. The low classification is associated with more internal war, internal conflict deaths, non-state conflict deaths and homicides. The high classification (indicating strong performance on both health and gender) is associated with less internal conflict civilian deaths and homicides, but also, surprisingly, with more violent state repression. Importantly, a three-way vicious cycle between health, gender and violence is strongly supported in many models by the interaction of the lagged violence variables with the low classification; these models examine the effect of previous levels of violence in countries that perform poorly on health and gender on subsequent levels of violence. These interactions are associated with more internal war, internal conflict deaths and civilian deaths, non-state conflict deaths, physical integrity violations, extra-judicial killings and homicides, compared to countries not included in the low and high classifications. These findings strongly suggest that violence begets more violence where countries perform very poorly on both health and gender. By contrast, positive interaction effects of the high classification contradict the notion of virtuous cycles.  
+
+##### Health & Gender Results
+
+|                                            | Life Expectancy | Infant Mortality | Mean Years of Schooling | Adolescent Fertility Rate |
+|--------------------------------------------|-----------------|------------------|-------------------------|---------------------------|
+| Life Expectancy                            |   na|     na|       |    $+$|
+| Infant Mortality                           |   na|     na|       |    $+$|
+| Mean Years of Schooling ratio              |  $+$|    $+$|     na|     na|
+| Adolescent Fertility Rate                  |  $+$|  $[-]$|     na|     na|
+| low classification                         |  $-$|    $-$|    $-$|    $-$|
+| high classification                        |     |       |       |       |
+| Conflict                                   |$[+]$|       |       |       |
+| Conflict: low interaction                  |     |       |       |       |
+| Conflict: high interaction                 |     |    $+$|       |       |
+| War                                        |     |       |       |    $-$|
+| War: low interaction                       |     |       |       |       |
+| War: high interaction                      |     |       |       |       |
+| Conflict Deaths                            |     |    $-$|       |  $[+]$|
+| Conflict Deaths: low interaction           |     |       |       |  $[+]$|
+| Conflict Deaths: high interaction          |     |       |       |       |
+| Conflict Civilian Deaths                   |$[+]$|       |       |  $[+]$|
+| Conflict Civilian Deaths: low interaction  |$[+]$|       |       |  $[+]$|
+| Conflict Civilian Deaths: high interaction |     |       |       |       |
+| OSV                                        |     |  $(-)$|       |       |
+| OSV: low interaction                       |    ~|  $(-)$|  $[+]$|  $[+]$|
+| OSV: high interaction                      |     |       |       |       |
+| OSV Deaths                                 |$[+]$|  $(-)$|       |  $[+]$|
+| OSV Deaths: low interaction                |     |       |       |       |
+| OSV Deaths: high interaction               |     |       |       |       |
+| NSC                                        |     |       |       |  $[+]$|
+| NSC: low interaction                       |     |       |       |       |
+| NSC: high interaction                      |     |       |       |       |
+| NSC Deaths                                 |$[+]$|       |       |  $[+]$|
+| NSC Deaths: low interaction                |     |       |       |       |
+| NSC Deaths: high interaction               |     |$[(+)]$|       |       |
+| NSC Civilian Deaths                        |$[+]$|       |       |  $[+]$|
+| NSC Civilian Deaths: low interaction       |     |       |       |       |
+| NSC Civilian Deaths: high interaction      |     |       |$[(-)]$|       |
+| LPI                                        |     |  $[+]$|    $-$|$[(+)]$|
+| LPI: low interaction                       |     |      ~|       |       |
+| LPI: high interaction                      |    ~|  $(+)$|      ~|       |
+| Torture                                    |     |       |       |       |
+| Torture: low interaction                   |     |      ~|       |      ~|
+| Torture: high interaction                  |     |  $(+)$|      ~|       |
+| Killings                                   |     |       |       |       |
+| Killings: low interaction                  |  $-$|    $-$|       |       |
+| Killings: high interaction                 |     |  $(+)$|      ~|       |
+| Homicides                                  |  $-$|  $[+]$|       |  $[+]$|
+| Homicides: low interaction                 |     |       |       |       |
+| Homicides: high interaction                |     |      ~|       |       |
+
+##### Violence Results
+
+|                           | Conflict | War | Conflict Deaths | Conflict Civilian Deaths | OSV | OSV Deaths | NSC | NSC Deaths | NSC Civilian Deaths | LPI | Torture | Killings | Homicides |
+|---------------------------|----------|-----|-----------------|--------------------------|-----|------------|-----|------------|---------------------|-----|---------|----------|-----------|
+| Life Expectancy           |   |   |   |$[+]$|  $-$|$[(+)]$|     |   |   |    $[+]$|$(-)$|       |       |
+| Infant Mortality          |$-$|   |   |     |$(-)$|       |     |   |   |    $(-)$|     |       |       |
+| Mean Years of Schooling   |   |$-$|   |     |     |    $-$|     |   |   |      $-$|     |       |       |
+| Adolescent Fertility Rate |$-$|   |   |     |     |       |     |   |   |$[+]/(-)$|     |$[(+)]$|  $[+]$|
+| low classification        |   |$+$|$+$|     |     |       |$[-]$|$+$|   |         |     |       |    $+$|
+| high classification       |   |   |   |  $-$|     |       |     |   |   |    $[+]$|     |  $[+]$|    $-$|
+| lagged DV                 |$+$|$+$|$+$|  $+$|  $+$|       |  $+$|$+$|$+$|      $+$|  $+$|    $+$|    $+$|
+| low interaction           |   |$+$|$+$|  $+$|     |       |     |$+$|   |      $+$|     |    $+$|    $+$|
+| high interaction          |   |   |   |     |     |       |     |   |   |    $[+]$|     |  $[+]$|$[(+)]$|
+
+#### Discussion
+
+The findings from the panel analyses suggest much more support for vicious than virtuous cycles, particularly between health and gender and in their effects on violence. The evidence varies by measures used and there are many null findings. The effects of violence on gender and health are less clear and often contradict the theoretical framework. Moreover, the analyses suggests that different types of violence may matter in different ways, pointing to the need for further research into such differences. For instance: Why is violence often associated with improved adolescent fertility rates on average?  
+
+Deep theoretical work and fuller statistical models are needed to address such questions and explore potential pathways out of vicious cycles. These panel analyses are limited in several ways. First, they examine broad associations and include the same covariates across all models. However, each of the outcome variables may be better modelled with a different set of covariates, based on different scholarly literatures. Second, the analyses do not examine interactions between different types of violence, or even control for other types of violence in a given model. Third, the analyses use only the low and high classification to operationalize the vicious and virtuous cycles hypotheses. However, analyses using a richer classification (including the other groups resulting from the classification procedure) and other interactions may uncover other associations pertaining to vicious and virtuous cycles. For instance, what are the relative statistical contributions of gender and health outcomes to levels of violence? Are there sequences of improvements in gender and health outcomes that are more likely to break countries out of vicious cycles? Despite these limitations, the support for vicious cycles between health and gender, and with violence, is convincing and novel. This result could be further strengthened with robustness checks using other health and gender measures.
