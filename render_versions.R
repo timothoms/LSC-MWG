@@ -1,37 +1,23 @@
 
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/index.Rmd',
-                  output_dir = "docs")
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/summary.Rmd',
-                  output_dir = "docs")
+rmarkdown::render('index.Rmd')
+rmarkdown::render('summary.Rmd')
+rmarkdown::render('data.Rmd', params = list(cache = FALSE, optimize = TRUE))
+rmarkdown::render('cases.Rmd', params = list(cache = FALSE, optimize = TRUE))
+rmarkdown::render('classifications.Rmd', params = list(cache = FALSE, optimize = TRUE))
+rmarkdown::render('sequences.Rmd', params = list(cache = FALSE, optimize = FALSE))
+rmarkdown::render('regressions.Rmd', params = list(cache = FALSE, optimize = TRUE))
+rmarkdown::render('panel.Rmd', output_file = "panel1995.html", params = list(cache = FALSE, optimize = TRUE, begin = 1995, end = 2015, incl_new = FALSE, set_title = "Panel Regressions (1995-2015)"))
+rmarkdown::render('panel.Rmd', output_file = "panel2lags.html", params = list(cache = FALSE, optimize = TRUE, lags = 2, incl_new = FALSE, set_title = "Panel Regressions (2 lags)"))
+rmarkdown::render('panel.Rmd', output_file = "panel3lags.html", params = list(cache = FALSE, optimize = TRUE, lags = 3, incl_new = FALSE, set_title = "Panel Regressions (3 lags)"))
+rmarkdown::render('panel.Rmd', params = list(cache = TRUE, optimize = TRUE))
 
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/data.Rmd',
-                  output_dir = "docs",
-                  params = list(cache = FALSE, optimize = TRUE))
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/cases.Rmd',
-                  output_dir = "docs",
-                  params = list(cache = FALSE, optimize = TRUE))
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/classifications.Rmd',
-                  output_dir = "docs",
-                  params = list(cache = FALSE, optimize = TRUE))
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/sequences.Rmd',
-                  output_dir = "docs",
-                  params = list(cache = FALSE, optimize = FALSE))
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/regressions.Rmd',
-                  output_dir = "docs",
-                  params = list(cache = FALSE, optimize = TRUE))
 
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/panel.Rmd',
-                  output_dir = "docs",
-                  output_file = "panel1995.html",
-                  params = list(cache = FALSE, optimize = TRUE, begin = 1995, end = 2015, incl_new = FALSE, set_title = "Panel Regressions (1995-2015)"))
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/panel.Rmd',
-                  output_dir = "docs",
-                  output_file = "panel2lags.html",
-                  params = list(cache = FALSE, optimize = TRUE, lags = 2, incl_new = FALSE, set_title = "Panel Regressions (2 lags)"))
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/panel.Rmd',
-                  output_dir = "docs",
-                  output_file = "panel3lags.html",
-                  params = list(cache = FALSE, optimize = TRUE, lags = 3, incl_new = FALSE, set_title = "Panel Regressions (3 lags)"))
-rmarkdown::render('/Users/oskarntthoms/Documents/GitHub/LSC-MWG/panel.Rmd',
-                  output_dir = "docs",
-                  params = list(cache = TRUE, optimize = TRUE))
+files <- c('index', 'summary', 'data', 'cases', 'classifications', 'sequences', 'regressions', "panel1995", "panel2lags", "panel3lags", 'panel')
+files <- paste(files, "html", sep = ".")
+file.rename(files, paste("docs/", files, sep = ""))
+file.copy(from = c("links.js", "styles.css"), to = paste("docs/", c("links.js", "styles.css"), sep = ""), overwrite = TRUE, copy.date = TRUE)
+
+
+# file.copy(from = "site_libs", to = "docs/site_libs/", recursive = TRUE, overwrite = TRUE, copy.date = TRUE)
+
+

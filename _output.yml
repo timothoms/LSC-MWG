@@ -5,7 +5,7 @@ html_document:
   fig_width: 8
   fig_height: 8
   self_contained: false
-  lib_dir: "docs/site_libs"
+  lib_dir: "site_libs"
   theme: flatly
   highlight: pygments
   code_folding: hide
