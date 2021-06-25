@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Summary of Panel Analyses</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+<link rel="stylesheet" href="/Users/oskarntthoms/Documents/GitHub/LSC-MWG/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">LSC-MWG</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="classifications.html">Classifications</a>
+</li>
+<li>
+  <a href="regressions.html">Cross-sectional Models</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Panel Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="panel.html">1970-2018, 1 lag</a>
+    </li>
+    <li>
+      <a href="panel1995.html">1995-2015, 1 lag</a>
+    </li>
+    <li>
+      <a href="panel2lags.html">1975-2018, 2 lags</a>
+    </li>
+    <li>
+      <a href="panel3lags.html">1980-2018, 3 lags</a>
+    </li>
+    <li>
+      <a href="summary.html">Summary</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/timothoms/LSC-MWG/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Summary of Panel Analyses</h1>
+
+</div>
+
+
+<div id="section" class="section level3 tabset tabset-fade tabset-pills">
+<h3 class="tabset tabset-fade tabset-pills"></h3>
+<div id="research-questions" class="section level4">
+<h4>Research questions</h4>
+<p>The large-N analyses carried out by the Lancet Commission Metrics Working Group have begun to build an evidence base for broad statistical relationships between gender, health, and violence outcomes. Based on the virtuous and vicious cycles framework proposing that health, gender, and violence variables interact with each other to produce reinforcing cycles, these analyses are guided by the following research questions:</p>
+<ul>
+<li>While accounting for the overall improvements that most countries have experienced in health and gender outcomes in recent decades, do those countries that score low in earlier periods improve less than the global average and/or high performers, or do they perhaps even decline?</li>
+<li>While accounting for possible ceiling effects, do those countries that score high in earlier periods a) maintain stable and high levels and b) avoid violence?</li>
+<li>Do countries that experience higher levels of violence a) improve less on gender equality and health outcomes than those with less violence, or b) do their gender and health outcomes perhaps even deteriorate?</li>
+<li>Are countries that score low on health and gender outcomes more prone to violence than those that score higher?</li>
+</ul>
+<p>These questions imply considerable complexity due to many directions of statistical effects: between gender and health outcomes: from gender and health outcomes to violence; and from violence to gender and health outcomes. Our analyses test these questions in probabilistic terms, not in deterministic fashion. While there are many other factors influencing health, gender and violence outcomes, we do not develop full causal models of each outcome, but examine whether associations between the three categories of outcomes are consistent with the theoretical framework of virtuous and vicious cycles.</p>
+</div>
+<div id="data-methods" class="section level4 tabset tabset-fade tabset-pills">
+<h4 class="tabset tabset-fade tabset-pills">Data &amp; Methods</h4>
+<div id="data" class="section level5">
+<h5>Data</h5>
+<p>Guided by the indicator mapping carried out by the Metrics Working Group, we identified a wide range of health, gender and violence measures as candidates for the analyses, and assembled a comprehensive cross-national time-series dataset with the best available data on relevant indicators and other important covariates, such as GDP per capita and political institutional variables. (A detailed codebook for the dataset is available at this <a href="https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing">link</a>.) Many health and gender measures in particular are subject to many missing data points across countries and over time, and this missingness is unlikely to be random and thus presents a potential threat to inferences. Therefore, based on our analysis of the quality and coverage of these data, and based on within-category correlations, we chose two representative and commonly accepted variables each for the health and gender dimensions. To measure violence, we chose more indicators in order to capture different types of violence, including state-based conflict, repression and societal violence. The following variables are included in the panel analyses:</p>
+<table>
+<colgroup>
+<col width="24%" />
+<col width="65%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>category</th>
+<th>variable</th>
+<th>source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>health</td>
+<td>life expectancy</td>
+<td>WPP</td>
+</tr>
+<tr class="even">
+<td>health</td>
+<td><em>infant mortality rate</em></td>
+<td>WPP</td>
+</tr>
+<tr class="odd">
+<td>gender</td>
+<td>mean years of schooling ratio</td>
+<td>HDR</td>
+</tr>
+<tr class="even">
+<td>gender</td>
+<td><em>adolescent fertility rate</em></td>
+<td>WPP</td>
+</tr>
+<tr class="odd">
+<td>state-based conflict</td>
+<td>internal conflict incidence</td>
+<td>UCDP</td>
+</tr>
+<tr class="even">
+<td>state-based conflict</td>
+<td>internal war incidence</td>
+<td>UCDP</td>
+</tr>
+<tr class="odd">
+<td>state-based conflict</td>
+<td>internal conflict deaths (rate per population)</td>
+<td>UCDP</td>
+</tr>
+<tr class="even">
+<td>state-based conflict</td>
+<td>internal conflict civilian deaths (rate per population)</td>
+<td>UCDP</td>
+</tr>
+<tr class="odd">
+<td>state repression</td>
+<td>one-sided violence (OSV) incidence</td>
+<td>UCDP</td>
+</tr>
+<tr class="even">
+<td>state repression</td>
+<td>one-sided violence (OSV) deaths (rate per population)</td>
+<td>UCDP</td>
+</tr>
+<tr class="odd">
+<td>state repression</td>
+<td><em>latent physical integrity measure</em></td>
+<td>Fariss</td>
+</tr>
+<tr class="even">
+<td>state repression</td>
+<td><em>state torture</em></td>
+<td>V-Dem</td>
+</tr>
+<tr class="odd">
+<td>state repression</td>
+<td><em>extra-judicial killings</em></td>
+<td>V-Dem</td>
+</tr>
+<tr class="even">
+<td>societal violence</td>
+<td>non-state conflict (NSC) incidence</td>
+<td>UCDP</td>
+</tr>
+<tr class="odd">
+<td>societal violence</td>
+<td>non-state conflict (NSC) deaths (rate per population)</td>
+<td>UCDP</td>
+</tr>
+<tr class="even">
+<td>societal violence</td>
+<td>non-state conflict civilian deaths (rate per population)</td>
+<td>UCDP</td>
+</tr>
+<tr class="odd">
+<td>societal violence</td>
+<td>homicides (rate per population)</td>
+<td>ODC/WHO</td>
+</tr>
+</tbody>
+</table>
+<p>As data availability and quality generally improves after 1990 and more violence variables exist for this period, the period of analyses is primarily 1990-2015 or 2018. All variables are aggregated to five-year averages because three of the key health and gender variables are provided as such averages by the World Populations Prospects Database.</p>
+<p>It is important to note that, for easier comparisons of results across variables within each category, we have inverted some variables such that higher values of the health and gender variables always indicate “better” outcomes, while higher values of the violence variables always mean higher levels of violence. (The affected variables are indicated by <em>italics</em> in the table above.)</p>
+</div>
+<div id="classifications" class="section level5">
+<h5>Classifications</h5>
+<p>To help us operationalize the vicious and virtuous cycles hypotheses, we developed a classification of countries based on the four health and gender outcomes, creating groups of countries for comparison. We divided each of the four measures into quintiles at any given point in time and aggregated them along the gender and health dimensions, to produce a 5x5 matrix. We selected the bottom four cells as our low classification and the top four as our high classification. Using this classification, we make the assumption that if there are virtuous and vicious cycles present in the data, then they surely would be observed for these two groups. (In the analyses presented here, we use only these groups, but the other groups resulting from this classification procedure could be analysed in extensions of this research.)</p>
+<p>Initial bivariate graphical analyses of the health, gender, and violence variables within classification groups show clear trends over time across measures. First, there is considerable global improvement in the health and gender measures in all classification groups. Second, average improvements are greatest in the low classification, and tend to be less pronounced in the high classification. This suggests ceiling effects for better performers that need to be accounted for in the analyses. Third, low performers on the health and gender dimensions tend to have the most violence on average over time (across different measures and different types of violence), and high performers have much less violence on average. (In a partial exception, average homicide rates are highest in intermediate classification groups rather than in the low classification, but the high classification clearly has the lowest homicide rates.)</p>
+</div>
+<div id="panel-methods" class="section level5">
+<h5>Panel Methods</h5>
+<p>We conducted multivariate cross-sectional and panel models. The cross-sectional analyses examine the longer-term growth rates in outcomes (over 20-25 years, from 1990 or 1995 to 2015). <strong>[Note: A summary of the cross-sectional analyses will be added later.]</strong></p>
+<p>The panel models examine short-term changes from one five-year period to the next, over as many periods as data availability allows; they use so-called “wide” panels of many countries but only a small number of time periods (between 6 and 11 periods). The dependent variables of the analyses are the individual health, gender, and violence variables. We test the vicious and virtuous cycles hypotheses by including lagged gender or health variables, or the low and high classification and the violence variables, as independent variables. All the panel models include covariates for logged GDP per capita, logged population size, and participatory democracy, in order to account for socio-economic and institutional conditions. (We also tried other political regime variables, but only included participatory democracy in the final models because the others did not show statistical associations with the outcome variables.) We further include the lagged dependent variable in each model in order to account for trends, autocorrelation and ceiling effects.</p>
+<p>Analysis of observational data requires careful attention to omitted variable biases and endogeneity of various kinds. These issues become even more pressing concerns in panel data than in cross-sectional data, because of the lack of independence of observations within countries over time, leading to issues of correlated unit (country) effects, heteroscedasticity and serial correlation. These are clearly problems in our models and data, as evidenced by a variety of econometric tests developed for panel data, which we carried out for each regression equation to decide which estimators are most defensible. This is important as the choice of estimator often leads to very different results. Based on the results of these tests across models, we chose the fixed effects (or “within”) ordinary least squares estimator (OLS run on demeaned within-country data), and more preferably, the fixed effects general (or unrestricted) feasible generalized least squares (GGLS) estimator.</p>
+</div>
+</div>
+<div id="findings" class="section level4 tabset tabset-fade tabset-pills">
+<h4 class="tabset tabset-fade tabset-pills">Findings</h4>
+<p>The summary tables show the outcome variables (DVs) in colums and covariates (IVs) in the rows, with the following symbols indicating their statistical effects, based on all models (each cell in the table represents a separate model):</p>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="88%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Legend</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(+\)</span></td>
+<td>statistically significant positive effect</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(-\)</span></td>
+<td>statistically significant negative effect</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\([]\)</span></td>
+<td>statistical effect contradicting theoretical expectations</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(()\)</span></td>
+<td>statistical effect not found in the preferred model (FE GGLS)</td>
+</tr>
+<tr class="odd">
+<td>~</td>
+<td>statistically significant interaction term but overall interaction effect is not statistically significant</td>
+</tr>
+<tr class="even">
+<td>na</td>
+<td>variable not included in the model</td>
+</tr>
+</tbody>
+</table>
+<div id="summary" class="section level5">
+<h5>Summary</h5>
+<p>The panel analyses find more support for vicious than virtuous cycles, and that these are more applicable to violence than gender and health outcomes.</p>
+<p>There is some evidence that health and gender outcomes reinforce each other, but the evidence is stronger for health than gender outcomes. Both the mean years of schooling (MYS) ratio in favor of females and the adolescent fertility rate (AFR) are positively associated with increased life expectancy, but only MYS is positively associated with improvements in the infant mortality rate (IMR). Recall here that both the IMR and AFR were inverted for the purpose of the analyses. This means that the higher the MYS ratio, the better the IMR. The AFR, which was also inverted, is negatively associated with the inverted IMR: this means that improvement in the AFR is associated with worsening in the IMR. For the gender outcomes, life expectancy and the IMR are associated with an improved AFR, but they have no statistical effects on MYS. When considering our classification, which operationalizes the vicious and virtuous cycles hypotheses with worst and best combinations of health and gender outcomes, the findings are clear and consistent: the low classification is associated with worse health and gender outcomes across all four variables, but the high classification is never statistically significant. This provides support for vicious cycles between health and gender but not virtuous cycles.</p>
+<p>Few of the violence variables have statistical effects on the gender and health outcomes that are consistent with the vicious and virtuous cycles hypotheses. In fact, many models suggest that violence is associated with better health and gender outcomes, as indicated by <span class="math inline">\([+]\)</span> in the table, and contradicting our theoretical framework. (The findings for the AFR are particularly noteworthy in this respect.) A few results are consistent with the vicious and virtuous cycles hypotheses, such as the associations of internal war with a worse AFR; internal conflict deaths and one-sided violence with worse infant mortality; the latent physical integrity measure with lower MYS ratios; and, unsurprisingly, homicides and extra-judicial killings with lower life expectancy. However, overall, the health and gender models only support a vicious cycle between health and gender, but do not provide much or consistent evidence for a three-way vicious cycle. Moreover, many models turn up null results.</p>
+<p>The analyses of various violence outcomes more clearly support the theoretical framework, though there are again several contradictory results with respect to the relationship between individual health and gender variables and violence variables, and many null results. Supporting the theoretical framework, higher life expectancy is associated with less one-sided violence episodes (but more deaths from such violence) and possibly with less state torture; improved infant mortality is associated with less internal conflict and possibly less one-sided violence and physical integrity violations; higher MYS ratios are associated with less internal conflict, one-sided violence deaths and physical integrity violations. While an improved AFR is associated with less internal conflict, it is also associated with more state violence and homicides. Like the analyses of health and gender outcomes, these results are not strongly supportive.</p>
+<p>However, the evidence is much more consistent and supportive of vicious cycles when using our classifications. The low classification is associated with more internal war, internal conflict deaths, non-state conflict deaths and homicides. The high classification (indicating strong performance on both health and gender) is associated with less internal conflict civilian deaths and homicides, but also, surprisingly, with more violent state repression. Importantly, a three-way vicious cycle between health, gender and violence is strongly supported in many models by the interaction of the lagged violence variables with the low classification; these models examine the effect of previous levels of violence in countries that perform poorly on health and gender on subsequent levels of violence. These interactions are associated with more internal war, internal conflict deaths and civilian deaths, non-state conflict deaths, physical integrity violations, extra-judicial killings and homicides, compared to countries not included in the low and high classifications. These findings strongly suggest that violence begets more violence where countries perform very poorly on both health and gender. By contrast, positive interaction effects of the high classification contradict the notion of virtuous cycles.</p>
+</div>
+<div id="health-gender-results" class="section level5">
+<h5>Health &amp; Gender Results</h5>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="12%" />
+<col width="13%" />
+<col width="19%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Life Expectancy</th>
+<th>Infant Mortality</th>
+<th>Mean Years of Schooling</th>
+<th>Adolescent Fertility Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Life Expectancy</td>
+<td>na</td>
+<td>na</td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+</tr>
+<tr class="even">
+<td>Infant Mortality</td>
+<td>na</td>
+<td>na</td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+</tr>
+<tr class="odd">
+<td>Mean Years of Schooling ratio</td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td>na</td>
+<td>na</td>
+</tr>
+<tr class="even">
+<td>Adolescent Fertility Rate</td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\([-]\)</span></td>
+<td>na</td>
+<td>na</td>
+</tr>
+<tr class="odd">
+<td>low classification</td>
+<td><span class="math inline">\(-\)</span></td>
+<td><span class="math inline">\(-\)</span></td>
+<td><span class="math inline">\(-\)</span></td>
+<td><span class="math inline">\(-\)</span></td>
+</tr>
+<tr class="even">
+<td>high classification</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Conflict</td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Conflict: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Conflict: high interaction</td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>War</td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(-\)</span></td>
+</tr>
+<tr class="odd">
+<td>War: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>War: high interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Conflict Deaths</td>
+<td></td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="even">
+<td>Conflict Deaths: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="odd">
+<td>Conflict Deaths: high interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Conflict Civilian Deaths</td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="odd">
+<td>Conflict Civilian Deaths: low interaction</td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="even">
+<td>Conflict Civilian Deaths: high interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>OSV</td>
+<td></td>
+<td><span class="math inline">\((-)\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>OSV: low interaction</td>
+<td>~</td>
+<td><span class="math inline">\((-)\)</span></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="odd">
+<td>OSV: high interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>OSV Deaths</td>
+<td><span class="math inline">\([+]\)</span></td>
+<td><span class="math inline">\((-)\)</span></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="odd">
+<td>OSV Deaths: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>OSV Deaths: high interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>NSC</td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="even">
+<td>NSC: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>NSC: high interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>NSC Deaths</td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="odd">
+<td>NSC Deaths: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>NSC Deaths: high interaction</td>
+<td></td>
+<td><span class="math inline">\([(+)]\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>NSC Civilian Deaths</td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="even">
+<td>NSC Civilian Deaths: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>NSC Civilian Deaths: high interaction</td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([(-)]\)</span></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>LPI</td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td><span class="math inline">\(-\)</span></td>
+<td><span class="math inline">\([(+)]\)</span></td>
+</tr>
+<tr class="odd">
+<td>LPI: low interaction</td>
+<td></td>
+<td>~</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>LPI: high interaction</td>
+<td>~</td>
+<td><span class="math inline">\((+)\)</span></td>
+<td>~</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Torture</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Torture: low interaction</td>
+<td></td>
+<td>~</td>
+<td></td>
+<td>~</td>
+</tr>
+<tr class="odd">
+<td>Torture: high interaction</td>
+<td></td>
+<td><span class="math inline">\((+)\)</span></td>
+<td>~</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Killings</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Killings: low interaction</td>
+<td><span class="math inline">\(-\)</span></td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Killings: high interaction</td>
+<td></td>
+<td><span class="math inline">\((+)\)</span></td>
+<td>~</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Homicides</td>
+<td><span class="math inline">\(-\)</span></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="even">
+<td>Homicides: low interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Homicides: high interaction</td>
+<td></td>
+<td>~</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="violence-results" class="section level5">
+<h5>Violence Results</h5>
+<table>
+<colgroup>
+<col width="15%" />
+<col width="5%" />
+<col width="2%" />
+<col width="9%" />
+<col width="14%" />
+<col width="2%" />
+<col width="6%" />
+<col width="2%" />
+<col width="6%" />
+<col width="12%" />
+<col width="2%" />
+<col width="5%" />
+<col width="5%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Conflict</th>
+<th>War</th>
+<th>Conflict Deaths</th>
+<th>Conflict Civilian Deaths</th>
+<th>OSV</th>
+<th>OSV Deaths</th>
+<th>NSC</th>
+<th>NSC Deaths</th>
+<th>NSC Civilian Deaths</th>
+<th>LPI</th>
+<th>Torture</th>
+<th>Killings</th>
+<th>Homicides</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Life Expectancy</td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td><span class="math inline">\(-\)</span></td>
+<td><span class="math inline">\([(+)]\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td><span class="math inline">\((-)\)</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Infant Mortality</td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\((-)\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\((-)\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Mean Years of Schooling</td>
+<td></td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Adolescent Fertility Rate</td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]/(-)\)</span></td>
+<td></td>
+<td><span class="math inline">\([(+)]\)</span></td>
+<td><span class="math inline">\([+]\)</span></td>
+</tr>
+<tr class="odd">
+<td>low classification</td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([-]\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+</tr>
+<tr class="even">
+<td>high classification</td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(-\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td><span class="math inline">\(-\)</span></td>
+</tr>
+<tr class="odd">
+<td>lagged DV</td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+</tr>
+<tr class="even">
+<td>low interaction</td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+<td></td>
+<td><span class="math inline">\(+\)</span></td>
+<td><span class="math inline">\(+\)</span></td>
+</tr>
+<tr class="odd">
+<td>high interaction</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td></td>
+<td><span class="math inline">\([+]\)</span></td>
+<td><span class="math inline">\([(+)]\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="discussion" class="section level4">
+<h4>Discussion</h4>
+<p>The findings from the panel analyses suggest much more support for vicious than virtuous cycles, particularly between health and gender and in their effects on violence. The evidence varies by measures used and there are many null findings. The effects of violence on gender and health are less clear and often contradict the theoretical framework. Moreover, the analyses suggests that different types of violence may matter in different ways, pointing to the need for further research into such differences. For instance: Why is violence often associated with improved adolescent fertility rates on average?</p>
+<p>Deep theoretical work and fuller statistical models are needed to address such questions and explore potential pathways out of vicious cycles. These panel analyses are limited in several ways. First, they examine broad associations and include the same covariates across all models. However, each of the outcome variables may be better modelled with a different set of covariates, based on different scholarly literatures. Second, the analyses do not examine interactions between different types of violence, or even control for other types of violence in a given model. Third, the analyses use only the low and high classification to operationalize the vicious and virtuous cycles hypotheses. However, analyses using a richer classification (including the other groups resulting from the classification procedure) and other interactions may uncover other associations pertaining to vicious and virtuous cycles. For instance, what are the relative statistical contributions of gender and health outcomes to levels of violence? Are there sequences of improvements in gender and health outcomes that are more likely to break countries out of vicious cycles? Despite these limitations, the support for vicious cycles between health and gender, and with violence, is convincing and novel. This result could be further strengthened with robustness checks using other health and gender measures.</p>
+</div>
+</div>
+
+<script type="text/javascript" src="links.js"></script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

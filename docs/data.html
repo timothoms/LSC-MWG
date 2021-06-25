@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data &amp; Correlations</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="/Users/oskarntthoms/Documents/GitHub/LSC-MWG/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">LSC-MWG</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Introduction</a>
+</li>
+<li>
+  <a href="data.html">Data</a>
+</li>
+<li>
+  <a href="classifications.html">Classifications</a>
+</li>
+<li>
+  <a href="regressions.html">Cross-sectional Models</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Panel Models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="panel.html">1970-2018, 1 lag</a>
+    </li>
+    <li>
+      <a href="panel1995.html">1995-2015, 1 lag</a>
+    </li>
+    <li>
+      <a href="panel2lags.html">1975-2018, 2 lags</a>
+    </li>
+    <li>
+      <a href="panel3lags.html">1980-2018, 3 lags</a>
+    </li>
+    <li>
+      <a href="summary.html">Summary</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/timothoms/LSC-MWG/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Data &amp; Correlations</h1>
+
+</div>
+
+
+<div id="section" class="section level3 tabset tabset-fade tabset-pills">
+<h3 class="tabset tabset-fade tabset-pills"></h3>
+<div id="dataset" class="section level4">
+<h4>Dataset</h4>
+<p>All the analyses are based on a large global dataset (and accompanying codebook) which we assembled from commonly used quantitative indicators on health, gender equality and several types of violence. The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Lancet Commission Metrics Working Group, or at this <a href="https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing">link</a> (access via logging into the shared folder provides more functionality). The dataset is also available in the shared Dropbox folder of the Working Group.) We begin by considering the following measures within the categories of health outcomes, gender inequalities, state-based violent conflict, one-sided violence, and societal violence. The code also sets up vectors of variable names for later use.)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;_data/dataset_LSCMWG.RData&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>link <span class="ot">&lt;-</span> <span class="st">&quot;https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>googlesheets4<span class="sc">::</span><span class="fu">gs4_deauth</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>codebook <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(link, <span class="at">sheet =</span> <span class="st">&quot;codebook&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>IsTrue <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> x }</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>categories <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">one_sided =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    codebook<span class="sc">$</span>sub_category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;one-sided violence&quot;</span>, <span class="st">&quot;repression&quot;</span>)],</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">societal =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;societal violence&quot;</span>)],</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conflict =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;state-based conflict&quot;</span>)],</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(<span class="sc">!</span>codebook<span class="sc">$</span>sub_category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;education&quot;</span>, <span class="st">&quot;labor&quot;</span>) <span class="sc">|</span> <span class="fu">is.na</span>(codebook<span class="sc">$</span>sub_category))],</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender_labor =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span> <span class="sc">&amp;</span> codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;labor&quot;</span>)],</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender_educ =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span> <span class="sc">&amp;</span> codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;education&quot;</span>)],</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">health =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    codebook<span class="sc">$</span>category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;health&quot;</span>)]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>categories</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">measurement_models =</span> <span class="fu">c</span>(<span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;v2caviol&quot;</span>),</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">death_rates =</span> <span class="fu">c</span>(<span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_osv_rate&quot;</span>, </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, <span class="st">&quot;deaths_civilians_nsc_rate&quot;</span>, <span class="st">&quot;deaths_all_ucdp_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>),</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">conflict_incidence =</span> <span class="fu">c</span>(<span class="st">&quot;conflict_internal&quot;</span>, <span class="st">&quot;war_internal&quot;</span>,  <span class="st">&quot;conflict_non_state&quot;</span>, <span class="st">&quot;conflict_one_sided&quot;</span>),</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">health_full =</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender_full =</span> <span class="fu">c</span>(<span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;wmn_parl_wdi&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;daly_ratio_ihme&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>),</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">political =</span> <span class="fu">c</span>(<span class="st">&quot;polity2_p4&quot;</span>, <span class="st">&quot;dem_bmr&quot;</span>, <span class="st">&quot;v2x_polyarchy&quot;</span>, <span class="st">&quot;v2x_libdem&quot;</span>, </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;v2x_liberal&quot;</span>, <span class="st">&quot;v2x_partipdem&quot;</span>, <span class="st">&quot;v2x_partip&quot;</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">lapply</span>(variables, <span class="cf">function</span>(set) {</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(set) <span class="ot">&lt;-</span> set </span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(set)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="country-data-coverage-over-time" class="section level4">
+<h4>Country data coverage over time</h4>
+<p>Due to data availability, the time period for our analyses will be primarily from 1990 until 2015 or 2018.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(categories, <span class="cf">function</span>(cat) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cat, <span class="cf">function</span>(col_name) { </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(data<span class="sc">$</span>year, <span class="sc">!</span><span class="fu">is.na</span>(data[, col_name]))[, <span class="dv">2</span>] </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, tbl)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(tbl) <span class="ot">&lt;-</span> cat</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tbl)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>## $one_sided
+##      deaths_civilians_osv_rate deaths_pitf_rate latentmean_fariss v2clkill v2cltort
+## 1960                         0                0               108      107      107
+## 1961                         0                0               112      112      112
+## 1962                         0                0               118      118      118
+## 1963                         0                0               119      119      119
+## 1964                         0                0               122      121      121
+## 1965                         0                0               126      125      125
+## 1966                         0                0               130      129      129
+## 1967                         0                0               131      130      130
+## 1968                         0                0               134      133      133
+## 1969                         0                0               134      133      133
+## 1970                         0                0               135      134      134
+## 1971                         0                0               140      136      136
+## 1972                         0                0               140      136      136
+## 1973                         0                0               141      136      136
+## 1974                         0                0               143      137      137
+## 1975                         0                0               150      144      144
+## 1976                         0                0               151      144      144
+## 1977                         0                0               152      145      145
+## 1978                         0                0               154      146      146
+## 1979                         0                0               156      146      146
+## 1980                         0                0               157      147      147
+## 1981                         0                0               159      147      147
+## 1982                         0                0               159      147      147
+## 1983                         0                0               160      147      147
+## 1984                         0                0               161      147      147
+## 1985                         0                0               161      147      147
+## 1986                         0                0               162      147      147
+## 1987                         0                0               162      147      147
+## 1988                         0                0               162      147      147
+## 1989                       163                0               162      147      147
+## 1990                       165                0               163      147      147
+## 1991                       182                0               180      162      162
+## 1992                       185                0               183      164      164
+## 1993                       189                0               187      166      166
+## 1994                       191                0               188      167      167
+## 1995                       191              191               188      167      167
+## 1996                       191              191               188      167      167
+## 1997                       191              191               188      167      167
+## 1998                       191              191               188      167      167
+## 1999                       191              191               190      167      167
+## 2000                       191              191               191      167      167
+## 2001                       191              191               191      167      167
+## 2002                       192              192               192      168      168
+## 2003                       192              192               192      168      168
+## 2004                       192              192               192      168      168
+## 2005                       192              192               192      168      168
+## 2006                       194              194               193      169      169
+## 2007                       194              194               193      169      169
+## 2008                       194              194               194      170      170
+## 2009                       194              194               194      170      170
+## 2010                       194              194               194      170      170
+## 2011                       195              195               195      171      171
+## 2012                       195              195               195      171      171
+## 2013                       195              195               195      170      170
+## 2014                       195              195               195      170      170
+## 2015                       195              195               195      170      170
+## 2016                       195              195               195      170      170
+## 2017                       195              195               195      170      170
+## 2018                       195              195                 0      168      168
+## 2019                       195              195                 0      143      143
+## 
+## $societal
+##      deaths_all_nsc_rate deaths_civilians_nsc_rate hom_odc_rate hom_odcwho_rate hom_who_rate v2caviol
+## 1960                   0                         0            0              32           32       70
+## 1961                   0                         0            0              36           36       74
+## 1962                   0                         0            0              36           36       80
+## 1963                   0                         0            0              40           40       81
+## 1964                   0                         0            0              42           42       83
+## 1965                   0                         0            0              46           46       85
+## 1966                   0                         0            0              45           45       88
+## 1967                   0                         0            0              49           49       88
+## 1968                   0                         0            0              52           52       91
+## 1969                   0                         0            0              50           50       91
+## 1970                   0                         0            0              48           48       95
+## 1971                   0                         0            0              47           47       96
+## 1972                   0                         0            0              47           47       96
+## 1973                   0                         0            0              48           48       96
+## 1974                   0                         0            0              51           51       97
+## 1975                   0                         0            0              53           53      100
+## 1976                   0                         0            0              50           50      100
+## 1977                   0                         0            0              58           58      102
+## 1978                   0                         0            0              55           55      102
+## 1979                   0                         0            0              53           53      102
+## 1980                   0                         0            0              56           56      104
+## 1981                   0                         0            0              58           58      104
+## 1982                   0                         0            0              52           52      104
+## 1983                   0                         0            0              58           58      104
+## 1984                   0                         0            0              60           60      104
+## 1985                   0                         0            0              60           60      104
+## 1986                   0                         0            0              59           59      104
+## 1987                   0                         0            0              68           68      104
+## 1988                   0                         0            0              60           60      104
+## 1989                 163                       163            0              62           62      104
+## 1990                 165                       165           68              85           63      106
+## 1991                 182                       182           80              99           77      119
+## 1992                 185                       185           87             102           80      122
+## 1993                 189                       189           86             102           80      124
+## 1994                 191                       191           93             107           79      125
+## 1995                 191                       191           95             105           75      125
+## 1996                 191                       191           94             103           62      125
+## 1997                 191                       191           97             103           50      125
+## 1998                 191                       191           97             101           40      126
+## 1999                 191                       191          100             101           30      126
+## 2000                 191                       191          112             114           23      127
+## 2001                 191                       191          119             121           18      127
+## 2002                 192                       192          118             120           16      128
+## 2003                 192                       192          132             132           14      128
+## 2004                 192                       192          139             139           11      128
+## 2005                 192                       192          136             137           23      131
+## 2006                 194                       194          141             141           19      132
+## 2007                 194                       194          143             143           19      132
+## 2008                 194                       194          153             153           21      132
+## 2009                 194                       194          150             151           18      132
+## 2010                 194                       194          154             155           19      135
+## 2011                 195                       195          144             145           19      135
+## 2012                 195                       195          146             147           19      136
+## 2013                 195                       195          127             129           19       94
+## 2014                 195                       195          123             126           19       96
+## 2015                 195                       195          125             130           16       96
+## 2016                 195                       195          119             123           12       96
+## 2017                 195                       195          110             111            5       97
+## 2018                 195                       195           87              87            0       98
+## 2019                 195                       195            0               0            0      103
+## 
+## $conflict
+##      deaths_all_ext_rate deaths_all_int_rate deaths_civilians_ext_rate deaths_civilians_int_rate
+## 1960                   0                   0                         0                         0
+## 1961                   0                   0                         0                         0
+## 1962                   0                   0                         0                         0
+## 1963                   0                   0                         0                         0
+## 1964                   0                   0                         0                         0
+## 1965                   0                   0                         0                         0
+## 1966                   0                   0                         0                         0
+## 1967                   0                   0                         0                         0
+## 1968                   0                   0                         0                         0
+## 1969                   0                   0                         0                         0
+## 1970                   0                   0                         0                         0
+## 1971                   0                   0                         0                         0
+## 1972                   0                   0                         0                         0
+## 1973                   0                   0                         0                         0
+## 1974                   0                   0                         0                         0
+## 1975                   0                   0                         0                         0
+## 1976                   0                   0                         0                         0
+## 1977                   0                   0                         0                         0
+## 1978                   0                   0                         0                         0
+## 1979                   0                   0                         0                         0
+## 1980                   0                   0                         0                         0
+## 1981                   0                   0                         0                         0
+## 1982                   0                   0                         0                         0
+## 1983                   0                   0                         0                         0
+## 1984                   0                   0                         0                         0
+## 1985                   0                   0                         0                         0
+## 1986                   0                   0                         0                         0
+## 1987                   0                   0                         0                         0
+## 1988                   0                   0                         0                         0
+## 1989                 163                 163                       163                       163
+## 1990                 165                 165                       165                       165
+## 1991                 182                 182                       182                       182
+## 1992                 185                 185                       185                       185
+## 1993                 189                 189                       189                       189
+## 1994                 191                 191                       191                       191
+## 1995                 191                 191                       191                       191
+## 1996                 191                 191                       191                       191
+## 1997                 191                 191                       191                       191
+## 1998                 191                 191                       191                       191
+## 1999                 191                 191                       191                       191
+## 2000                 191                 191                       191                       191
+## 2001                 191                 191                       191                       191
+## 2002                 192                 192                       192                       192
+## 2003                 192                 192                       192                       192
+## 2004                 192                 192                       192                       192
+## 2005                 192                 192                       192                       192
+## 2006                 194                 194                       194                       194
+## 2007                 194                 194                       194                       194
+## 2008                 194                 194                       194                       194
+## 2009                 194                 194                       194                       194
+## 2010                 194                 194                       194                       194
+## 2011                 195                 195                       195                       195
+## 2012                 195                 195                       195                       195
+## 2013                 195                 195                       195                       195
+## 2014                 195                 195                       195                       195
+## 2015                 195                 195                       195                       195
+## 2016                 195                 195                       195                       195
+## 2017                 195                 195                       195                       195
+## 2018                 195                 195                       195                       195
+## 2019                 195                 195                       195                       195
+## 
+## $gender
+##      gdi_hdr gii_hdr wmn_parl_wdi asfr_adol_wpp fert_adol_wdi fertility_wdi tfr_wpp
+## 1960       0       0            0           101           101           101     101
+## 1961       0       0            0             0           105           104       0
+## 1962       0       0            0             0           111           111       0
+## 1963       0       0            0             0           112           111       0
+## 1964       0       0            0             0           115           115       0
+## 1965       0       0            0           119           119           119     119
+## 1966       0       0            0             0           123           123       0
+## 1967       0       0            0             0           123           123       0
+## 1968       0       0            0             0           126           126       0
+## 1969       0       0            0             0           126           126       0
+## 1970       0       0            0           128           128           128     128
+## 1971       0       0            0             0           133           133       0
+## 1972       0       0            0             0           133           133       0
+## 1973       0       0            0             0           134           134       0
+## 1974       0       0            0             0           136           136       0
+## 1975       0       0            0           143           143           143     143
+## 1976       0       0            0             0           145           145       0
+## 1977       0       0            0             0           146           145       0
+## 1978       0       0            0             0           147           146       0
+## 1979       0       0            0             0           150           149       0
+## 1980       0       0            0           151           151           150     151
+## 1981       0       0            0             0           153           152       0
+## 1982       0       0            0             0           153           154       0
+## 1983       0       0            0             0           153           152       0
+## 1984       0       0            0             0           153           152       0
+## 1985       0       0            0           153           153           152     153
+## 1986       0       0            0             0           154           153       0
+## 1987       0       0            0             0           154           157       0
+## 1988       0       0            0             0           154           153       0
+## 1989       0       0            0             0           154           153       0
+## 1990       0       0            0           156           156           155     156
+## 1991       0       0            0             0           173           172       0
+## 1992       0       0            0             0           176           178       0
+## 1993       0       0            0             0           179           178       0
+## 1994       0       0            0             0           180           179       0
+## 1995     117     121            0           181           180           180     181
+## 1996       0       0            0             0           180           179       0
+## 1997       0       0          160             0           180           182       0
+## 1998       0       0          162             0           180           180       0
+## 1999       0       0          153             0           180           181       0
+## 2000     145     119          157           181           180           182     181
+## 2001       0       0          167             0           180           181       0
+## 2002       0       0          161             0           181           184       0
+## 2003       0       0          174             0           181           183       0
+## 2004       0       0          181             0           181           182       0
+## 2005     156     144          185           182           181           184     182
+## 2006       0       0          189             0           183           186       0
+## 2007       0       0          188             0           183           186       0
+## 2008       0       0          187             0           183           186       0
+## 2009       0       0          187             0           183           186       0
+## 2010     160     149          187           184           183           186     184
+## 2011     162     150          187             0           183           186       0
+## 2012     163     153          188             0           183           187       0
+## 2013     163     150          183             0           183           185       0
+## 2014     164     152          186             0           183           185       0
+## 2015     164     158          188           185           183           186     185
+## 2016     164     162          191             0           183           185       0
+## 2017     165     160          189             0           183           185       0
+## 2018     165     162          190           185           183           185     185
+## 2019       0       0          192             0             0             0       0
+## 
+## $gender_labor
+##      labor_mod_ratio15_ilo labor_mod_ratio15_wdi labor_nat_ratio15_ilo labor_nat_ratio15_wdi
+## 1960                     0                     0                    31                    31
+## 1961                     0                     0                    20                    20
+## 1962                     0                     0                     7                     7
+## 1963                     0                     0                     9                     9
+## 1964                     0                     0                     6                     6
+## 1965                     0                     0                     8                     8
+## 1966                     0                     0                    15                    15
+## 1967                     0                     0                     3                     3
+## 1968                     0                     0                     3                     3
+## 1969                     0                     0                     3                     3
+## 1970                     0                     0                    34                    34
+## 1971                     0                     0                    23                    23
+## 1972                     0                     0                     9                     9
+## 1973                     0                     0                    10                     9
+## 1974                     0                     0                    12                    12
+## 1975                     0                     0                    29                    29
+## 1976                     0                     0                    27                    27
+## 1977                     0                     0                    25                    25
+## 1978                     0                     0                    32                    31
+## 1979                     0                     0                    40                    39
+## 1980                     0                     0                    61                    60
+## 1981                     0                     0                    49                    48
+## 1982                     0                     0                    39                    38
+## 1983                     0                     0                    46                    44
+## 1984                     0                     0                    44                    42
+## 1985                     0                     0                    56                    54
+## 1986                     0                     0                    56                    54
+## 1987                     0                     0                    51                    49
+## 1988                     0                     0                    55                    53
+## 1989                     0                     0                    63                    61
+## 1990                   153                   151                    70                    68
+## 1991                   169                   168                    83                    82
+## 1992                   172                   171                    65                    64
+## 1993                   175                   174                    72                    71
+## 1994                   176                   175                    77                    76
+## 1995                   176                   175                    76                    75
+## 1996                   176                   175                    87                    86
+## 1997                   176                   175                    85                    84
+## 1998                   176                   175                    88                    87
+## 1999                   176                   175                    87                    86
+## 2000                   176                   175                    99                    98
+## 2001                   176                   175                    97                    96
+## 2002                   177                   176                    96                    95
+## 2003                   177                   176                    99                    98
+## 2004                   177                   176                   100                    99
+## 2005                   177                   176                   107                   106
+## 2006                   179                   178                   106                   105
+## 2007                   179                   178                   103                   102
+## 2008                   179                   178                   103                   102
+## 2009                   179                   178                   112                   113
+## 2010                   179                   178                   115                   115
+## 2011                   180                   178                   113                   112
+## 2012                   180                   178                   118                   117
+## 2013                   180                   178                   118                   117
+## 2014                   180                   178                   123                   123
+## 2015                   180                   178                   114                   112
+## 2016                   180                   178                   112                   112
+## 2017                   180                   178                   111                   113
+## 2018                   180                   178                    98                   102
+## 2019                   180                   178                    64                    86
+## 
+## $gender_educ
+##      eys_ratio_hdr eys_ratio_uis lit_adult_ratio_uis lit_rate_ratio_wdi mys_ratio_hdr mys_ratio_uis
+## 1960             0             0                   0                  0             0             0
+## 1961             0             0                   0                  0             0             0
+## 1962             0             0                   0                  0             0             0
+## 1963             0             0                   0                  0             0             0
+## 1964             0             0                   0                  0             0             0
+## 1965             0             0                   0                  0             0             0
+## 1966             0             0                   0                  0             0             0
+## 1967             0             0                   0                  0             0             0
+## 1968             0             0                   0                  0             0             0
+## 1969             0             0                   0                  0             0             0
+## 1970             0            29                   1                  1             0            27
+## 1971             0            98                   0                  0             0            17
+## 1972             0            93                   1                  1             0             5
+## 1973             0            91                   0                  0             0             3
+## 1974             0            86                   0                  0             0             5
+## 1975             0            85                   6                  6             0            13
+## 1976             0            94                   7                  7             0             9
+## 1977             0            96                   1                  1             0             2
+## 1978             0            93                   2                  2             0             2
+## 1979             0            94                   6                  6             0             6
+## 1980             0            91                  16                 16             0            23
+## 1981             0            98                  16                 16             0            21
+## 1982             0            95                   7                  7             0             7
+## 1983             0            96                   2                  2             0             4
+## 1984             0           100                   7                  8             0             4
+## 1985             0            96                   6                  6             0             6
+## 1986             0           104                   4                  4             0             8
+## 1987             0            98                   3                  3             0             2
+## 1988             0            99                   5                  5             0             6
+## 1989             0            96                   1                  1             0             2
+## 1990            94            92                  15                 15           125            19
+## 1991             0            95                  20                 20             0            16
+## 1992             0            94                   9                  9             0             8
+## 1993             0           105                   4                  4             0             2
+## 1994             0            98                  11                 11             0             3
+## 1995           145            92                   5                  5           143             5
+## 1996             0            87                   9                  9             0             5
+## 1997             0            71                   3                  3             0             0
+## 1998             0            84                   6                  6             0             3
+## 1999             0           134                   8                  8             0             4
+## 2000           166           131                  43                 44           154            16
+## 2001             0           127                  28                 29             0            22
+## 2002             0           129                  19                 20             0            16
+## 2003             0           124                  10                 10             0            11
+## 2004             0           136                  24                 25             0            29
+## 2005           171           139                  20                 22           165            33
+## 2006             0           134                  26                 28             0            50
+## 2007             0           138                  35                 36             0            53
+## 2008             0           136                  32                 33             0            62
+## 2009             0           133                  34                 35             0            63
+## 2010           178           135                  48                 51           168            74
+## 2011           180           138                  57                 58           170            76
+## 2012           180           131                  45                 46           170            67
+## 2013           180           117                  34                 34           170            58
+## 2014           180           128                  52                 52           171            68
+## 2015           181           131                  42                 42           171            64
+## 2016           181           126                  34                 35           171            61
+## 2017           182           123                  32                 32           171            48
+## 2018           182            64                  77                 77           171            35
+## 2019             0             4                   0                  1             0             0
+## 
+## $health
+##      daly_ihme imr_wdi imr_wpp life_exp_wdi life_exp_wpp ufmr_wdi ufmr_wpp physicians_pc_wdi daly_ratio_ihme mmr_unicef
+## 1960         0      74     101          100          101       74      101                85               0          0
+## 1961         0      78       0          105            0       78        0                18               0          0
+## 1962         0      87       0          111            0       87        0                16               0          0
+## 1963         0      89       0          111            0       89        0                16               0          0
+## 1964         0      93       0          114            0       93        0                16               0          0
+## 1965         0      98     119          118          119       98      119                98               0          0
+## 1966         0     103       0          123            0      103        0                19               0          0
+## 1967         0     104       0          123            0      104        0                17               0          0
+## 1968         0     108       0          126            0      108        0                17               0          0
+## 1969         0     112       0          126            0      112        0                17               0          0
+## 1970         0     114     128          128          128      114      128               112               0          0
+## 1971         0     121       0          133            0      121        0                25               0          0
+## 1972         0     123       0          133            0      123        0                21               0          0
+## 1973         0     124       0          134            0      124        0                22               0          0
+## 1974         0     127       0          136            0      127        0                20               0          0
+## 1975         0     133     143          143          143      133      143                80               0          0
+## 1976         0     135       0          144            0      135        0                25               0          0
+## 1977         0     136       0          145            0      136        0                26               0          0
+## 1978         0     143       0          146            0      143        0                24               0          0
+## 1979         0     146       0          149            0      146        0                34               0          0
+## 1980         0     148     151          151          151      148      151                68               0          0
+## 1981         0     150       0          153            0      150        0                91               0          0
+## 1982         0     152       0          154            0      152        0                43               0          0
+## 1983         0     154       0          153            0      154        0                36               0          0
+## 1984         0     154       0          153            0      154        0                72               0          0
+## 1985         0     160     153          153          153      160      153                57               0          0
+## 1986         0     162       0          154            0      162        0                50               0          0
+## 1987         0     162       0          157            0      162        0                37               0          0
+## 1988         0     162       0          154            0      162        0                45               0          0
+## 1989         0     162       0          154            0      162        0                48               0          0
+## 1990       160     164     156          156          156      164      156               119             160          0
+## 1991       177     181       0          173            0      181        0                89             177          0
+## 1992       180     184       0          178            0      184        0                91             180          0
+## 1993       183     187       0          179            0      187        0               115             183          0
+## 1994       184     189       0          181            0      189        0                88             184          0
+## 1995       184     189     181          182          181      189      181               122             184          0
+## 1996       184     189       0          181            0      189        0               105             184          0
+## 1997       184     189       0          183            0      189        0               111             184          0
+## 1998       184     189       0          181            0      189        0                95             184          0
+## 1999       184     189       0          182            0      189        0                91             184          0
+## 2000       184     189     181          183          181      189      181               107             184        180
+## 2001       184     189       0          181            0      189        0               100             184          0
+## 2002       185     190       0          184            0      190        0                95             185          0
+## 2003       185     190       0          182            0      190        0                89             185          0
+## 2004       185     190       0          182            0      190        0               133             185          0
+## 2005       185     190     182          183          182      190      182               105             185        181
+## 2006       187     192       0          184            0      192        0               104             187          0
+## 2007       187     192       0          184            0      192        0               117             187          0
+## 2008       187     192       0          185            0      192        0               138             187          0
+## 2009       187     192       0          185            0      192        0               135             187          0
+## 2010       187     192     184          185          184      192      184               164             187        183
+## 2011       188     192       0          185            0      192        0               118             188          0
+## 2012       188     192       0          186            0      192        0               116             188          0
+## 2013       188     192       0          185            0      192        0               115             188          0
+## 2014       188     192       0          185            0      192        0               114             188          0
+## 2015       188     192     185          185          185      192      185               105             188        184
+## 2016       188     192       0          185            0      192        0               113             188          0
+## 2017       188     192       0          185            0      192        0               104             188        184
+## 2018         0     192     185          185          185      192      185                61               0          0
+## 2019         0     192       0            0            0      192        0                 0               0          0</code></pre>
+</div>
+<div id="within-category-correlations" class="section level4">
+<h4>Within-category correlations</h4>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">names</span>(categories), <span class="cf">function</span>(category) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data[, categories[[category]]], <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">stroke =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)) <span class="sc">+</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>)) <span class="sc">+</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(category)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p><img src="data_files/figure-html/within-1.png" width="100%" height="100%" /><img src="data_files/figure-html/within-2.png" width="100%" height="100%" /><img src="data_files/figure-html/within-3.png" width="100%" height="100%" /><img src="data_files/figure-html/within-4.png" width="100%" height="100%" /><img src="data_files/figure-html/within-5.png" width="100%" height="100%" /><img src="data_files/figure-html/within-6.png" width="100%" height="100%" /><img src="data_files/figure-html/within-7.png" width="100%" height="100%" /></p>
+</div>
+<div id="across-category-correlations" class="section level4">
+<h4>Across-category correlations</h4>
+<p>Based on theoretical relevance and representativeness (see within-category correlations), we show correlations of certain of these variables across the categories:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>variables_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;physicians_pc_wdi&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;pc_rgdpe_pwt&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_all_osv_rate&quot;</span>, <span class="st">&quot;latentmean_fariss&quot;</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data[, variables_to_include], <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">stroke =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)) <span class="sc">+</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>))</span></code></pre></div>
+<p><img src="data_files/figure-html/across-1.png" width="100%" height="100%" /></p>
+</div>
+<div id="which-countries-have-such-high-ratios-of-years-of-schooling-in-favor-of-women" class="section level4">
+<h4>Which countries have such high ratios of years of schooling in favor of women?</h4>
+<p>We noticed that some of the education ratios (female to male) are surprisingly high, and want to know which country-years account for this.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>ed <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;mys_ratio_uis&quot;</span>, <span class="st">&quot;eys_ratio_hdr&quot;</span>, <span class="st">&quot;eys_ratio_uis&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, variables<span class="sc">$</span>ed])</span></code></pre></div>
+<pre><code>##  mys_ratio_hdr   mys_ratio_uis   eys_ratio_hdr   eys_ratio_uis  
+##  Min.   :0.104   Min.   :0.081   Min.   :0.080   Min.   :0.052  
+##  1st Qu.:0.734   1st Qu.:0.878   1st Qu.:0.939   1st Qu.:0.884  
+##  Median :0.935   Median :0.956   Median :1.024   Median :0.989  
+##  Mean   :0.857   Mean   :0.902   Mean   :0.987   Mean   :0.925  
+##  3rd Qu.:1.000   3rd Qu.:1.002   3rd Qu.:1.064   3rd Qu.:1.015  
+##  Max.   :1.529   Max.   :1.267   Max.   :1.317   Max.   :1.441  
+##  NA&#39;s   :8188    NA&#39;s   :9165    NA&#39;s   :8108    NA&#39;s   :5100</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="fu">unique</span>(data<span class="sc">$</span>country[<span class="fu">IsTrue</span>(data<span class="sc">$</span>mys_ratio_hdr <span class="sc">&gt;</span> <span class="dv">1</span>)]), <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Argentina; Armenia; Australia; Bahamas; Barbados; Belize; Brazil; Bulgaria; Canada; Colombia; Costa Rica; Cuba; Denmark; Dominican Republic; Estonia; Fiji; Finland; Gabon; Guyana; Honduras; Iceland; Ireland; Israel; Jamaica; Japan; Jordan; Kazakhstan; Kuwait; Kyrgyzstan; Latvia; Lesotho; Libya; Madagascar; Malta; Moldova; Mongolia; Myanmar; Namibia; New Zealand; Nicaragua; Norway; Oman; Panama; Paraguay; Philippines; Poland; Portugal; Qatar; Saint Lucia; Sweden; Tonga; Trinidad &amp; Tobago; United Arab Emirates; United States of America; Uruguay; Venezuela&quot;</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data[<span class="fu">IsTrue</span>(data<span class="sc">$</span>mys_ratio_hdr <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, variables<span class="sc">$</span>ed)]</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["year"],"name":[2],"type":["int"],"align":["right"]},{"label":["mys_ratio_hdr"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["mys_ratio_uis"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["eys_ratio_hdr"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["eys_ratio_uis"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Argentina","2":"1995","3":"1.012048","4":"NA","5":"1.1023622","6":"NA"},{"1":"Argentina","2":"2000","3":"1.023529","4":"NA","5":"1.0939597","6":"1.0134364"},{"1":"Argentina","2":"2005","3":"1.102273","4":"NA","5":"1.1045752","6":"1.0305750"},{"1":"Argentina","2":"2010","3":"1.019608","4":"1.0172959","5":"1.1242236","6":"1.0333478"},{"1":"Argentina","2":"2011","3":"1.019608","4":"1.0163126","5":"1.1428571","6":"1.0380169"},{"1":"Argentina","2":"2012","3":"1.019417","4":"1.0315133","5":"1.1358025","6":"1.0328518"},{"1":"Argentina","2":"2013","3":"1.019417","4":"1.0241271","5":"1.1500000","6":"1.0298672"},{"1":"Argentina","2":"2014","3":"1.019417","4":"1.0326301","5":"1.1428571","6":"1.0298847"},{"1":"Argentina","2":"2015","3":"1.019417","4":"1.0328785","5":"1.1428571","6":"1.0271775"},{"1":"Argentina","2":"2016","3":"1.019231","4":"1.0276893","5":"1.1490683","6":"1.0200855"},{"1":"Argentina","2":"2017","3":"1.019048","4":"NA","5":"1.1543210","6":"1.0189666"},{"1":"Argentina","2":"2018","3":"1.019048","4":"1.0366669","5":"1.1524390","6":"NA"},{"1":"Armenia","2":"1995","3":"1.019231","4":"NA","5":"1.0816327","6":"NA"},{"1":"Armenia","2":"2000","3":"1.009259","4":"NA","5":"1.0849057","6":"1.0709776"},{"1":"Armenia","2":"2005","3":"1.009174","4":"NA","5":"1.1621622","6":"NA"},{"1":"Armenia","2":"2010","3":"1.018018","4":"NA","5":"1.0468750","6":"1.0020496"},{"1":"Armenia","2":"2011","3":"1.008929","4":"0.9991736","5":"1.0468750","6":"1.0078731"},{"1":"Armenia","2":"2012","3":"1.008850","4":"NA","5":"1.0472441","6":"NA"},{"1":"Armenia","2":"2013","3":"1.017699","4":"NA","5":"1.0546875","6":"1.0297419"},{"1":"Armenia","2":"2014","3":"1.017699","4":"NA","5":"1.0629921","6":"1.0388380"},{"1":"Armenia","2":"2015","3":"1.026549","4":"1.0008448","5":"1.0634921","6":"1.0365081"},{"1":"Australia","2":"2010","3":"1.016000","4":"1.0114154","5":"1.0572917","6":"NA"},{"1":"Australia","2":"2011","3":"1.024000","4":"1.0174083","5":"1.0615385","6":"NA"},{"1":"Australia","2":"2012","3":"1.007812","4":"1.0140547","5":"1.0555556","6":"NA"},{"1":"Australia","2":"2013","3":"1.008264","4":"1.0045243","5":"1.0450000","6":"NA"},{"1":"Australia","2":"2014","3":"1.008197","4":"0.9952510","5":"1.0450000","6":"NA"},{"1":"Australia","2":"2015","3":"1.008000","4":"0.9990668","5":"1.0450000","6":"0.9284530"},{"1":"Australia","2":"2016","3":"1.008000","4":"1.0017042","5":"1.0450000","6":"0.9279010"},{"1":"Australia","2":"2017","3":"1.007937","4":"1.0064624","5":"1.0355556","6":"0.9378633"},{"1":"Australia","2":"2018","3":"1.007937","4":"1.0114460","5":"1.0462963","6":"NA"},{"1":"Bahamas","2":"2000","3":"1.037383","4":"1.0395408","5":"1.0598291","6":"NA"},{"1":"Bahamas","2":"2005","3":"1.027778","4":"NA","5":"NA","6":"0.9792481"},{"1":"Bahamas","2":"2010","3":"1.026316","4":"1.0283259","5":"NA","6":"1.0102124"},{"1":"Bahamas","2":"2011","3":"1.026549","4":"NA","5":"NA","6":"1.0002135"},{"1":"Bahamas","2":"2012","3":"1.026786","4":"NA","5":"NA","6":"1.0127843"},{"1":"Bahamas","2":"2013","3":"1.036036","4":"NA","5":"NA","6":"1.0114008"},{"1":"Bahamas","2":"2014","3":"1.027027","4":"NA","5":"NA","6":"1.0016473"},{"1":"Bahamas","2":"2015","3":"1.027027","4":"NA","5":"NA","6":"0.9900086"},{"1":"Bahamas","2":"2016","3":"1.026786","4":"NA","5":"NA","6":"1.0112380"},{"1":"Bahamas","2":"2017","3":"1.026316","4":"NA","5":"NA","6":"NA"},{"1":"Bahamas","2":"2018","3":"1.026316","4":"NA","5":"NA","6":"1.0266260"},{"1":"Barbados","2":"2000","3":"1.022472","4":"1.0196166","5":"1.1287879","6":"1.0068711"},{"1":"Barbados","2":"2005","3":"1.021978","4":"NA","5":"1.1521739","6":"0.9929657"},{"1":"Barbados","2":"2010","3":"1.054945","4":"NA","5":"1.1914894","6":"1.0082515"},{"1":"Barbados","2":"2011","3":"1.062500","4":"NA","5":"1.2014388","6":"1.0153320"},{"1":"Barbados","2":"2012","3":"1.058824","4":"NA","5":"1.2014388","6":"NA"},{"1":"Barbados","2":"2013","3":"1.058824","4":"NA","5":"1.2014388","6":"NA"},{"1":"Barbados","2":"2014","3":"1.058824","4":"NA","5":"1.2014388","6":"1.0151131"},{"1":"Barbados","2":"2015","3":"1.058824","4":"NA","5":"1.2014388","6":"1.0126403"},{"1":"Barbados","2":"2016","3":"1.058252","4":"NA","5":"1.2014388","6":"1.0209268"},{"1":"Barbados","2":"2017","3":"1.058252","4":"NA","5":"1.2014388","6":"0.9998955"},{"1":"Barbados","2":"2018","3":"1.058252","4":"NA","5":"1.2028986","6":"0.9977602"},{"1":"Belize","2":"1990","3":"1.017241","4":"NA","5":"NA","6":"NA"},{"1":"Belize","2":"1995","3":"1.015873","4":"NA","5":"NA","6":"0.9818326"},{"1":"Belize","2":"2000","3":"1.014286","4":"NA","5":"1.0170940","6":"0.9839012"},{"1":"Belize","2":"2005","3":"1.013158","4":"0.9862096","5":"1.0163934","6":"0.9820896"},{"1":"Belize","2":"2010","3":"1.011236","4":"1.0012019","5":"1.0409836","6":"1.0046421"},{"1":"Belize","2":"2011","3":"1.011111","4":"NA","5":"1.0491803","6":"0.9982201"},{"1":"Belize","2":"2012","3":"1.021978","4":"NA","5":"1.0476190","6":"0.9905792"},{"1":"Belize","2":"2013","3":"1.021739","4":"NA","5":"1.0400000","6":"0.9904405"},{"1":"Belize","2":"2014","3":"1.010638","4":"NA","5":"1.0400000","6":"0.9916063"},{"1":"Belize","2":"2015","3":"1.010526","4":"NA","5":"1.0400000","6":"0.9833555"},{"1":"Belize","2":"2016","3":"1.010417","4":"NA","5":"1.0236220","6":"0.9786956"},{"1":"Belize","2":"2017","3":"1.020619","4":"NA","5":"1.0236220","6":"0.9931894"},{"1":"Belize","2":"2018","3":"1.020619","4":"NA","5":"1.0387597","6":"0.9882322"},{"1":"Brazil","2":"1990","3":"1.076923","4":"NA","5":"NA","6":"NA"},{"1":"Brazil","2":"1995","3":"1.086957","4":"NA","5":"NA","6":"NA"},{"1":"Brazil","2":"2000","3":"1.090909","4":"NA","5":"1.0211268","6":"NA"},{"1":"Brazil","2":"2005","3":"1.033333","4":"NA","5":"1.0444444","6":"1.0276789"},{"1":"Brazil","2":"2010","3":"1.044776","4":"1.0461557","5":"1.0666667","6":"NA"},{"1":"Brazil","2":"2011","3":"1.043478","4":"1.0510914","5":"1.0592593","6":"1.0219112"},{"1":"Brazil","2":"2012","3":"1.056338","4":"1.0531122","5":"1.0746269","6":"1.0265893"},{"1":"Brazil","2":"2013","3":"1.056338","4":"1.0593793","5":"1.0680272","6":"1.0205010"},{"1":"Brazil","2":"2014","3":"1.069444","4":"1.0619411","5":"1.0743243","6":"1.0246454"},{"1":"Brazil","2":"2015","3":"1.068493","4":"1.0593044","5":"1.0675676","6":"1.0076134"},{"1":"Brazil","2":"2016","3":"1.053333","4":"1.0508461","5":"1.0671141","6":"1.0109662"},{"1":"Brazil","2":"2017","3":"1.065789","4":"1.0565330","5":"1.0533333","6":"0.9999819"},{"1":"Brazil","2":"2018","3":"1.065789","4":"1.0561730","5":"1.0533333","6":"NA"},{"1":"Bulgaria","2":"2010","3":"1.009434","4":"1.0062292","5":"1.0352113","6":"0.9770350"},{"1":"Bulgaria","2":"2014","3":"1.009174","4":"1.0163016","5":"1.0335570","6":"0.9774027"},{"1":"Bulgaria","2":"2015","3":"1.008547","4":"1.0178920","5":"1.0337838","6":"0.9764837"},{"1":"Bulgaria","2":"2016","3":"1.008475","4":"1.0188202","5":"1.0337838","6":"0.9763702"},{"1":"Bulgaria","2":"2017","3":"1.008475","4":"1.0204417","5":"1.0273973","6":"0.9792148"},{"1":"Bulgaria","2":"2018","3":"1.008475","4":"NA","5":"1.0273973","6":"NA"},{"1":"Canada","2":"2005","3":"1.033333","4":"NA","5":"1.0584416","6":"0.9845941"},{"1":"Canada","2":"2010","3":"1.032258","4":"NA","5":"1.0608108","6":"0.9905261"},{"1":"Canada","2":"2011","3":"1.032000","4":"0.9994856","5":"1.0544218","6":"0.9930030"},{"1":"Canada","2":"2012","3":"1.031746","4":"NA","5":"1.0608108","6":"1.0039336"},{"1":"Canada","2":"2013","3":"1.031496","4":"NA","5":"1.0657895","6":"1.0062874"},{"1":"Canada","2":"2014","3":"1.031008","4":"NA","5":"1.0653595","6":"1.0082686"},{"1":"Canada","2":"2015","3":"1.038462","4":"NA","5":"1.0649351","6":"1.0077130"},{"1":"Canada","2":"2016","3":"1.030534","4":"1.0077612","5":"1.0645161","6":"1.0082293"},{"1":"Canada","2":"2017","3":"1.030534","4":"NA","5":"1.0641026","6":"1.0055422"},{"1":"Canada","2":"2018","3":"1.030534","4":"NA","5":"1.0641026","6":"NA"},{"1":"Colombia","2":"2010","3":"1.013514","4":"1.0133095","5":"1.0428571","6":"1.0402699"},{"1":"Colombia","2":"2011","3":"1.013333","4":"1.0167309","5":"1.0352113","6":"1.0288404"},{"1":"Colombia","2":"2012","3":"1.013158","4":"1.0176870","5":"1.0434783","6":"1.0284008"},{"1":"Colombia","2":"2013","3":"1.038961","4":"1.0279523","5":"1.0422535","6":"1.0283574"},{"1":"Colombia","2":"2014","3":"1.025316","4":"1.0303330","5":"1.0425532","6":"1.0242586"},{"1":"Colombia","2":"2015","3":"1.037975","4":"1.0285380","5":"1.0425532","6":"1.0212547"},{"1":"Colombia","2":"2016","3":"1.049383","4":"1.0337760","5":"1.0425532","6":"1.0193817"},{"1":"Colombia","2":"2017","3":"1.036585","4":"NA","5":"1.0425532","6":"1.0137645"},{"1":"Colombia","2":"2018","3":"1.036585","4":"1.0386809","5":"1.0419580","6":"1.0129424"},{"1":"Costa Rica","2":"2005","3":"1.012821","4":"NA","5":"1.0320000","6":"1.0001834"},{"1":"Costa Rica","2":"2011","3":"1.011905","4":"1.0070314","5":"1.0496454","6":"1.0073540"},{"1":"Costa Rica","2":"2013","3":"1.011765","4":"NA","5":"1.0629371","6":"1.0192219"},{"1":"Costa Rica","2":"2015","3":"1.023529","4":"1.0205092","5":"1.0680272","6":"1.0137391"},{"1":"Costa Rica","2":"2016","3":"1.023529","4":"1.0190037","5":"1.0675676","6":"1.0250632"},{"1":"Costa Rica","2":"2017","3":"1.035294","4":"NA","5":"1.0604027","6":"1.0358715"},{"1":"Costa Rica","2":"2018","3":"1.035294","4":"1.0275835","5":"1.0604027","6":"1.0349623"},{"1":"Cuba","2":"2010","3":"1.009091","4":"NA","5":"1.1568627","6":"0.9898463"},{"1":"Cuba","2":"2012","3":"1.009259","4":"0.9986616","5":"1.1000000","6":"0.9971822"},{"1":"Cuba","2":"2014","3":"1.009009","4":"NA","5":"1.0666667","6":"0.9817547"},{"1":"Cuba","2":"2017","3":"1.008547","4":"NA","5":"1.0437956","6":"0.9834458"},{"1":"Cuba","2":"2018","3":"1.008547","4":"NA","5":"1.0647482","6":"0.9854518"},{"1":"Denmark","2":"2000","3":"1.018182","4":"NA","5":"1.0700637","6":"1.0160413"},{"1":"Denmark","2":"2005","3":"1.015748","4":"NA","5":"1.0736196","6":"1.0113467"},{"1":"Denmark","2":"2010","3":"1.007874","4":"0.9993190","5":"1.0797546","6":"1.0046451"},{"1":"Denmark","2":"2011","3":"1.015873","4":"1.0084502","5":"1.0730337","6":"1.0054268"},{"1":"Denmark","2":"2012","3":"1.023810","4":"1.0187041","5":"1.0722222","6":"1.0031380"},{"1":"Denmark","2":"2015","3":"1.024194","4":"1.0222260","5":"1.0923913","6":"1.0198503"},{"1":"Denmark","2":"2016","3":"1.024194","4":"1.0236999","5":"1.0760870","6":"1.0118140"},{"1":"Denmark","2":"2017","3":"1.024194","4":"NA","5":"1.0760870","6":"1.0052706"},{"1":"Denmark","2":"2018","3":"1.024194","4":"1.0353374","5":"1.0760870","6":"NA"},{"1":"Dominican Republic","2":"1995","3":"1.051724","4":"NA","5":"NA","6":"NA"},{"1":"Dominican Republic","2":"2000","3":"1.118644","4":"NA","5":"NA","6":"1.0352128"},{"1":"Dominican Republic","2":"2005","3":"1.089552","4":"NA","5":"NA","6":"1.0352983"},{"1":"Dominican Republic","2":"2010","3":"1.042254","4":"1.0556576","5":"1.0800000","6":"0.9720995"},{"1":"Dominican Republic","2":"2011","3":"1.070423","4":"1.0596734","5":"1.0793651","6":"0.9890062"},{"1":"Dominican Republic","2":"2012","3":"1.069444","4":"1.0729521","5":"1.0708661","6":"0.9859432"},{"1":"Dominican Republic","2":"2013","3":"1.068493","4":"1.0620242","5":"1.0708661","6":"0.9875123"},{"1":"Dominican Republic","2":"2014","3":"1.067568","4":"1.0680212","5":"1.0787402","6":"0.9845867"},{"1":"Dominican Republic","2":"2015","3":"1.053333","4":"1.0881666","5":"1.1153846","6":"0.9849615"},{"1":"Dominican Republic","2":"2016","3":"1.080000","4":"1.0637388","5":"1.1153846","6":"0.9899017"},{"1":"Dominican Republic","2":"2017","3":"1.092105","4":"NA","5":"1.1153846","6":"0.9932994"},{"1":"Dominican Republic","2":"2018","3":"1.092105","4":"NA","5":"1.0962963","6":"0.9969710"},{"1":"Estonia","2":"2000","3":"1.016807","4":"1.0213600","5":"1.1126761","6":"1.0240879"},{"1":"Estonia","2":"2005","3":"1.033333","4":"NA","5":"1.1390728","6":"1.0107751"},{"1":"Estonia","2":"2010","3":"1.040984","4":"1.0558425","5":"1.1298701","6":"0.9969035"},{"1":"Estonia","2":"2011","3":"1.049180","4":"1.0541039","5":"1.1153846","6":"0.9950605"},{"1":"Estonia","2":"2012","3":"1.049180","4":"1.0502563","5":"1.1153846","6":"0.9947610"},{"1":"Estonia","2":"2013","3":"1.057377","4":"1.0564618","5":"1.1025641","6":"0.9933143"},{"1":"Estonia","2":"2014","3":"1.065574","4":"1.0728039","5":"1.1038961","6":"0.9941579"},{"1":"Estonia","2":"2015","3":"1.065574","4":"1.0696957","5":"1.1045752","6":"0.9966776"},{"1":"Estonia","2":"2016","3":"1.062992","4":"1.0647516","5":"1.1045752","6":"1.0009463"},{"1":"Estonia","2":"2017","3":"1.063492","4":"1.0668901","5":"1.1045752","6":"1.0055490"},{"1":"Estonia","2":"2018","3":"1.063492","4":"1.0703312","5":"1.0980392","6":"NA"},{"1":"Fiji","2":"2010","3":"1.020833","4":"NA","5":"NA","6":"NA"},{"1":"Fiji","2":"2011","3":"1.020408","4":"NA","5":"NA","6":"1.0367794"},{"1":"Fiji","2":"2012","3":"1.019802","4":"NA","5":"NA","6":"1.0496040"},{"1":"Fiji","2":"2013","3":"1.039216","4":"NA","5":"NA","6":"NA"},{"1":"Fiji","2":"2014","3":"1.068627","4":"NA","5":"NA","6":"NA"},{"1":"Fiji","2":"2015","3":"1.068627","4":"NA","5":"NA","6":"NA"},{"1":"Fiji","2":"2016","3":"1.018692","4":"NA","5":"NA","6":"NA"},{"1":"Fiji","2":"2017","3":"1.018692","4":"1.0174452","5":"NA","6":"NA"},{"1":"Fiji","2":"2018","3":"1.028037","4":"NA","5":"NA","6":"NA"},{"1":"Finland","2":"2005","3":"1.008333","4":"1.0118273","5":"1.0662651","6":"1.0199036"},{"1":"Finland","2":"2010","3":"1.016393","4":"1.0214338","5":"1.0736196","6":"1.0217477"},{"1":"Finland","2":"2011","3":"1.024590","4":"1.0232377","5":"1.0731707","6":"1.0201121"},{"1":"Finland","2":"2012","3":"1.016260","4":"1.0154248","5":"1.0666667","6":"1.0202264"},{"1":"Finland","2":"2013","3":"1.008197","4":"1.0198122","5":"1.0864865","6":"1.0496890"},{"1":"Finland","2":"2014","3":"1.024590","4":"1.0215913","5":"1.0810811","6":"1.0508475"},{"1":"Finland","2":"2015","3":"1.032787","4":"1.0237437","5":"1.0864865","6":"1.0507843"},{"1":"Finland","2":"2016","3":"1.024390","4":"NA","5":"1.0864865","6":"1.0513359"},{"1":"Finland","2":"2017","3":"1.024390","4":"1.0271513","5":"1.0864865","6":"1.0505808"},{"1":"Finland","2":"2018","3":"1.024390","4":"NA","5":"1.0864865","6":"NA"},{"1":"Gabon","2":"1990","3":"1.529412","4":"NA","5":"NA","6":"NA"},{"1":"Gabon","2":"1995","3":"1.204545","4":"NA","5":"0.9512195","6":"0.9558595"},{"1":"Guyana","2":"1995","3":"1.042254","4":"NA","5":"NA","6":"NA"},{"1":"Guyana","2":"2000","3":"1.109589","4":"NA","5":"1.0000000","6":"NA"},{"1":"Guyana","2":"2005","3":"1.135135","4":"NA","5":"1.0654206","6":"1.0075737"},{"1":"Guyana","2":"2010","3":"1.116883","4":"NA","5":"1.0660377","6":"0.9991342"},{"1":"Guyana","2":"2011","3":"1.116883","4":"NA","5":"1.0630631","6":"0.9937120"},{"1":"Guyana","2":"2012","3":"1.129870","4":"NA","5":"1.0636364","6":"0.9930456"},{"1":"Guyana","2":"2013","3":"1.128205","4":"NA","5":"1.0636364","6":"NA"},{"1":"Guyana","2":"2014","3":"1.113924","4":"NA","5":"1.0727273","6":"NA"},{"1":"Guyana","2":"2015","3":"1.113924","4":"NA","5":"1.0630631","6":"NA"},{"1":"Guyana","2":"2016","3":"1.112500","4":"NA","5":"1.0720721","6":"NA"},{"1":"Guyana","2":"2017","3":"1.112500","4":"NA","5":"1.0720721","6":"NA"},{"1":"Guyana","2":"2018","3":"1.112500","4":"NA","5":"1.0720721","6":"NA"},{"1":"Honduras","2":"2010","3":"1.018868","4":"NA","5":"1.0776699","6":"1.0748052"},{"1":"Honduras","2":"2011","3":"1.018182","4":"1.0139125","5":"1.0784314","6":"1.0706760"},{"1":"Honduras","2":"2012","3":"1.018182","4":"1.0161662","5":"1.0900000","6":"1.0692137"},{"1":"Honduras","2":"2013","3":"1.017241","4":"NA","5":"1.0918367","6":"1.0667104"},{"1":"Honduras","2":"2014","3":"1.016393","4":"1.0240336","5":"1.0721649","6":"1.0480724"},{"1":"Honduras","2":"2015","3":"1.032258","4":"1.0399404","5":"1.0918367","6":"1.0635217"},{"1":"Honduras","2":"2016","3":"1.015385","4":"1.0096649","5":"1.0816327","6":"1.0553408"},{"1":"Iceland","2":"1990","3":"1.011905","4":"NA","5":"1.0212766","6":"NA"},{"1":"Iceland","2":"1995","3":"1.034091","4":"NA","5":"1.0256410","6":"0.9846233"},{"1":"Iceland","2":"2000","3":"1.032258","4":"NA","5":"1.0853659","6":"1.0241767"},{"1":"Iceland","2":"2005","3":"1.030303","4":"NA","5":"1.1286550","6":"0.9956038"},{"1":"Iceland","2":"2010","3":"1.038462","4":"NA","5":"1.1445087","6":"1.0105390"},{"1":"Iceland","2":"2011","3":"1.037037","4":"NA","5":"1.1257143","6":"1.0029972"},{"1":"Iceland","2":"2012","3":"1.044643","4":"NA","5":"1.1179775","6":"0.9963394"},{"1":"Iceland","2":"2013","3":"1.042735","4":"NA","5":"1.1311475","6":"1.0172703"},{"1":"Ireland","2":"1990","3":"1.010309","4":"NA","5":"1.0336134","6":"1.0494428"},{"1":"Ireland","2":"1995","3":"1.009709","4":"NA","5":"1.0310078","6":"1.0288275"},{"1":"Ireland","2":"2000","3":"1.028302","4":"NA","5":"1.0628931","6":"1.0258079"},{"1":"Ireland","2":"2005","3":"1.043860","4":"NA","5":"1.0348837","6":"1.0311879"},{"1":"Ireland","2":"2010","3":"1.027273","4":"1.0243316","5":"1.0163934","6":"1.0199777"},{"1":"Ireland","2":"2011","3":"1.037383","4":"1.0350294","5":"1.0000000","6":"1.0130931"},{"1":"Ireland","2":"2012","3":"1.045455","4":"NA","5":"0.9946237","6":"1.0085805"},{"1":"Ireland","2":"2013","3":"1.061947","4":"NA","5":"1.0215054","6":"NA"},{"1":"Ireland","2":"2014","3":"1.077586","4":"NA","5":"1.0267380","6":"1.0062484"},{"1":"Ireland","2":"2015","3":"1.050420","4":"NA","5":"1.0102564","6":"1.0073540"},{"1":"Ireland","2":"2016","3":"1.032520","4":"NA","5":"1.0102564","6":"1.0057692"},{"1":"Ireland","2":"2017","3":"1.032520","4":"1.0382700","5":"1.0102564","6":"0.9885165"},{"1":"Ireland","2":"2018","3":"1.032520","4":"NA","5":"1.0106952","6":"NA"},{"1":"Israel","2":"2000","3":"1.016949","4":"NA","5":"1.0612245","6":"0.9952828"},{"1":"Israel","2":"2005","3":"1.016529","4":"NA","5":"1.0519481","6":"0.9992559"},{"1":"Jamaica","2":"1990","3":"1.034483","4":"NA","5":"NA","6":"NA"},{"1":"Jamaica","2":"1995","3":"1.031250","4":"NA","5":"1.0450450","6":"NA"},{"1":"Jamaica","2":"2000","3":"1.070423","4":"NA","5":"1.0571429","6":"1.0085716"},{"1":"Jamaica","2":"2005","3":"1.076923","4":"NA","5":"1.1140351","6":"NA"},{"1":"Jamaica","2":"2010","3":"1.069767","4":"NA","5":"1.1278195","6":"NA"},{"1":"Jamaica","2":"2011","3":"1.081395","4":"1.0927266","5":"1.1287879","6":"NA"},{"1":"Jamaica","2":"2012","3":"1.068182","4":"NA","5":"1.1230769","6":"NA"},{"1":"Jamaica","2":"2013","3":"1.067416","4":"NA","5":"1.1181102","6":"NA"},{"1":"Jamaica","2":"2014","3":"1.066667","4":"NA","5":"1.1200000","6":"NA"},{"1":"Jamaica","2":"2015","3":"1.053763","4":"NA","5":"1.1280000","6":"1.0641111"},{"1":"Jamaica","2":"2016","3":"1.063830","4":"NA","5":"1.1209677","6":"1.0145407"},{"1":"Jamaica","2":"2017","3":"1.052632","4":"NA","5":"1.1209677","6":"1.0156953"},{"1":"Jamaica","2":"2018","3":"1.052632","4":"NA","5":"1.1209677","6":"0.9893990"},{"1":"Japan","2":"2013","3":"1.008197","4":"NA","5":"0.9869281","6":"NA"},{"1":"Japan","2":"2014","3":"1.016129","4":"NA","5":"0.9869281","6":"NA"},{"1":"Japan","2":"2015","3":"1.016129","4":"NA","5":"0.9934641","6":"NA"},{"1":"Japan","2":"2016","3":"1.032000","4":"NA","5":"0.9934641","6":"NA"},{"1":"Japan","2":"2017","3":"1.032000","4":"NA","5":"0.9934641","6":"NA"},{"1":"Japan","2":"2018","3":"1.031746","4":"NA","5":"0.9934641","6":"NA"},{"1":"Jordan","2":"2000","3":"1.034483","4":"NA","5":"1.0400000","6":"1.0264744"},{"1":"Kazakhstan","2":"2005","3":"1.026087","4":"NA","5":"1.0575540","6":"NA"},{"1":"Kazakhstan","2":"2014","3":"1.008621","4":"NA","5":"1.0479452","6":"1.0152135"},{"1":"Kazakhstan","2":"2016","3":"1.008547","4":"NA","5":"1.0476190","6":"1.0151841"},{"1":"Kazakhstan","2":"2017","3":"1.008547","4":"NA","5":"1.0472973","6":"1.0094350"},{"1":"Kazakhstan","2":"2018","3":"1.017094","4":"1.0049567","5":"1.0469799","6":"1.0084977"},{"1":"Kuwait","2":"2000","3":"1.033898","4":"NA","5":"1.0970149","6":"1.0223195"},{"1":"Kuwait","2":"2005","3":"1.101695","4":"1.1404294","5":"1.1363636","6":"1.0767292"},{"1":"Kuwait","2":"2010","3":"1.090909","4":"NA","5":"1.1102362","6":"1.0004361"},{"1":"Kuwait","2":"2011","3":"1.043478","4":"NA","5":"1.1031746","6":"0.9868211"},{"1":"Kuwait","2":"2012","3":"1.041667","4":"1.0307149","5":"1.0960000","6":"1.0386842"},{"1":"Kuwait","2":"2013","3":"1.140625","4":"1.1464095","5":"1.1085271","6":"1.0343919"},{"1":"Kuwait","2":"2014","3":"1.136364","4":"NA","5":"1.1085271","6":"1.0388141"},{"1":"Kuwait","2":"2015","3":"1.132353","4":"1.1332511","5":"1.1085271","6":"1.0514563"},{"1":"Kuwait","2":"2016","3":"1.144928","4":"NA","5":"1.1085271","6":"NA"},{"1":"Kuwait","2":"2017","3":"1.159420","4":"1.1555490","5":"1.1085271","6":"NA"},{"1":"Kuwait","2":"2018","3":"1.159420","4":"1.1670872","5":"1.1085271","6":"NA"},{"1":"Kyrgyzstan","2":"2011","3":"1.009434","4":"NA","5":"1.0413223","6":"0.9988312"},{"1":"Kyrgyzstan","2":"2012","3":"1.018868","4":"NA","5":"1.0400000","6":"0.9941281"},{"1":"Kyrgyzstan","2":"2013","3":"1.018868","4":"NA","5":"1.0468750","6":"1.0008363"},{"1":"Kyrgyzstan","2":"2014","3":"1.018692","4":"NA","5":"1.0465116","6":"0.9998768"},{"1":"Kyrgyzstan","2":"2015","3":"1.018692","4":"NA","5":"1.0542636","6":"1.0042961"},{"1":"Kyrgyzstan","2":"2016","3":"1.009259","4":"NA","5":"1.0378788","6":"0.9945386"},{"1":"Kyrgyzstan","2":"2017","3":"1.009259","4":"NA","5":"1.0378788","6":"0.9947036"},{"1":"Kyrgyzstan","2":"2018","3":"1.018519","4":"NA","5":"1.0303030","6":"0.9961141"},{"1":"Latvia","2":"1995","3":"1.022727","4":"NA","5":"1.0750000","6":"1.0391915"},{"1":"Latvia","2":"2000","3":"1.032258","4":"NA","5":"1.1363636","6":"1.0120782"},{"1":"Latvia","2":"2005","3":"1.025000","4":"1.0332999","5":"1.1428571","6":"0.9941119"},{"1":"Latvia","2":"2010","3":"1.040984","4":"1.0466225","5":"1.1292517","6":"0.9913628"},{"1":"Latvia","2":"2011","3":"1.040650","4":"1.0516452","5":"1.1020408","6":"0.9860982"},{"1":"Latvia","2":"2012","3":"1.048780","4":"1.0529292","5":"1.0890411","6":"0.9892607"},{"1":"Latvia","2":"2013","3":"1.048387","4":"1.0581104","5":"1.0794702","6":"0.9866489"},{"1":"Latvia","2":"2014","3":"1.048780","4":"1.0596254","5":"1.0728477","6":"0.9894705"},{"1":"Latvia","2":"2015","3":"1.048387","4":"1.0672325","5":"1.0927152","6":"0.9925809"},{"1":"Latvia","2":"2016","3":"1.048387","4":"1.0658734","5":"1.0927152","6":"0.9945070"},{"1":"Latvia","2":"2017","3":"1.048000","4":"NA","5":"1.0927152","6":"0.9970645"},{"1":"Latvia","2":"2018","3":"1.048000","4":"1.0714194","5":"1.0915033","6":"NA"},{"1":"Lesotho","2":"1990","3":"1.157895","4":"NA","5":"1.2738095","6":"1.2208955"},{"1":"Lesotho","2":"1995","3":"1.166667","4":"NA","5":"1.2134831","6":"NA"},{"1":"Lesotho","2":"2000","3":"1.173913","4":"NA","5":"1.0918367","6":"1.0529116"},{"1":"Lesotho","2":"2005","3":"1.234043","4":"NA","5":"1.0480769","6":"1.0304956"},{"1":"Lesotho","2":"2010","3":"1.300000","4":"NA","5":"1.0857143","6":"1.0501731"},{"1":"Lesotho","2":"2011","3":"1.320000","4":"NA","5":"1.0952381","6":"1.0467118"},{"1":"Lesotho","2":"2012","3":"1.313725","4":"NA","5":"1.0841121","6":"1.0521267"},{"1":"Lesotho","2":"2013","3":"1.326923","4":"NA","5":"1.0873786","6":"1.0509483"},{"1":"Lesotho","2":"2014","3":"1.346154","4":"NA","5":"1.0776699","6":"1.0512792"},{"1":"Lesotho","2":"2015","3":"1.320755","4":"NA","5":"1.0784314","6":"1.0457585"},{"1":"Lesotho","2":"2016","3":"1.272727","4":"NA","5":"1.0693069","6":"1.0437421"},{"1":"Lesotho","2":"2017","3":"1.272727","4":"NA","5":"1.0776699","6":"1.0433921"},{"1":"Lesotho","2":"2018","3":"1.272727","4":"NA","5":"1.0776699","6":"NA"},{"1":"Libya","2":"2010","3":"1.100000","4":"NA","5":"1.0362319","6":"NA"},{"1":"Libya","2":"2011","3":"1.100000","4":"NA","5":"1.0296296","6":"NA"},{"1":"Libya","2":"2012","3":"1.100000","4":"NA","5":"1.0303030","6":"NA"},{"1":"Libya","2":"2013","3":"1.100000","4":"NA","5":"1.0305344","6":"NA"},{"1":"Libya","2":"2014","3":"1.100000","4":"NA","5":"1.0387597","6":"NA"},{"1":"Libya","2":"2015","3":"1.100000","4":"NA","5":"1.0312500","6":"NA"},{"1":"Libya","2":"2016","3":"1.100000","4":"NA","5":"1.0314961","6":"NA"},{"1":"Libya","2":"2017","3":"1.111111","4":"NA","5":"1.0317460","6":"NA"},{"1":"Libya","2":"2018","3":"1.111111","4":"NA","5":"1.0317460","6":"NA"},{"1":"Madagascar","2":"2000","3":"1.076923","4":"NA","5":"0.9404762","6":"NA"},{"1":"Madagascar","2":"2005","3":"1.109091","4":"NA","5":"0.9361702","6":"0.9478869"},{"1":"Madagascar","2":"2010","3":"1.100000","4":"NA","5":"0.9615385","6":"NA"},{"1":"Madagascar","2":"2011","3":"1.100000","4":"NA","5":"0.9708738","6":"0.9684754"},{"1":"Madagascar","2":"2012","3":"1.081967","4":"NA","5":"0.9619048","6":"0.9702574"},{"1":"Madagascar","2":"2013","3":"1.098361","4":"NA","5":"0.9622642","6":"NA"},{"1":"Madagascar","2":"2014","3":"1.098361","4":"NA","5":"0.9809524","6":"0.9842530"},{"1":"Madagascar","2":"2015","3":"1.098361","4":"NA","5":"0.9905660","6":"0.9891117"},{"1":"Madagascar","2":"2016","3":"1.098361","4":"NA","5":"0.9809524","6":"0.9916801"},{"1":"Madagascar","2":"2017","3":"1.098361","4":"NA","5":"0.9903846","6":"NA"},{"1":"Madagascar","2":"2018","3":"1.103448","4":"NA","5":"0.9903846","6":"1.0063683"},{"1":"Malta","2":"1990","3":"1.138462","4":"NA","5":"0.9384615","6":"0.9534755"},{"1":"Moldova","2":"2015","3":"1.008696","4":"1.0112961","5":"1.0438596","6":"1.0019147"},{"1":"Moldova","2":"2016","3":"1.008696","4":"NA","5":"1.0438596","6":"0.9983845"},{"1":"Moldova","2":"2017","3":"1.008696","4":"NA","5":"1.0438596","6":"0.9953261"},{"1":"Moldova","2":"2018","3":"1.008696","4":"NA","5":"1.0350877","6":"0.9946047"},{"1":"Mongolia","2":"2005","3":"1.011628","4":"NA","5":"1.1440678","6":"1.0574337"},{"1":"Mongolia","2":"2010","3":"1.054348","4":"1.0612283","5":"1.1007194","6":"1.0204575"},{"1":"Mongolia","2":"2011","3":"1.063158","4":"NA","5":"1.1000000","6":"NA"},{"1":"Mongolia","2":"2012","3":"1.062500","4":"NA","5":"1.0921986","6":"NA"},{"1":"Mongolia","2":"2013","3":"1.062500","4":"NA","5":"1.0992908","6":"NA"},{"1":"Mongolia","2":"2014","3":"1.061856","4":"NA","5":"1.0915493","6":"NA"},{"1":"Mongolia","2":"2015","3":"1.051020","4":"NA","5":"1.0833333","6":"NA"},{"1":"Mongolia","2":"2016","3":"1.061224","4":"NA","5":"1.0656934","6":"NA"},{"1":"Mongolia","2":"2017","3":"1.060606","4":"NA","5":"1.0652174","6":"NA"},{"1":"Mongolia","2":"2018","3":"1.060606","4":"NA","5":"1.0802920","6":"NA"},{"1":"Myanmar","2":"2000","3":"1.033333","4":"NA","5":"NA","6":"0.9943664"},{"1":"Myanmar","2":"2005","3":"1.058824","4":"NA","5":"NA","6":"0.9876219"},{"1":"Myanmar","2":"2010","3":"1.131579","4":"NA","5":"NA","6":"1.0101887"},{"1":"Myanmar","2":"2011","3":"1.125000","4":"NA","5":"NA","6":"NA"},{"1":"Myanmar","2":"2012","3":"1.119048","4":"NA","5":"NA","6":"NA"},{"1":"Myanmar","2":"2013","3":"1.088889","4":"NA","5":"NA","6":"NA"},{"1":"Myanmar","2":"2014","3":"1.042553","4":"NA","5":"NA","6":"0.9910732"},{"1":"Myanmar","2":"2015","3":"1.042553","4":"NA","5":"NA","6":"NA"},{"1":"Myanmar","2":"2016","3":"1.020833","4":"NA","5":"NA","6":"1.0180103"},{"1":"Myanmar","2":"2017","3":"1.020408","4":"NA","5":"1.0510204","6":"1.0029183"},{"1":"Myanmar","2":"2018","3":"1.020408","4":"NA","5":"1.0396040","6":"1.0086748"},{"1":"Namibia","2":"2005","3":"1.016949","4":"NA","5":"1.0000000","6":"1.0036047"},{"1":"Namibia","2":"2010","3":"1.032787","4":"NA","5":"1.0169492","6":"NA"},{"1":"Namibia","2":"2011","3":"1.048387","4":"NA","5":"1.0165289","6":"NA"},{"1":"Namibia","2":"2012","3":"1.047619","4":"NA","5":"1.0163934","6":"NA"},{"1":"Namibia","2":"2013","3":"1.062500","4":"NA","5":"1.0081301","6":"NA"},{"1":"Namibia","2":"2014","3":"1.078125","4":"NA","5":"1.0081301","6":"NA"},{"1":"Namibia","2":"2015","3":"1.061538","4":"NA","5":"1.0081301","6":"NA"},{"1":"Namibia","2":"2016","3":"1.092308","4":"NA","5":"1.0081301","6":"NA"},{"1":"Namibia","2":"2017","3":"1.090909","4":"NA","5":"1.0160000","6":"NA"},{"1":"Namibia","2":"2018","3":"1.106061","4":"NA","5":"1.0160000","6":"NA"},{"1":"New Zealand","2":"2005","3":"1.017391","4":"NA","5":"1.0928962","6":"1.0285951"},{"1":"New Zealand","2":"2010","3":"1.008403","4":"NA","5":"1.0846561","6":"1.0242353"},{"1":"Nicaragua","2":"2010","3":"1.068966","4":"NA","5":"1.0442478","6":"1.0334817"},{"1":"Nicaragua","2":"2011","3":"1.067797","4":"NA","5":"1.0442478","6":"NA"},{"1":"Nicaragua","2":"2012","3":"1.065574","4":"NA","5":"1.0442478","6":"NA"},{"1":"Nicaragua","2":"2013","3":"1.064516","4":"NA","5":"1.0442478","6":"NA"},{"1":"Nicaragua","2":"2014","3":"1.079365","4":"NA","5":"1.0423729","6":"NA"},{"1":"Nicaragua","2":"2015","3":"1.062500","4":"NA","5":"1.0420168","6":"NA"},{"1":"Nicaragua","2":"2016","3":"1.078125","4":"NA","5":"1.0504202","6":"NA"},{"1":"Nicaragua","2":"2017","3":"1.078125","4":"NA","5":"1.0504202","6":"NA"},{"1":"Nicaragua","2":"2018","3":"1.092308","4":"NA","5":"1.0504202","6":"NA"},{"1":"Norway","2":"2010","3":"1.007874","4":"1.0061821","5":"1.0828402","6":"0.9920629"},{"1":"Norway","2":"2011","3":"1.007874","4":"1.0089664","5":"1.0828402","6":"0.9938992"},{"1":"Norway","2":"2012","3":"1.007937","4":"NA","5":"1.0833333","6":"0.9944815"},{"1":"Norway","2":"2015","3":"1.008000","4":"1.0096461","5":"1.0701754","6":"0.9871600"},{"1":"Norway","2":"2016","3":"1.008000","4":"1.0125142","5":"1.0813953","6":"0.9868725"},{"1":"Norway","2":"2017","3":"1.008000","4":"1.0152549","5":"1.0813953","6":"0.9792231"},{"1":"Norway","2":"2018","3":"1.008000","4":"NA","5":"1.0804598","6":"NA"},{"1":"Oman","2":"2012","3":"1.011628","4":"NA","5":"1.0681818","6":"1.0046639"},{"1":"Oman","2":"2013","3":"1.056818","4":"NA","5":"1.1052632","6":"1.0381155"},{"1":"Oman","2":"2014","3":"1.100000","4":"NA","5":"1.1111111","6":"NA"},{"1":"Oman","2":"2015","3":"1.130435","4":"1.1217327","5":"1.1167883","6":"1.0165642"},{"1":"Oman","2":"2016","3":"1.127660","4":"NA","5":"1.0992908","6":"0.9817231"},{"1":"Oman","2":"2017","3":"1.127660","4":"NA","5":"1.0992908","6":"0.9950743"},{"1":"Oman","2":"2018","3":"1.127660","4":"NA","5":"1.0992908","6":"0.9790225"},{"1":"Panama","2":"2000","3":"1.025641","4":"1.0356080","5":"1.0932203","6":"1.0029922"},{"1":"Panama","2":"2005","3":"1.047619","4":"NA","5":"1.0975610","6":"1.0037913"},{"1":"Panama","2":"2010","3":"1.055556","4":"1.0502146","5":"1.0725806","6":"1.0014098"},{"1":"Panama","2":"2011","3":"1.054348","4":"NA","5":"1.0819672","6":"1.0103891"},{"1":"Panama","2":"2012","3":"1.053191","4":"NA","5":"1.0909091","6":"NA"},{"1":"Panama","2":"2013","3":"1.063158","4":"NA","5":"1.0909091","6":"1.0096311"},{"1":"Panama","2":"2014","3":"1.084211","4":"NA","5":"1.0991736","6":"1.0170085"},{"1":"Panama","2":"2015","3":"1.084211","4":"NA","5":"1.0991736","6":"1.0085417"},{"1":"Panama","2":"2016","3":"1.051020","4":"NA","5":"1.0991736","6":"1.0044374"},{"1":"Panama","2":"2017","3":"1.050505","4":"NA","5":"1.0991736","6":"1.0120983"},{"1":"Panama","2":"2018","3":"1.050505","4":"NA","5":"1.0991736","6":"NA"},{"1":"Paraguay","2":"2016","3":"1.012048","4":"1.0075724","5":"1.0819672","6":"NA"},{"1":"Paraguay","2":"2017","3":"1.011905","4":"NA","5":"1.0819672","6":"NA"},{"1":"Paraguay","2":"2018","3":"1.011905","4":"1.0021147","5":"1.0819672","6":"NA"},{"1":"Philippines","2":"2000","3":"1.013158","4":"1.0121400","5":"1.0357143","6":"NA"},{"1":"Philippines","2":"2005","3":"1.012048","4":"NA","5":"1.0535714","6":"1.0285916"},{"1":"Philippines","2":"2010","3":"1.022727","4":"1.0279029","5":"1.0347826","6":"NA"},{"1":"Philippines","2":"2011","3":"1.045455","4":"NA","5":"1.0427350","6":"NA"},{"1":"Philippines","2":"2012","3":"1.033708","4":"NA","5":"1.0500000","6":"NA"},{"1":"Philippines","2":"2013","3":"1.033333","4":"1.0380443","5":"1.0487805","6":"NA"},{"1":"Philippines","2":"2014","3":"1.044444","4":"NA","5":"1.0487805","6":"1.0135090"},{"1":"Philippines","2":"2015","3":"1.043956","4":"NA","5":"1.0487805","6":"1.0057741"},{"1":"Philippines","2":"2016","3":"1.032609","4":"NA","5":"1.0487805","6":"1.0081751"},{"1":"Philippines","2":"2017","3":"1.043478","4":"1.0684506","5":"1.0487805","6":"1.0176870"},{"1":"Philippines","2":"2018","3":"1.043478","4":"NA","5":"1.0483871","6":"NA"},{"1":"Poland","2":"2014","3":"1.008264","4":"1.0122895","5":"1.1052632","6":"0.9850555"},{"1":"Poland","2":"2015","3":"1.008197","4":"NA","5":"1.1038961","6":"NA"},{"1":"Portugal","2":"2014","3":"1.011236","4":"1.0141416","5":"0.9939394","6":"0.9652910"},{"1":"Portugal","2":"2015","3":"1.011111","4":"1.0125097","5":"0.9878788","6":"0.9621911"},{"1":"Qatar","2":"1990","3":"1.075472","4":"NA","5":"1.1818182","6":"1.0657147"},{"1":"Qatar","2":"1995","3":"1.263158","4":"NA","5":"1.1637931","6":"0.9811054"},{"1":"Qatar","2":"2000","3":"1.242857","4":"NA","5":"1.1500000","6":"1.0332210"},{"1":"Qatar","2":"2005","3":"1.130952","4":"NA","5":"1.0384615","6":"0.9417160"},{"1":"Qatar","2":"2010","3":"1.085366","4":"1.0798584","5":"1.0894309","6":"0.9630719"},{"1":"Qatar","2":"2011","3":"1.190476","4":"1.1906667","5":"1.0381679","6":"NA"},{"1":"Qatar","2":"2012","3":"1.191011","4":"1.1966075","5":"1.2616822","6":"NA"},{"1":"Qatar","2":"2013","3":"1.113402","4":"1.1244441","5":"1.3168317","6":"NA"},{"1":"Qatar","2":"2014","3":"1.168421","4":"1.1666902","5":"1.3047619","6":"NA"},{"1":"Qatar","2":"2015","3":"1.180851","4":"NA","5":"1.2792793","6":"NA"},{"1":"Qatar","2":"2016","3":"1.193548","4":"1.1869412","5":"1.2368421","6":"NA"},{"1":"Qatar","2":"2017","3":"1.193548","4":"1.2043930","5":"1.2702703","6":"NA"},{"1":"Qatar","2":"2018","3":"1.193548","4":"NA","5":"1.2702703","6":"NA"},{"1":"Saint Lucia","2":"2000","3":"1.073529","4":"NA","5":"1.0569106","6":"1.0697893"},{"1":"Saint Lucia","2":"2005","3":"1.069444","4":"NA","5":"1.1016949","6":"1.0274209"},{"1":"Saint Lucia","2":"2010","3":"1.074074","4":"1.0711752","5":"1.0546875","6":"NA"},{"1":"Saint Lucia","2":"2011","3":"1.061728","4":"NA","5":"1.0534351","6":"NA"},{"1":"Saint Lucia","2":"2012","3":"1.061728","4":"NA","5":"1.0472441","6":"NA"},{"1":"Saint Lucia","2":"2013","3":"1.061728","4":"1.0692309","5":"1.0409836","6":"NA"},{"1":"Saint Lucia","2":"2014","3":"1.060976","4":"NA","5":"1.0314961","6":"NA"},{"1":"Saint Lucia","2":"2015","3":"1.060976","4":"NA","5":"1.0444444","6":"0.9770972"},{"1":"Saint Lucia","2":"2016","3":"1.073171","4":"NA","5":"1.0359712","6":"0.9889021"},{"1":"Saint Lucia","2":"2017","3":"1.073171","4":"NA","5":"1.0441176","6":"1.0003951"},{"1":"Saint Lucia","2":"2018","3":"1.073171","4":"NA","5":"1.0441176","6":"1.0116403"},{"1":"Sweden","2":"2000","3":"1.017699","4":"NA","5":"1.1918605","6":"1.1434109"},{"1":"Sweden","2":"2005","3":"1.041322","4":"1.0401348","5":"1.0986842","6":"0.9955915"},{"1":"Sweden","2":"2010","3":"1.024590","4":"1.0263270","5":"1.0986842","6":"0.9923309"},{"1":"Sweden","2":"2011","3":"1.024590","4":"1.0279997","5":"1.1000000","6":"0.9933198"},{"1":"Sweden","2":"2012","3":"1.024390","4":"1.0300270","5":"1.1066667","6":"0.9938356"},{"1":"Sweden","2":"2013","3":"1.016529","4":"1.0135374","5":"1.0988372","6":"1.0870439"},{"1":"Sweden","2":"2014","3":"1.016393","4":"1.0160309","5":"1.0919540","6":"1.0831070"},{"1":"Sweden","2":"2015","3":"1.016260","4":"1.0186516","5":"1.0842697","6":"1.0761185"},{"1":"Sweden","2":"2016","3":"1.016260","4":"1.0212953","5":"1.0828729","6":"1.0558218"},{"1":"Sweden","2":"2017","3":"1.016260","4":"1.0237164","5":"1.0828729","6":"1.0236962"},{"1":"Sweden","2":"2018","3":"1.016260","4":"NA","5":"1.0888889","6":"NA"},{"1":"Tonga","2":"1995","3":"1.011236","4":"NA","5":"1.0522388","6":"NA"},{"1":"Tonga","2":"2014","3":"1.009091","4":"NA","5":"1.0454545","6":"1.0297605"},{"1":"Tonga","2":"2015","3":"1.009009","4":"NA","5":"1.0367647","6":"1.0132317"},{"1":"Tonga","2":"2016","3":"1.009009","4":"NA","5":"1.0359712","6":"NA"},{"1":"Tonga","2":"2017","3":"1.009009","4":"NA","5":"1.0359712","6":"NA"},{"1":"Tonga","2":"2018","3":"1.008929","4":"NA","5":"1.0359712","6":"NA"},{"1":"Trinidad & Tobago","2":"2017","3":"1.018349","4":"NA","5":"1.1500000","6":"NA"},{"1":"Trinidad & Tobago","2":"2018","3":"1.018349","4":"NA","5":"1.1500000","6":"NA"},{"1":"United Arab Emirates","2":"1990","3":"1.017857","4":"NA","5":"1.0970874","6":"1.0340608"},{"1":"United Arab Emirates","2":"1995","3":"1.057143","4":"NA","5":"1.0825688","6":"1.0201833"},{"1":"United Arab Emirates","2":"2000","3":"1.060976","4":"NA","5":"NA","6":"NA"},{"1":"United Arab Emirates","2":"2005","3":"1.159091","4":"1.1682454","5":"NA","6":"NA"},{"1":"United Arab Emirates","2":"2010","3":"1.224719","4":"NA","5":"NA","6":"NA"},{"1":"United Arab Emirates","2":"2011","3":"1.233333","4":"NA","5":"1.0775194","6":"NA"},{"1":"United Arab Emirates","2":"2012","3":"1.217391","4":"NA","5":"1.0769231","6":"NA"},{"1":"United Arab Emirates","2":"2013","3":"1.225806","4":"NA","5":"1.0763359","6":"NA"},{"1":"United Arab Emirates","2":"2014","3":"1.234043","4":"NA","5":"1.0681818","6":"NA"},{"1":"United Arab Emirates","2":"2015","3":"1.218750","4":"NA","5":"1.0676692","6":"NA"},{"1":"United Arab Emirates","2":"2016","3":"1.226804","4":"NA","5":"1.0671642","6":"0.9635392"},{"1":"United Arab Emirates","2":"2017","3":"1.224490","4":"0.9395745","5":"1.0671642","6":"0.9561074"},{"1":"United Arab Emirates","2":"2018","3":"1.224490","4":"0.9409092","5":"1.0671642","6":"NA"},{"1":"United States of America","2":"1990","3":"1.024590","4":"NA","5":"1.0604027","6":"NA"},{"1":"United States of America","2":"1995","3":"1.016000","4":"NA","5":"1.0718954","6":"NA"},{"1":"United States of America","2":"2005","3":"1.007874","4":"1.0004782","5":"1.1052632","6":"1.0044048"},{"1":"United States of America","2":"2010","3":"1.015152","4":"1.0087998","5":"1.1146497","6":"1.0011602"},{"1":"United States of America","2":"2011","3":"1.007519","4":"1.0069820","5":"1.1139241","6":"1.0048266"},{"1":"United States of America","2":"2013","3":"1.007576","4":"1.0026814","5":"1.0955414","6":"0.9975224"},{"1":"United States of America","2":"2015","3":"1.007519","4":"1.0061740","5":"1.0955414","6":"1.0054215"},{"1":"United States of America","2":"2016","3":"1.007463","4":"1.0073317","5":"1.0955414","6":"0.9964672"},{"1":"United States of America","2":"2017","3":"1.007463","4":"NA","5":"1.0955414","6":"0.9939095"},{"1":"United States of America","2":"2018","3":"1.007463","4":"1.0065169","5":"1.0764331","6":"NA"},{"1":"Uruguay","2":"1995","3":"1.013333","4":"NA","5":"1.1932773","6":"1.0734912"},{"1":"Uruguay","2":"2000","3":"1.051282","4":"NA","5":"1.1194030","6":"1.0525278"},{"1":"Uruguay","2":"2005","3":"1.051282","4":"NA","5":"1.1328671","6":"1.0546678"},{"1":"Uruguay","2":"2010","3":"1.049383","4":"1.0506933","5":"1.1304348","6":"1.0605636"},{"1":"Uruguay","2":"2011","3":"1.060976","4":"1.0622784","5":"1.1258741","6":"NA"},{"1":"Uruguay","2":"2012","3":"1.073171","4":"1.0668023","5":"1.1292517","6":"NA"},{"1":"Uruguay","2":"2013","3":"1.048193","4":"1.0565868","5":"1.1324503","6":"NA"},{"1":"Uruguay","2":"2014","3":"1.059524","4":"1.0619333","5":"1.1250000","6":"NA"},{"1":"Uruguay","2":"2015","3":"1.059524","4":"1.0615569","5":"1.1266667","6":"NA"},{"1":"Uruguay","2":"2016","3":"1.071429","4":"1.0665982","5":"1.1266667","6":"NA"},{"1":"Uruguay","2":"2017","3":"1.071429","4":"1.0644180","5":"1.1266667","6":"1.0471383"},{"1":"Uruguay","2":"2018","3":"1.071429","4":"1.0653988","5":"1.1324503","6":"NA"},{"1":"Venezuela","2":"2000","3":"1.031746","4":"NA","5":"1.1010101","6":"1.0488092"},{"1":"Venezuela","2":"2005","3":"1.041096","4":"NA","5":"1.1000000","6":"1.0335193"},{"1":"Venezuela","2":"2010","3":"1.056818","4":"NA","5":"1.1666667","6":"1.0193969"},{"1":"Venezuela","2":"2011","3":"1.063830","4":"1.0822465","5":"1.1746032","6":"1.0206982"},{"1":"Venezuela","2":"2012","3":"1.063830","4":"NA","5":"1.1732283","6":"1.0253993"},{"1":"Venezuela","2":"2013","3":"1.052083","4":"NA","5":"1.1755725","6":"1.0302189"},{"1":"Venezuela","2":"2014","3":"1.061856","4":"NA","5":"1.1769231","6":"1.0207143"},{"1":"Venezuela","2":"2015","3":"1.061224","4":"1.0722093","5":"1.1705426","6":"1.0180859"},{"1":"Venezuela","2":"2016","3":"1.070000","4":"1.0580385","5":"1.1760000","6":"1.0183248"},{"1":"Venezuela","2":"2017","3":"1.070000","4":"NA","5":"1.1694915","6":"1.0192031"},{"1":"Venezuela","2":"2018","3":"1.070000","4":"NA","5":"1.1694915","6":"NA"}],"options":{"columns":{"min":[8],"max":[10]},"rows":{"min":[12],"max":[12]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="inverting-variables-for-comparable-interpretations" class="section level4">
+<h4>Inverting variables for comparable interpretations</h4>
+<p>Since we are dealing with a wide range of measures, we need to ensure that they reflect the same “direction” of effects. We do this by coding the negative of some variables, so that higher values indicate better outcomes for the health and gender categories and higher values indicate worse outcomes for the violence categories.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;mmr_unicef&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;latentmean_fariss_cumulative1991&quot;</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss_cumulative1996&quot;</span>, <span class="st">&quot;v2cltort_cumulative1991&quot;</span>, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;v2cltort_cumulative1996&quot;</span>, <span class="st">&quot;v2clkill_cumulative1991&quot;</span>, <span class="st">&quot;v2clkill_cumulative1996&quot;</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<pre><code>##     imr_wpp           ufmr_wpp         mmr_unicef     daly_ihme      asfr_adol_wpp        tfr_wpp      latentmean_fariss    v2cltort          v2clkill      
+##  Min.   :  1.254   Min.   :  1.765   Min.   :   2   Min.   : 15334   Min.   :  0.283   Min.   :1.051   Min.   :-3.767    Min.   :-3.2680   Min.   :-3.5870  
+##  1st Qu.: 15.363   1st Qu.: 18.328   1st Qu.:  17   1st Qu.: 27130   1st Qu.: 29.676   1st Qu.:2.170   1st Qu.:-1.097    1st Qu.:-0.9450   1st Qu.:-0.6980  
+##  Median : 40.161   Median : 50.881   Median :  65   Median : 32776   Median : 69.553   Median :3.782   Median :-0.074    Median : 0.3440   Median : 0.7360  
+##  Mean   : 56.186   Mean   : 84.469   Mean   : 202   Mean   : 43276   Mean   : 78.652   Mean   :4.065   Mean   : 0.091    Mean   : 0.3197   Mean   : 0.5478  
+##  3rd Qu.: 85.913   3rd Qu.:129.686   3rd Qu.: 277   3rd Qu.: 50724   3rd Qu.:117.050   3rd Qu.:5.955   3rd Qu.: 1.187    3rd Qu.: 1.6570   3rd Qu.: 1.9530  
+##  Max.   :319.239   Max.   :465.517   Max.   :2480   Max.   :788016   Max.   :242.574   Max.   :8.800   Max.   : 5.140    Max.   : 3.3210   Max.   : 3.2090  
+##  NA&#39;s   :8259      NA&#39;s   :8259      NA&#39;s   :9396   NA&#39;s   :5145     NA&#39;s   :8259      NA&#39;s   :8259    NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data[, variables<span class="sc">$</span>negative] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, variables<span class="sc">$</span>negative], <span class="st">&#39;-&#39;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<pre><code>##     imr_wpp            ufmr_wpp          mmr_unicef      daly_ihme       asfr_adol_wpp         tfr_wpp       latentmean_fariss    v2cltort          v2clkill      
+##  Min.   :-319.239   Min.   :-465.517   Min.   :-2480   Min.   :-788016   Min.   :-242.574   Min.   :-8.800   Min.   :-5.140    Min.   :-3.3210   Min.   :-3.2090  
+##  1st Qu.: -85.913   1st Qu.:-129.686   1st Qu.: -277   1st Qu.: -50724   1st Qu.:-117.050   1st Qu.:-5.955   1st Qu.:-1.187    1st Qu.:-1.6570   1st Qu.:-1.9530  
+##  Median : -40.161   Median : -50.881   Median :  -65   Median : -32776   Median : -69.553   Median :-3.782   Median : 0.074    Median :-0.3440   Median :-0.7360  
+##  Mean   : -56.186   Mean   : -84.469   Mean   : -202   Mean   : -43276   Mean   : -78.652   Mean   :-4.065   Mean   :-0.091    Mean   :-0.3197   Mean   :-0.5478  
+##  3rd Qu.: -15.363   3rd Qu.: -18.328   3rd Qu.:  -17   3rd Qu.: -27130   3rd Qu.: -29.676   3rd Qu.:-2.170   3rd Qu.: 1.097    3rd Qu.: 0.9450   3rd Qu.: 0.6980  
+##  Max.   :  -1.254   Max.   :  -1.765   Max.   :   -2   Max.   : -15334   Max.   :  -0.283   Max.   :-1.051   Max.   : 3.767    Max.   : 3.2680   Max.   : 3.5870  
+##  NA&#39;s   :8259       NA&#39;s   :8259       NA&#39;s   :9396    NA&#39;s   :5145      NA&#39;s   :8259       NA&#39;s   :8259     NA&#39;s   :681       NA&#39;s   :1209      NA&#39;s   :1209</code></pre>
+</div>
+<div id="variable-transformations-and-coding-performance-measures" class="section level4">
+<h4>Variable transformations and coding performance measures</h4>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">cut</span>(year, <span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2020</span>, <span class="dv">5</span>), <span class="at">right =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>health) <span class="ot">&lt;-</span> variables<span class="sc">$</span>health <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(variables<span class="sc">$</span>gender) <span class="ot">&lt;-</span> variables<span class="sc">$</span>gender <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender, <span class="st">&quot;pc_rgdpe_pwt&quot;</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(country, period) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars), <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.names =</span> <span class="st">&quot;{col}_avg&quot;</span>), <span class="at">.keep =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)], <span class="cf">function</span>(col) {</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  col[<span class="fu">is.nan</span>(col)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(col)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs, <span class="fu">paste</span>(take_logs, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs_negative, <span class="fu">paste</span>(take_logs_negative, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative))])</span></code></pre></div>
+<pre><code>##  asfr_adol_wpp      asfr_adol_wpp_avg     imr_wpp          imr_wpp_avg        life_exp_wpp   life_exp_wpp_avg mys_ratio_hdr   mys_ratio_hdr_avg  pc_rgdpe_pwt      pc_rgdpe_pwt_avg  
+##  Min.   :-242.574   Min.   :-242.574   Min.   :-319.239   Min.   :-319.239   Min.   :14.49   Min.   :14.49    Min.   :0.104   Min.   :0.104     Min.   :   226.3   Min.   :   423.4  
+##  1st Qu.:-117.050   1st Qu.:-114.743   1st Qu.: -85.913   1st Qu.: -81.977   1st Qu.:55.06   1st Qu.:55.78    1st Qu.:0.734   1st Qu.:0.694     1st Qu.:  2255.1   1st Qu.:  2283.9  
+##  Median : -69.553   Median : -68.097   Median : -40.161   Median : -38.269   Median :66.91   Median :67.30    Median :0.935   Median :0.919     Median :  5664.2   Median :  5863.5  
+##  Mean   : -78.652   Mean   : -77.720   Mean   : -56.186   Mean   : -53.855   Mean   :63.73   Mean   :64.16    Mean   :0.857   Mean   :0.835     Mean   : 11675.4   Mean   : 11907.5  
+##  3rd Qu.: -29.676   3rd Qu.: -29.279   3rd Qu.: -15.363   3rd Qu.: -14.938   3rd Qu.:72.89   3rd Qu.:73.07    3rd Qu.:1.000   3rd Qu.:0.990     3rd Qu.: 14680.7   3rd Qu.: 15047.4  
+##  Max.   :  -0.283   Max.   :  -0.283   Max.   :  -1.254   Max.   :  -1.254   Max.   :84.43   Max.   :84.43    Max.   :1.529   Max.   :1.529     Max.   :253103.4   Max.   :230063.7  
+##  NA&#39;s   :8259       NA&#39;s   :773        NA&#39;s   :8259       NA&#39;s   :773        NA&#39;s   :8259    NA&#39;s   :773      NA&#39;s   :8188    NA&#39;s   :5009      NA&#39;s   :1909       NA&#39;s   :1499</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs], log)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs_negative, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs_negative], <span class="cf">function</span>(col) { <span class="sc">-</span><span class="fu">log</span>(<span class="sc">-</span>col) })</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">paste</span> (<span class="st">&quot;lg&quot;</span>, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative)), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)])</span></code></pre></div>
+<pre><code>##  lg_asfr_adol_wpp lg_asfr_adol_wpp_avg   lg_imr_wpp     lg_imr_wpp_avg    lg_life_exp_wpp lg_life_exp_wpp_avg lg_mys_ratio_hdr lg_mys_ratio_hdr_avg lg_pc_rgdpe_pwt  lg_pc_rgdpe_pwt_avg
+##  Min.   :-5.491   Min.   :-5.491       Min.   :-5.766   Min.   :-5.7659   Min.   :2.673   Min.   :2.674       Min.   :-2.262   Min.   :-2.262       Min.   : 5.422   Min.   : 6.048     
+##  1st Qu.:-4.763   1st Qu.:-4.743       1st Qu.:-4.453   1st Qu.:-4.4064   1st Qu.:4.008   1st Qu.:4.021       1st Qu.:-0.309   1st Qu.:-0.366       1st Qu.: 7.721   1st Qu.: 7.734     
+##  Median :-4.242   Median :-4.221       Median :-3.693   Median :-3.6446   Median :4.203   Median :4.209       Median :-0.068   Median :-0.085       Median : 8.642   Median : 8.677     
+##  Mean   :-3.996   Mean   :-3.983       Mean   :-3.521   Mean   :-3.4863   Mean   :4.135   Mean   :4.143       Mean   :-0.194   Mean   :-0.227       Mean   : 8.662   Mean   : 8.686     
+##  3rd Qu.:-3.390   3rd Qu.:-3.377       3rd Qu.:-2.732   3rd Qu.:-2.7039   3rd Qu.:4.289   3rd Qu.:4.291       3rd Qu.: 0.000   3rd Qu.:-0.010       3rd Qu.: 9.594   3rd Qu.: 9.619     
+##  Max.   : 1.262   Max.   : 1.262       Max.   :-0.226   Max.   :-0.2263   Max.   :4.436   Max.   :4.436       Max.   : 0.425   Max.   : 0.425       Max.   :12.442   Max.   :12.346     
+##  NA&#39;s   :8259     NA&#39;s   :773          NA&#39;s   :8259     NA&#39;s   :773       NA&#39;s   :8259    NA&#39;s   :773         NA&#39;s   :8188     NA&#39;s   :5009         NA&#39;s   :1909     NA&#39;s   :1499</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>CodePerformance <span class="ot">&lt;-</span> <span class="cf">function</span>(y_var, x_vars, df) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  x_vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(x_vars, <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  equation <span class="ot">&lt;-</span> <span class="fu">paste</span>(y_var, <span class="st">&quot;~&quot;</span>, x_vars)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df, <span class="at">country =</span> country, <span class="at">year =</span> year))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  df[, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> df[, y_var] <span class="sc">-</span> df<span class="sc">$</span>predicted</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))])</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(variables<span class="sc">$</span>health, variables<span class="sc">$</span>gender)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">c</span>(vars, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1965</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vars, <span class="cf">function</span>(var) {</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    dat <span class="ot">&lt;-</span> data[data<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, var)]</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">nrow</span>(<span class="fu">na.omit</span>(dat)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">CodePerformance</span>(<span class="at">y_var =</span> var, <span class="at">x_vars =</span> <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, <span class="at">df =</span> dat)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>      } </span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> results[<span class="sc">!</span><span class="fu">unlist</span>(<span class="fu">lapply</span>(results, is.null))]</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, results)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> performance_measures)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, performance_measures, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(data, codebook, categories, variables, <span class="at">file =</span> <span class="st">&quot;_data/LSCMWG_working_data.RData&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+
+<script type="text/javascript" src="links.js"></script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
