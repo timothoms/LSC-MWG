@@ -119,24 +119,24 @@ RunModels <- function(equations,
   }) )
   test_args_list <- list(
     ## unit effects
-    list(testfunction = "pFtest", x_estimator = "fe", z_estimator = "ols"),
-    list(testfunction = "plmtest", x_estimator = "ols"),
-    list(testfunction = "plmtest", x_estimator = "ols", effect = "time"),
-    list(testfunction = "plmtest", x_estimator = "ols", effect = "twoways"),
+    list(testfunction = "pFtest", x_estimator = "fe", z_estimator = "ols", what = "unit effects"),
+    list(testfunction = "plmtest", x_estimator = "ols", what = "unit effects"),
+    list(testfunction = "plmtest", x_estimator = "ols", effect = "time", what = "unit effects"),
+    list(testfunction = "plmtest", x_estimator = "ols", effect = "twoways", what = "unit effects"),
     ## correlated effects
-    list(testfunction = "phtest", x_estimator = "fe", x2_estimator = "re"),
-    list(testfunction = "phtest", x_estimator = "fegls", x2_estimator = "ggls", note = "(FGLS)"),
-    ## any type of serial correlation of time-decaying kind in the ideosyncratic error terms
-    list(testfunction = "pwtest", x_estimator = "ols"),
-    ## serial correlation: detecting features of persistence
-    list(testfunction = "pbsytest", x_estimator = "ols", test = "ar"),
-    list(testfunction = "pbsytest", x_estimator = "ols", test = "re"),
+    list(testfunction = "phtest", x_estimator = "fe", x2_estimator = "re", what = "correlated effects"),
+    list(testfunction = "phtest", x_estimator = "fegls", x2_estimator = "ggls", note = "(FGLS)", what = "correlated effects"),
+    ## any type of serial corr. of time-decaying kind in the ideosyncratic error terms
+    list(testfunction = "pwtest", x_estimator = "ols", what = "ideosyncratic serial corr."),
+    ## serial corr.: detecting features of persistence
+    list(testfunction = "pbsytest", x_estimator = "ols", test = "ar", what = "persistent serial corr."),
+    list(testfunction = "pbsytest", x_estimator = "ols", test = "re", what = "persistent serial corr."),
     ## list(testfunction = "pbsytest", x_estimator = "ols", test = "j"),
-    list(testfunction = "pbltest", x_estimator = "re", alternative = "onesided"),
-    ## traditional serial correlation tests
+    list(testfunction = "pbltest", x_estimator = "re", alternative = "onesided", what = "persistent serial corr."),
+    ## traditional serial corr. tests
     # list(testfunction = "pbgtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
     # list(testfunction = "pdwtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
-    list(testfunction = "pwartest", x_estimator = "fe")
+    list(testfunction = "pwartest", x_estimator = "fe", what = "traditional serial corr.")
   )
   names(models) <- models <- unique(unlist(lapply(estlist, names)))
   results <- lapply(test_args_list, function(test_args) {
@@ -144,21 +144,22 @@ RunModels <- function(equations,
       args$x <- estlist[[args$x_estimator]][[modelname]]$fit
       if("z_estimator" %in% names(args)) args$z <- estlist[[args$z_estimator]][[modelname]]$fit
       if("x2_estimator" %in% names(args)) args$x2 <- estlist[[args$x2_estimator]][[modelname]]$fit
+      test_resultsmethod <- paste(test_results$testfunction, test_resultsmethod, sep = ": ")
       exclude <- c("testfunction", "x_estimator", "z_estimator", "note")
       test_results <- do.call(args$testfunction, args = args[!names(args) %in% exclude], quote = TRUE)
       if("note" %in% names(args)) test_results$method <- paste(test_results$method, args$note)
-      data.frame(test_results[c("method", "alternative", "p.value")])
+      data.frame(test_results[c("method", "alternative", "p.value", "what")])
     })
     tests <- lapply(names(tests), function(modelname) {
       names(tests[[modelname]])[3] <- modelname
       return(tests[[modelname]])
     })
-    Reduce(f = function(...) merge(..., by = c("method", "alternative"), all = TRUE), x = tests)
+    Reduce(f = function(...) merge(..., by = c("method", "alternative", "what"), all = TRUE), x = tests)
   })
   tests <- do.call(rbind, results)
-  tests[, !names(tests) %in% c("method", "alternative")] <- 
+  tests[, !names(tests) %in% c("method", "alternative", "what")] <- 
     format(round(tests[, !names(tests) %in% c("method", "alternative")], 3), nsmall = 3)
-  tests <- tests[, c("method", names(tests)[!names(tests) %in% c("method", "alternative")], "alternative")]
+  tests <- tests[, c("method", names(tests)[!names(tests) %in% c("method", "alternative", "what")], "alternative", "what")]
   estimators_to_show <- estimators_to_show[estimators_to_show %in% names(estlist)]
   if(pdfswitch & !is.null(pdfname)) pdf(file = paste("pdfs/", pdfname, ".pdf", sep = ""), width = 16, height = 9)
   RegressionFig(estlist = estlist[estimators_to_show], 
