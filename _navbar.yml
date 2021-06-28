@@ -21,7 +21,7 @@ left:
     href: panel3lags.html
   - text: "Summary"
     href: summary.html
-- text: "Sequences""
+- text: "Sequences"
   href: sequences.html
 right:
 - icon: fa-github fa-lg
