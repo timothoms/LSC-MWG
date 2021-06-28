@@ -88,7 +88,9 @@ The analyses of various violence outcomes more clearly support the theoretical f
 
 However, the evidence is much more consistent and supportive of vicious cycles when using our classifications. The low classification is associated with more internal war, internal conflict deaths, non-state conflict deaths and homicides. The high classification (indicating strong performance on both health and gender) is associated with less internal conflict civilian deaths and homicides, but also, surprisingly, with more violent state repression. Importantly, a three-way vicious cycle between health, gender and violence is strongly supported in many models by the interaction of the lagged violence variables with the low classification; these models examine the effect of previous levels of violence in countries that perform poorly on health and gender on subsequent levels of violence. These interactions are associated with more internal war, internal conflict deaths and civilian deaths, non-state conflict deaths, physical integrity violations, extra-judicial killings and homicides, compared to countries not included in the low and high classifications. These findings strongly suggest that violence begets more violence where countries perform very poorly on both health and gender. By contrast, positive interaction effects of the high classification contradict the notion of virtuous cycles.  
 
-##### Health & Gender Results
+##### Health & Gender Results {.tabset .tabset-fade .tabset-pills}
+
+###### 1970-2018, 1 lag
 
 |                                            | Life Expectancy | Infant Mortality | Mean Years of Schooling | Adolescent Fertility Rate |
 |--------------------------------------------|-----------------|------------------|-------------------------|---------------------------|
@@ -138,7 +140,15 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 | Homicides: low interaction                 |     |       |       |       |
 | Homicides: high interaction                |     |      ~|       |       |
 
-##### Violence Results
+###### 1995-2015, 1 lag
+
+###### 1975-2018, 2 lags
+
+###### 1980-2018, 3 lags
+
+##### Violence Results {.tabset .tabset-fade .tabset-pills}
+
+###### 1970-2018, 1 lag
 
 |                           | Conflict | War | Conflict Deaths | Conflict Civilian Deaths | OSV | OSV Deaths | NSC | NSC Deaths | NSC Civilian Deaths | LPI | Torture | Killings | Homicides |
 |---------------------------|----------|-----|-----------------|--------------------------|-----|------------|-----|------------|---------------------|-----|---------|----------|-----------|
@@ -151,6 +161,12 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 | lagged DV                 |$+$|$+$|$+$|  $+$|  $+$|       |  $+$|$+$|$+$|      $+$|  $+$|    $+$|    $+$|
 | low interaction           |   |$+$|$+$|  $+$|     |       |     |$+$|   |      $+$|     |    $+$|    $+$|
 | high interaction          |   |   |   |     |     |       |     |   |   |    $[+]$|     |  $[+]$|$[(+)]$|
+
+###### 1995-2015, 1 lag
+
+###### 1975-2018, 2 lags
+
+###### 1980-2018, 3 lags
 
 #### Discussion
 
