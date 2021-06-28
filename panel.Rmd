@@ -1408,7 +1408,7 @@ results$tests
 
 
 ```{r echo = FALSE, eval = params$incl_new, include = params$incl_new}
-knitr::asis_output("##### NEW DV: DALYs (DALYs) {.tabset .tabset-fade .tabset-pills}")
+knitr::asis_output("##### NEW DV: Disability-adjusted Life Years (DALYs) {.tabset .tabset-fade .tabset-pills}")
 ```
 ```{r echo = FALSE, eval = params$incl_new, include = params$incl_new}
 knitr::asis_output("###### Base models")
