@@ -118,48 +118,47 @@ RunModels <- function(equations,
     })
   }) )
   test_args_list <- list(
-    ## unit effects
-    list(testfunction = "pFtest", x_estimator = "fe", z_estimator = "ols", what = "unit effects"),
-    list(testfunction = "plmtest", x_estimator = "ols", what = "unit effects"),
-    list(testfunction = "plmtest", x_estimator = "ols", effect = "time", what = "unit effects"),
-    list(testfunction = "plmtest", x_estimator = "ols", effect = "twoways", what = "unit effects"),
-    ## correlated effects
-    list(testfunction = "phtest", x_estimator = "fe", x2_estimator = "re", what = "correlated effects"),
-    list(testfunction = "phtest", x_estimator = "fegls", x2_estimator = "ggls", note = "(FGLS)", what = "correlated effects"),
+    list(what = "unit effects", testfunction = "pFtest", x_estimator = "fe", z_estimator = "ols"),
+    list(what = "unit effects", testfunction = "plmtest", x_estimator = "ols"),
+    list(what = "unit effects", testfunction = "plmtest", x_estimator = "ols", effect = "time"),
+    list(what = "unit effects", testfunction = "plmtest", x_estimator = "ols", effect = "twoways"),
+    list(what = "correlated effects", testfunction = "phtest", x_estimator = "fe", x2_estimator = "re"),
+    list(what = "correlated effects", testfunction = "phtest", x_estimator = "fegls", x2_estimator = "ggls", note = "(FGLS)"),
     ## any type of serial corr. of time-decaying kind in the ideosyncratic error terms
-    list(testfunction = "pwtest", x_estimator = "ols", what = "ideosyncratic serial corr."),
+    list(what = "ideosyncratic serial corr.", testfunction = "pwtest", x_estimator = "ols"),
     ## serial corr.: detecting features of persistence
-    list(testfunction = "pbsytest", x_estimator = "ols", test = "ar", what = "persistent serial corr."),
-    list(testfunction = "pbsytest", x_estimator = "ols", test = "re", what = "persistent serial corr."),
-    ## list(testfunction = "pbsytest", x_estimator = "ols", test = "j"),
-    list(testfunction = "pbltest", x_estimator = "re", alternative = "onesided", what = "persistent serial corr."),
-    ## traditional serial corr. tests
-    # list(testfunction = "pbgtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
-    # list(testfunction = "pdwtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
-    list(testfunction = "pwartest", x_estimator = "fe", what = "traditional serial corr.")
+    list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "ar"),
+    list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "re"),
+    ## list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "j"),
+    list(what = "persistent serial corr.", testfunction = "pbltest", x_estimator = "re", alternative = "onesided"),
+    # list(what = "traditional serial corr.", testfunction = "pbgtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
+    # list(what = "traditional serial corr.", testfunction = "pdwtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
+    list(what = "traditional serial corr.", testfunction = "pwartest", x_estimator = "fe")
   )
   names(models) <- models <- unique(unlist(lapply(estlist, names)))
-  results <- lapply(test_args_list, function(test_args) {
-    tests <- lapply(models, function(modelname, args = test_args) {
+  results <- lapply(test_args_list, function(test_args) { 
+    tests <- lapply(models, function(modelname, args = test_args) { 
       args$x <- estlist[[args$x_estimator]][[modelname]]$fit
       if("z_estimator" %in% names(args)) args$z <- estlist[[args$z_estimator]][[modelname]]$fit
       if("x2_estimator" %in% names(args)) args$x2 <- estlist[[args$x2_estimator]][[modelname]]$fit
-      test_resultsmethod <- paste(test_results$testfunction, test_resultsmethod, sep = ": ")
       exclude <- c("testfunction", "x_estimator", "z_estimator", "note")
       test_results <- do.call(args$testfunction, args = args[!names(args) %in% exclude], quote = TRUE)
+      test_results$method <- paste(args$testfunction, test_results$method, sep = ": ")
       if("note" %in% names(args)) test_results$method <- paste(test_results$method, args$note)
-      data.frame(test_results[c("method", "alternative", "p.value", "what")])
+      data.frame(what = args$what, test_results[c("method", "alternative", "p.value")])
     })
     tests <- lapply(names(tests), function(modelname) {
-      names(tests[[modelname]])[3] <- modelname
+      names(tests[[modelname]])[4] <- modelname
       return(tests[[modelname]])
     })
-    Reduce(f = function(...) merge(..., by = c("method", "alternative", "what"), all = TRUE), x = tests)
+    Reduce(f = function(...) merge(..., by = c("what", "method", "alternative"), all = TRUE), x = tests)
   })
   tests <- do.call(rbind, results)
-  tests[, !names(tests) %in% c("method", "alternative", "what")] <- 
-    format(round(tests[, !names(tests) %in% c("method", "alternative")], 3), nsmall = 3)
-  tests <- tests[, c("method", names(tests)[!names(tests) %in% c("method", "alternative", "what")], "alternative", "what")]
+  tests[, !names(tests) %in% c("what", "method", "alternative")] <- 
+    format(round(tests[, !names(tests) %in% c("what", "method", "alternative")], 3), nsmall = 3)
+  
+  
+  tests <- tests[, c("what", "method", names(tests)[!names(tests) %in% c("what", "method", "alternative")], "alternative")]
   estimators_to_show <- estimators_to_show[estimators_to_show %in% names(estlist)]
   if(pdfswitch & !is.null(pdfname)) pdf(file = paste("pdfs/", pdfname, ".pdf", sep = ""), width = 16, height = 9)
   RegressionFig(estlist = estlist[estimators_to_show], 
@@ -609,11 +608,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r life_exp_violence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results$tests
 ```
@@ -1003,11 +1001,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r imr_violence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results$tests
 ```
@@ -1397,11 +1394,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r ufmr_violence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results$tests
 ```
@@ -1791,11 +1787,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r daly_violence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results$tests
 ```
@@ -2185,11 +2180,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r mys_violence, eval = params$incl_new, include = params$incl_new}
 results_mys <- RunModels(equations = c(
+  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results_mys$tests
 ```
@@ -2577,11 +2571,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r asfr_violence, eval = params$incl_new, include = params$incl_new}
 results_mys <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results_mys$tests
 ```
@@ -2969,11 +2962,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r labor_violence, eval = params$incl_new, include = params$incl_new}
 results_mys <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results_mys$tests
 ```
@@ -3361,11 +3353,10 @@ knitr::asis_output("###### Violence controls (NEW)")
 ```
 ```{r gii_violence, eval = params$incl_new, include = params$incl_new}
 results_mys <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_conflict_internal + lag_conflict_non_state + lag_conflict_one_sided,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate,
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_latentmean_fariss + lag_lg_hom_odcwho_rate)
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp + lag_lg_deaths_civilians_int_rate + lag_lg_deaths_civilians_nsc_rate + lag_lg_deaths_civilians_osv_rate + lag_lg_hom_odcwho_rate)
 )
 results_mys$tests
 ```
