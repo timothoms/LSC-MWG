@@ -94,8 +94,9 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 
 ###### 1970-2018, 1 lag
 
-| Base Models                   | Life Exp.                 | IMR     | UFMR | DALYs | MYS | Adol. Fert. | Labour Part. Ratio | GII |
+|                               | Life Exp.                 | IMR     | UFMR | DALYs | MYS | Adol. Fert. | Labour Part. Ratio | GII |
 |:------------------------------|:-------------------------:|:-------:|:----:|:-----:|:---:|:-----------:|:------------------:|:---:|
+| **Base Models**               |                           |         |      |       |     |             |                    |     |
 | Life Expectancy               |                        $+$|       na|      |       |     |          $+$|                    |     |
 | Infant Mortality              |                         na|      $+$|      |       |     |          $+$|                    |     |
 | MYS Ratio                     |                        $+$|      $+$|      |       |  $+$|           na|                    |     |
@@ -105,9 +106,7 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 | G>H classification            |$[-]$ (mid-upp) / $+$ (low)|    $[-]$|      |       |   na|           na|                    |     |
 | mid classification            |                  $+$ (low)|         |      |       |   na|           na|                    |     |
 | upp classification            |                  $+$ (low)|         |      |       |     |             |                    |     |
-
-| Internal Conflict             | Life Exp.                 | IMR     | UFMR | DALYs | MYS | Adol. Fert. | Labour Part. Ratio | GII |
-|:------------------------------|:-------------------------:|:-------:|:----:|:-----:|:---:|:-----------:|:------------------:|:---:|
+| **Internal Conflict**         |                           |         |      |       |     |             |                    |     |
 | Conflict                      |                        $+$|         |      |       |     |             |                    |     |
 | Conflict: low                 |                        $+$|         |      |       |     |             |                    |     |
 | Conflict: H>G                 |                           |         |      |       |   na|           na|                    |     |
@@ -132,9 +131,7 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 | Conflict Civ. Deaths: G>H     |                           |      $-$|      |       |   na|           na|                    |     |
 | Conflict Civ. Deaths: mid     |                           |         |      |       |     |             |                    |     |
 | Conflict Civ. Deaths: upp     |                           |         |      |       |     |             |                    |     |
-
-| One-sided Violence            | Life Exp.                 | IMR     | UFMR | DALYs | MYS | Adol. Fert. | Labour Part. Ratio | GII |
-|:------------------------------|:-------------------------:|:-------:|:----:|:-----:|:---:|:-----------:|:------------------:|:---:|
+| **One-sided Violence**        |                           |         |      |       |     |             |                    |     |
 | OSV                           |                           |    $[-]$|      |       |     |             |                    |     |
 | OSV: low                      |                           |      $-$|      |       |  $+$|          $+$|                    |     |
 | OSV: H>G                      |                           |         |      |       |   na|           na|                    |     |
@@ -147,9 +144,7 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 | OSV Deaths: G>H               |                           |         |      |       |   na|           na|                    |     |
 | OSV Deaths: mid               |                           |         |      |       |     |             |                    |     |
 | OSV Deaths: upp               |                           |         |      |       |     |             |                    |     |
-
-| Societal Violence             | Life Exp.                 | IMR     | UFMR | DALYs | MYS | Adol. Fert. | Labour Part. Ratio | GII |
-|:------------------------------|:-------------------------:|:-------:|:----:|:-----:|:---:|:-----------:|:------------------:|:---:|
+| **Societal Violence**         |                           |         |      |       |     |             |                    |     |
 | NSC                           |                           |         |      |       |     |          $+$|                    |     |
 | NSC: low                      |                           |         |      |       |     |             |                    |     |
 | NSC: H>G                      |                           |         |      |       |   na|           na|                    |     |
@@ -174,9 +169,7 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 | Homicides: G>H                |                      $[+]$|      $+$|      |       |   na|           na|                    |     |
 | Homicides: mid                |               $[-]$ (prev)|         |      |       |     |             |                    |     |
 | Homicides: upp                |                           |         |      |       |     |             |                    |     |
-
-| State Repression              | Life Exp.                 | IMR     | UFMR | DALYs | MYS | Adol. Fert. | Labour Part. Ratio | GII |
-|:------------------------------|:-------------------------:|:-------:|:----:|:-----:|:---:|:-----------:|:------------------:|:---:|
+| **State Repression**          |                           |         |      |       |     |             |                    |     |
 | LPI                           |                           |      $+$|      |       |  $-$|        $[+]$|                    |     |
 | LPI: low                      |                           |         |      |       |     |             |                    |     |
 | LPI: H>G                      |                           |      $+$|      |       |   na|           na|                    |     |
@@ -206,23 +199,23 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 
 ###### 1970-2018, 1 lag
 
-|                           | Confl. | War | Confl. Deaths | Conflict Civ. Deaths | OSV | OSV Deaths | NSC | NSC Deaths | NSC Civ. Deaths | LPI   | Torture | Killings | Homicides |
-|:--------------------------|:------:|:---:|:-------------:|:--------------------:|:---:|:----------:|:---:|:----------:|:---------------:|:-----:|:-------:|:--------:|:---------:|
-| Life Expectancy           |        |     |               |                   $+$|  $-$|       $[+]$|     |            |                 |    $+$|    $[-]$|          |           |
-| Infant Mortality          |     $-$|     |               |                      |$[-]$|            |     |            |                 |  $[-]$|         |          |           |
-| MYS Ratio                 |        |  $-$|               |                      |     |         $-$|     |            |                 |    $-$|         |          |           |
-| Adolescent Fertility Rate |     $-$|     |               |                      |     |            |     |            |                 |$+/[-]$|         |     $[+]$|        $+$|
-| low classification        |        |  $+$|            $+$|                      |     |            |  $-$|         $+$|                 |       |         |          |        $+$|
-| H>G classification        |      na|   na|             na|                    na|   na|          na|   na|          na|               na|     na|       na|        na|         na|
-| G>H classification        |      na|   na|             na|                    na|   na|          na|   na|          na|               na|     na|       na|        na|         na|
-| mid classification        |      na|   na|             na|                    na|   na|          na|   na|          na|               na|     na|       na|        na|         na|
-| upp classification        |        |     |               |                   $-$|     |            |     |            |                 |    $+$|         |       $+$|        $-$|
-| lagged DV                 |     $+$|  $+$|            $+$|                   $+$|  $+$|            |  $+$|         $+$|              $+$|    $+$|      $+$|       $+$|        $+$|
-| low interaction           |        |  $+$|            $+$|                   $+$|     |            |     |         $+$|                 |    $+$|         |       $+$|        $+$|
-| H>G interaction           |      na|   na|             na|                    na|   na|          na|   na|          na|               na|     na|       na|        na|         na|
-| G>H interaction           |      na|   na|             na|                    na|   na|          na|   na|          na|               na|     na|       na|        na|         na|
-| mid interaction           |        |     |               |                      |     |            |     |            |                 |       |         |          |           |
-| upp interaction           |        |     |               |                      |     |            |     |            |                 |    $+$|         |       $+$|      $[+]$|
+|                           |Confl.| War |Confl. Deaths|Conflict Civ. Deaths| OSV |OSV Deaths| NSC | NSC Deaths | NSC Civ. Deaths | LPI   | Torture | Killings | Homicides |
+|:--------------------------|:----:|:---:|:-----------:|:------------------:|:---:|:--------:|:---:|:----------:|:---------------:|:-----:|:-------:|:--------:|:---------:|
+| Life Expectancy           |      |     |             |                 $+$|  $-$|     $[+]$|     |            |                 |    $+$|    $[-]$|          |           |
+| Infant Mortality          |   $-$|     |             |                    |$[-]$|          |     |            |                 |  $[-]$|         |          |           |
+| MYS Ratio                 |      |  $-$|             |                    |     |       $-$|     |            |                 |    $-$|         |          |           |
+| Adolescent Fertility Rate |   $-$|     |             |                    |     |          |     |            |                 |$+/[-]$|         |     $[+]$|        $+$|
+| low classification        |      |  $+$|          $+$|                    |     |          |  $-$|         $+$|                 |       |         |          |        $+$|
+| H>G classification        |    na|   na|           na|                  na|   na|        na|   na|          na|               na|     na|       na|        na|         na|
+| G>H classification        |    na|   na|           na|                  na|   na|        na|   na|          na|               na|     na|       na|        na|         na|
+| mid classification        |    na|   na|           na|                  na|   na|        na|   na|          na|               na|     na|       na|        na|         na|
+| upp classification        |      |     |             |                 $-$|     |          |     |            |                 |    $+$|         |       $+$|        $-$|
+| lagged DV                 |   $+$|  $+$|          $+$|                 $+$|  $+$|          |  $+$|         $+$|              $+$|    $+$|      $+$|       $+$|        $+$|
+| low interaction           |      |  $+$|          $+$|                 $+$|     |          |     |         $+$|                 |    $+$|         |       $+$|        $+$|
+| H>G interaction           |    na|   na|           na|                  na|   na|        na|   na|          na|               na|     na|       na|        na|         na|
+| G>H interaction           |    na|   na|           na|                  na|   na|        na|   na|          na|               na|     na|       na|        na|         na|
+| mid interaction           |      |     |             |                    |     |          |     |            |                 |       |         |          |           |
+| upp interaction           |      |     |             |                    |     |          |     |            |                 |    $+$|         |       $+$|      $[+]$|
 
 ###### 1995-2015, 1 lag
 
