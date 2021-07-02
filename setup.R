@@ -9,5 +9,5 @@ knitr::opts_chunk$set(echo = TRUE, cache = params$cache,
                       fig.width = 7, fig.height = 5,
                       out.width = "67%", out.height = "67%",
                       rownames.print = FALSE,
-                      rows.print = 10, cols.min.print = 8)
+                      rows.print = 10, cols.min.print = 10)
 options(width = 240, max.print = 5000)
