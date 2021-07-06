@@ -270,6 +270,9 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
+<li>
+  <a href="sequences.html">Sequences</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -331,18 +334,38 @@ $(document).ready(function () {
 </tr>
 <tr class="even">
 <td>health</td>
-<td><em>infant mortality rate</em></td>
+<td><em>infant mortality rate</em> (IMR)</td>
 <td>WPP</td>
 </tr>
 <tr class="odd">
+<td>health</td>
+<td><em>under-five mortality rate</em> (UFMR)</td>
+<td>WPP</td>
+</tr>
+<tr class="even">
+<td>health</td>
+<td><em>disability-adjusted life years</em> (DALYs)</td>
+<td>IHME</td>
+</tr>
+<tr class="odd">
 <td>gender</td>
-<td>mean years of schooling ratio</td>
+<td>mean years of schooling ratio (MYS)</td>
 <td>HDR</td>
 </tr>
 <tr class="even">
 <td>gender</td>
 <td><em>adolescent fertility rate</em></td>
 <td>WPP</td>
+</tr>
+<tr class="odd">
+<td>gender</td>
+<td>labour participation ratio</td>
+<td>ILO</td>
+</tr>
+<tr class="even">
+<td>gender</td>
+<td>Gender Inequality Index</td>
+<td>HDR</td>
 </tr>
 <tr class="odd">
 <td>state-based conflict</td>
@@ -430,16 +453,6 @@ $(document).ready(function () {
 <h4 class="tabset tabset-fade tabset-pills">Findings</h4>
 <p>The summary tables show the outcome variables (DVs) in colums and covariates (IVs) in the rows, with the following symbols indicating their statistical effects, based on all models (each cell in the table represents a separate model):</p>
 <table>
-<colgroup>
-<col width="11%" />
-<col width="88%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>Legend</th>
-<th></th>
-</tr>
-</thead>
 <tbody>
 <tr class="odd">
 <td><span class="math inline">\(+\)</span></td>
@@ -451,15 +464,7 @@ $(document).ready(function () {
 </tr>
 <tr class="odd">
 <td><span class="math inline">\([]\)</span></td>
-<td>statistical effect contradicting theoretical expectations</td>
-</tr>
-<tr class="even">
-<td><span class="math inline">\(()\)</span></td>
 <td>statistical effect not found in the preferred model (FE GGLS)</td>
-</tr>
-<tr class="odd">
-<td>~</td>
-<td>statistically significant interaction term but overall interaction effect is not statistically significant</td>
 </tr>
 <tr class="even">
 <td>na</td>
@@ -471,532 +476,1392 @@ $(document).ready(function () {
 <h5>Summary</h5>
 <p>The panel analyses find more support for vicious than virtuous cycles, and that these are more applicable to violence than gender and health outcomes.</p>
 <p>There is some evidence that health and gender outcomes reinforce each other, but the evidence is stronger for health than gender outcomes. Both the mean years of schooling (MYS) ratio in favor of females and the adolescent fertility rate (AFR) are positively associated with increased life expectancy, but only MYS is positively associated with improvements in the infant mortality rate (IMR). Recall here that both the IMR and AFR were inverted for the purpose of the analyses. This means that the higher the MYS ratio, the better the IMR. The AFR, which was also inverted, is negatively associated with the inverted IMR: this means that improvement in the AFR is associated with worsening in the IMR. For the gender outcomes, life expectancy and the IMR are associated with an improved AFR, but they have no statistical effects on MYS. When considering our classification, which operationalizes the vicious and virtuous cycles hypotheses with worst and best combinations of health and gender outcomes, the findings are clear and consistent: the low classification is associated with worse health and gender outcomes across all four variables, but the high classification is never statistically significant. This provides support for vicious cycles between health and gender but not virtuous cycles.</p>
-<p>Few of the violence variables have statistical effects on the gender and health outcomes that are consistent with the vicious and virtuous cycles hypotheses. In fact, many models suggest that violence is associated with better health and gender outcomes, as indicated by <span class="math inline">\([+]\)</span> in the table, and contradicting our theoretical framework. (The findings for the AFR are particularly noteworthy in this respect.) A few results are consistent with the vicious and virtuous cycles hypotheses, such as the associations of internal war with a worse AFR; internal conflict deaths and one-sided violence with worse infant mortality; the latent physical integrity measure with lower MYS ratios; and, unsurprisingly, homicides and extra-judicial killings with lower life expectancy. However, overall, the health and gender models only support a vicious cycle between health and gender, but do not provide much or consistent evidence for a three-way vicious cycle. Moreover, many models turn up null results.</p>
+<p>Few of the violence variables have statistical effects on the gender and health outcomes that are consistent with the vicious and virtuous cycles hypotheses. In fact, many models suggest that violence is associated with better health and gender outcomes, as indicated by <span class="math inline">\(+\)</span> in the table, and contradicting our theoretical framework. (The findings for the AFR are particularly noteworthy in this respect.) A few results are consistent with the vicious and virtuous cycles hypotheses, such as the associations of internal war with a worse AFR; internal conflict deaths and one-sided violence with worse infant mortality; the latent physical integrity measure with lower MYS ratios; and, unsurprisingly, homicides and extra-judicial killings with lower life expectancy. However, overall, the health and gender models only support a vicious cycle between health and gender, but do not provide much or consistent evidence for a three-way vicious cycle. Moreover, many models turn up null results.</p>
 <p>The analyses of various violence outcomes more clearly support the theoretical framework, though there are again several contradictory results with respect to the relationship between individual health and gender variables and violence variables, and many null results. Supporting the theoretical framework, higher life expectancy is associated with less one-sided violence episodes (but more deaths from such violence) and possibly with less state torture; improved infant mortality is associated with less internal conflict and possibly less one-sided violence and physical integrity violations; higher MYS ratios are associated with less internal conflict, one-sided violence deaths and physical integrity violations. While an improved AFR is associated with less internal conflict, it is also associated with more state violence and homicides. Like the analyses of health and gender outcomes, these results are not strongly supportive.</p>
 <p>However, the evidence is much more consistent and supportive of vicious cycles when using our classifications. The low classification is associated with more internal war, internal conflict deaths, non-state conflict deaths and homicides. The high classification (indicating strong performance on both health and gender) is associated with less internal conflict civilian deaths and homicides, but also, surprisingly, with more violent state repression. Importantly, a three-way vicious cycle between health, gender and violence is strongly supported in many models by the interaction of the lagged violence variables with the low classification; these models examine the effect of previous levels of violence in countries that perform poorly on health and gender on subsequent levels of violence. These interactions are associated with more internal war, internal conflict deaths and civilian deaths, non-state conflict deaths, physical integrity violations, extra-judicial killings and homicides, compared to countries not included in the low and high classifications. These findings strongly suggest that violence begets more violence where countries perform very poorly on both health and gender. By contrast, positive interaction effects of the high classification contradict the notion of virtuous cycles.</p>
 </div>
-<div id="health-gender-results" class="section level5">
-<h5>Health &amp; Gender Results</h5>
+<div id="health-gender-results" class="section level5 tabset tabset-fade tabset-pills">
+<h5 class="tabset tabset-fade tabset-pills">Health &amp; Gender Results</h5>
+<div id="lag" class="section level6">
+<h6>1970-2018, 1 lag</h6>
 <table>
-<colgroup>
-<col width="33%" />
-<col width="12%" />
-<col width="13%" />
-<col width="19%" />
-<col width="20%" />
-</colgroup>
 <thead>
 <tr class="header">
-<th></th>
-<th>Life Expectancy</th>
-<th>Infant Mortality</th>
-<th>Mean Years of Schooling</th>
-<th>Adolescent Fertility Rate</th>
+<th align="left">Base Models</th>
+<th align="center">Life Exp.</th>
+<th align="center">IMR</th>
+<th align="center">UFMR</th>
+<th align="center">DALYs</th>
+<th align="center">MYS</th>
+<th align="center">Adol. Fert.</th>
+<th align="center">Labour Part. Ratio</th>
+<th align="center">GII</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Life Expectancy</td>
-<td>na</td>
-<td>na</td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
+<td align="left">Life Expectancy</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Infant Mortality</td>
-<td>na</td>
-<td>na</td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
+<td align="left">Infant Mortality</td>
+<td align="center">na</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Mean Years of Schooling ratio</td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td>na</td>
-<td>na</td>
+<td align="left">MYS Ratio</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Adolescent Fertility Rate</td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\([-]\)</span></td>
-<td>na</td>
-<td>na</td>
+<td align="left">Adolescent Fertility Rate</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>low classification</td>
-<td><span class="math inline">\(-\)</span></td>
-<td><span class="math inline">\(-\)</span></td>
-<td><span class="math inline">\(-\)</span></td>
-<td><span class="math inline">\(-\)</span></td>
+<td align="left">low classification</td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"><span class="math inline">\(-\)</span>(prev)</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>high classification</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">H&gt;G classification</td>
+<td align="center"><span class="math inline">\([+]\)</span> (low)</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Conflict</td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">G&gt;H classification</td>
+<td align="center"><span class="math inline">\([-]\)</span> (mid-upp) / <span class="math inline">\(+\)</span> (low)</td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Conflict: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">mid classification</td>
+<td align="center"><span class="math inline">\(+\)</span> (low)</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Conflict: high interaction</td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
-<td></td>
-<td></td>
+<td align="left">upp classification</td>
+<td align="center"><span class="math inline">\(+\)</span> (low)</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="21%" />
+<col width="7%" />
+<col width="4%" />
+<col width="5%" />
+<col width="4%" />
+<col width="10%" />
+<col width="16%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Internal Conflict</th>
+<th align="center">Life Exp.</th>
+<th align="center">IMR</th>
+<th align="center">UFMR</th>
+<th align="center">DALYs</th>
+<th align="center">MYS</th>
+<th align="center">Adol. Fert.</th>
+<th align="center">Labour Part. Ratio</th>
+<th align="center">GII</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Conflict</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>War</td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\(-\)</span></td>
+<td align="left">Conflict: low</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>War: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>War: high interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict: G&gt;H</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Conflict Deaths</td>
-<td></td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">Conflict: mid</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Conflict Deaths: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">Conflict: upp</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span>(prev)</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Conflict Deaths: high interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">War</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Conflict Civilian Deaths</td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">War: low</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Conflict Civilian Deaths: low interaction</td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">War: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Conflict Civilian Deaths: high interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">War: G&gt;H</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>OSV</td>
-<td></td>
-<td><span class="math inline">\((-)\)</span></td>
-<td></td>
-<td></td>
+<td align="left">War: mid</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>OSV: low interaction</td>
-<td>~</td>
-<td><span class="math inline">\((-)\)</span></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">War: upp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>OSV: high interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Deaths</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>OSV Deaths</td>
-<td><span class="math inline">\([+]\)</span></td>
-<td><span class="math inline">\((-)\)</span></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">Conflict Deaths: low</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>OSV Deaths: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Deaths: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>OSV Deaths: high interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Deaths: G&gt;H</td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>NSC</td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">Conflict Deaths: mid</td>
+<td align="center"><span class="math inline">\([-]\)</span> (prev)</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>NSC: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Deaths: upp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>NSC: high interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Civ. Deaths</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>NSC Deaths</td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">Conflict Civ. Deaths: low</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>NSC Deaths: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Civ. Deaths: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>NSC Deaths: high interaction</td>
-<td></td>
-<td><span class="math inline">\([(+)]\)</span></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Civ. Deaths: G&gt;H</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>NSC Civilian Deaths</td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">Conflict Civ. Deaths: mid</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>NSC Civilian Deaths: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Conflict Civ. Deaths: upp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="21%" />
+<col width="7%" />
+<col width="4%" />
+<col width="5%" />
+<col width="4%" />
+<col width="10%" />
+<col width="16%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">One-sided Violence</th>
+<th align="center">Life Exp.</th>
+<th align="center">IMR</th>
+<th align="center">UFMR</th>
+<th align="center">DALYs</th>
+<th align="center">MYS</th>
+<th align="center">Adol. Fert.</th>
+<th align="center">Labour Part. Ratio</th>
+<th align="center">GII</th>
+</tr>
+</thead>
+<tbody>
 <tr class="odd">
-<td>NSC Civilian Deaths: high interaction</td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([(-)]\)</span></td>
-<td></td>
+<td align="left">OSV</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>LPI</td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td><span class="math inline">\(-\)</span></td>
-<td><span class="math inline">\([(+)]\)</span></td>
+<td align="left">OSV: low</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>LPI: low interaction</td>
-<td></td>
-<td>~</td>
-<td></td>
-<td></td>
+<td align="left">OSV: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>LPI: high interaction</td>
-<td>~</td>
-<td><span class="math inline">\((+)\)</span></td>
-<td>~</td>
-<td></td>
+<td align="left">OSV: G&gt;H</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Torture</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">OSV: mid</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Torture: low interaction</td>
-<td></td>
-<td>~</td>
-<td></td>
-<td>~</td>
+<td align="left">OSV: upp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Torture: high interaction</td>
-<td></td>
-<td><span class="math inline">\((+)\)</span></td>
-<td>~</td>
-<td></td>
+<td align="left">OSV Deaths</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Killings</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">OSV Deaths: low</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Killings: low interaction</td>
-<td><span class="math inline">\(-\)</span></td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td></td>
+<td align="left">OSV Deaths: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Killings: high interaction</td>
-<td></td>
-<td><span class="math inline">\((+)\)</span></td>
-<td>~</td>
-<td></td>
+<td align="left">OSV Deaths: G&gt;H</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Homicides</td>
-<td><span class="math inline">\(-\)</span></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">OSV Deaths: mid</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Homicides: low interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">OSV Deaths: upp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="21%" />
+<col width="7%" />
+<col width="4%" />
+<col width="5%" />
+<col width="4%" />
+<col width="10%" />
+<col width="16%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Societal Violence</th>
+<th align="center">Life Exp.</th>
+<th align="center">IMR</th>
+<th align="center">UFMR</th>
+<th align="center">DALYs</th>
+<th align="center">MYS</th>
+<th align="center">Adol. Fert.</th>
+<th align="center">Labour Part. Ratio</th>
+<th align="center">GII</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">NSC</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC: low</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Homicides: high interaction</td>
-<td></td>
-<td>~</td>
-<td></td>
-<td></td>
+<td align="left">NSC: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC: G&gt;H</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">NSC: mid</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC: upp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">NSC Deaths</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC Deaths: low</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">NSC Deaths: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC Deaths: G&gt;H</td>
+<td align="center"><span class="math inline">\((-)\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">NSC Deaths: mid</td>
+<td align="center"><span class="math inline">\((+)\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC Deaths: upp</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">NSC Civ. Deaths</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC Civ. Deaths: low</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">NSC Civ. Deaths: H&gt;G</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC Civ. Deaths: G&gt;H</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">NSC Civ. Deaths: mid</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">NSC Civ. Deaths: upp</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Homicides</td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Homicides: low</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Homicides: H&gt;G</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Homicides: G&gt;H</td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Homicides: mid</td>
+<td align="center"><span class="math inline">\([-]\)</span> (prev)</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Homicides: upp</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th align="left">State Repression</th>
+<th align="center">Life Exp.</th>
+<th align="center">IMR</th>
+<th align="center">UFMR</th>
+<th align="center">DALYs</th>
+<th align="center">MYS</th>
+<th align="center">Adol. Fert.</th>
+<th align="center">Labour Part. Ratio</th>
+<th align="center">GII</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">LPI</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">LPI: low</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">LPI: H&gt;G</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">LPI: G&gt;H</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">LPI: mid</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">LPI: upp</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Killings</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Killings: low</td>
+<td align="center"><span class="math inline">\(-\)</span> (prev)</td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Killings: H&gt;G</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Killings: G&gt;H</td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Killings: mid</td>
+<td align="center"><span class="math inline">\([+]\)</span> (prev)</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Killings: upp</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Torture</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Torture: low</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Torture: H&gt;G</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Torture: G&gt;H</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">Torture: mid</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">Torture: upp</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="violence-results" class="section level5">
-<h5>Violence Results</h5>
+<div id="lag-1" class="section level6">
+<h6>1995-2015, 1 lag</h6>
+</div>
+<div id="lags" class="section level6">
+<h6>1975-2018, 2 lags</h6>
+</div>
+<div id="lags-1" class="section level6">
+<h6>1980-2018, 3 lags</h6>
+</div>
+</div>
+<div id="violence-results" class="section level5 tabset tabset-fade tabset-pills">
+<h5 class="tabset tabset-fade tabset-pills">Violence Results</h5>
+<div id="lag-2" class="section level6">
+<h6>1970-2018, 1 lag</h6>
 <table>
 <colgroup>
-<col width="15%" />
-<col width="5%" />
-<col width="2%" />
+<col width="16%" />
+<col width="4%" />
+<col width="3%" />
 <col width="9%" />
-<col width="14%" />
-<col width="2%" />
-<col width="6%" />
-<col width="2%" />
-<col width="6%" />
-<col width="12%" />
-<col width="2%" />
+<col width="13%" />
+<col width="3%" />
+<col width="7%" />
+<col width="3%" />
+<col width="7%" />
+<col width="10%" />
+<col width="4%" />
 <col width="5%" />
-<col width="5%" />
+<col width="6%" />
 <col width="6%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th></th>
-<th>Conflict</th>
-<th>War</th>
-<th>Conflict Deaths</th>
-<th>Conflict Civilian Deaths</th>
-<th>OSV</th>
-<th>OSV Deaths</th>
-<th>NSC</th>
-<th>NSC Deaths</th>
-<th>NSC Civilian Deaths</th>
-<th>LPI</th>
-<th>Torture</th>
-<th>Killings</th>
-<th>Homicides</th>
+<th align="left"></th>
+<th align="center">Confl.</th>
+<th align="center">War</th>
+<th align="center">Confl. Deaths</th>
+<th align="center">Conflict Civ. Deaths</th>
+<th align="center">OSV</th>
+<th align="center">OSV Deaths</th>
+<th align="center">NSC</th>
+<th align="center">NSC Deaths</th>
+<th align="center">NSC Civ. Deaths</th>
+<th align="center">LPI</th>
+<th align="center">Torture</th>
+<th align="center">Killings</th>
+<th align="center">Homicides</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Life Expectancy</td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td><span class="math inline">\(-\)</span></td>
-<td><span class="math inline">\([(+)]\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td><span class="math inline">\((-)\)</span></td>
-<td></td>
-<td></td>
+<td align="left">Life Expectancy</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Infant Mortality</td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\((-)\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\((-)\)</span></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">Infant Mortality</td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([-]\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
-<td>Mean Years of Schooling</td>
-<td></td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td></td>
-<td></td>
+<td align="left">MYS Ratio</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
 </tr>
 <tr class="even">
-<td>Adolescent Fertility Rate</td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]/(-)\)</span></td>
-<td></td>
-<td><span class="math inline">\([(+)]\)</span></td>
-<td><span class="math inline">\([+]\)</span></td>
+<td align="left">Adolescent Fertility Rate</td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+/[-]\)</span></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
 </tr>
 <tr class="odd">
-<td>low classification</td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([-]\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
+<td align="left">low classification</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
 </tr>
 <tr class="even">
-<td>high classification</td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\(-\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td><span class="math inline">\(-\)</span></td>
+<td align="left">H&gt;G classification</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
 </tr>
 <tr class="odd">
-<td>lagged DV</td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
+<td align="left">G&gt;H classification</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
 </tr>
 <tr class="even">
-<td>low interaction</td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
-<td></td>
-<td><span class="math inline">\(+\)</span></td>
-<td><span class="math inline">\(+\)</span></td>
+<td align="left">mid classification</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
 </tr>
 <tr class="odd">
-<td>high interaction</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td></td>
-<td><span class="math inline">\([+]\)</span></td>
-<td><span class="math inline">\([(+)]\)</span></td>
+<td align="left">upp classification</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(-\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">lagged DV</td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+</tr>
+<tr class="odd">
+<td align="left">low interaction</td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+</tr>
+<tr class="even">
+<td align="left">H&gt;G interaction</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+</tr>
+<tr class="odd">
+<td align="left">G&gt;H interaction</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+<td align="center">na</td>
+</tr>
+<tr class="even">
+<td align="left">mid interaction</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">upp interaction</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"></td>
+<td align="center"><span class="math inline">\(+\)</span></td>
+<td align="center"><span class="math inline">\([+]\)</span></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div id="lag-3" class="section level6">
+<h6>1995-2015, 1 lag</h6>
+</div>
+<div id="lags-2" class="section level6">
+<h6>1975-2018, 2 lags</h6>
+</div>
+<div id="lags-3" class="section level6">
+<h6>1980-2018, 3 lags</h6>
+</div>
 </div>
 </div>
 <div id="discussion" class="section level4">
