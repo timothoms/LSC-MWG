@@ -156,7 +156,7 @@ RunModels <- function(equations,
   tests <- do.call(rbind, results)
   tests[, !names(tests) %in% c("what", "method", "alternative")] <- 
     format(round(tests[, !names(tests) %in% c("what", "method", "alternative")], 3), nsmall = 3)
-  tests <- tests[, c("method", "alternative", names(tests)[!names(tests) %in% c("method", "alternative", "what")])]
+  tests <- tests[, c("method", names(tests)[!names(tests) %in% c("method", "alternative", "what")], "alternative")]
   estimators_to_show <- estimators_to_show[estimators_to_show %in% names(estlist)]
   if(pdfswitch & !is.null(pdfname)) pdf(file = paste("pdfs/", pdfname, ".pdf", sep = ""), width = 16, height = 9)
   RegressionFig(estlist = estlist[estimators_to_show], 
