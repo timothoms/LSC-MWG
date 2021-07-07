@@ -94,116 +94,117 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 
 ###### 1970-2018, 1 lag
 
-| **_Base Models_**           | Life Expectancy           | IMR     | UFMR                  | DALYs   | MYS   |  Adolescent Fertility Rate  |  Labour Participation Ratio  | GII   |
-|:----------------------------|:-------------------------:|:-------:|:---------------------:|:-------:|:-----:|:---------------------------:|:----------------------------:|:-----:|
-| lagged DV                   |                        $+$|      $+$|                    $+$|         |    $+$|                             |                              |       |
-| Life Expectancy             |                           |       na|                     na|         |       |                          $+$|                              |       |
-| Infant Mortality            |                         na|         |                       |         |       |                          $+$|                              |       |
-| MYS Ratio                   |                        $+$|      $+$|                    $+$|         |       |                           na|                              |       |
-| Adolescent Fertility Rate   |                        $+$|      $-$|                    $-$|         |     na|                          $+$|                              |       |
-| low classification          |                        $-$|$-$(prev)|              $-$(prev)|         |    $-$|                          $-$|                              |       |
-| H>G classification          |                $[+]$ (low)|         |                       |         |     na|                           na|                              |       |
-| G>H classification          |$[-]$ (mid-upp) / $+$ (low)|    $(-)$|         $(-)$(mid/upp)|         |     na|                           na|                              |       |
-| mid classification          |                  $+$ (low)|         |                       |         |     na|                           na|                              |       |
-| upp classification          |                  $+$ (low)|         |                       |         |       |                             |                              |       |
-|                             |                           |         |                       |         |       |                             |                              |       |
-| **_Internal Conflict_**     | **Life Expectancy**       | **IMR** |               **IMR** |**DALYs**|**MYS**|**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| Conflict                    |                        $+$|         |                       |         |       |                             |                              |       |
-| Conflict: low               |                        $+$|         |                       |         |       |                             |                              |       |
-| Conflict: H>G               |                      $(+)$|      $+$|                       |         |     na|                           na|                              |       |
-| Conflict: G>H               |                           |      $-$|                       |         |     na|                           na|                              |       |
-| Conflict: mid               |                           |         |                  $(+)$|         |       |                             |                              |       |
-| Conflict: upp               |                           |$+$(prev)|              $+$(prev)|         |       |                             |                              |       |
-| War                         |                           |         |                       |         |       |                          $-$|                              |       |
-| War: low                    |                           |         |                       |         |       |                             |                              |       |
-| War: H>G                    |                           |         |                       |         |     na|                           na|                              |       |
-| War: G>H                    |                        $-$|      $-$|                    $-$|         |     na|                           na|                              |       |
-| War: mid                    |                        $-$|         |                       |         |       |                             |                              |       |
-| War: upp                    |                           |         |                       |         |       |                             |                              |       |
-| Conflict Deaths             |                           |      $-$|                    $-$|         |       |                          $+$|                              |       |
-| Conflict Deaths: low        |                           |      $-$|                    $-$|         |       |                          $+$|                              |       |
-| Conflict Deaths: H>G        |                           |         |                       |         |     na|                           na|                              |       |
-| Conflict Deaths: G>H        |                        $-$|      $-$|                    $-$|         |     na|                           na|                              |       |
-| Conflict Deaths: mid        |               $(-)$ (prev)|         |                       |         |       |                             |                              |       |
-| Conflict Deaths: upp        |                           |         |                       |         |       |                             |                              |       |
-| Conflict Civ. Deaths        |                        $+$|         |                       |         |       |                          $+$|                              |       |
-| Conflict Civ. Deaths: low   |                        $+$|         |                       |         |       |                          $+$|                              |       |
-| Conflict Civ. Deaths: H>G   |                           |         |                       |         |     na|                           na|                              |       |
-| Conflict Civ. Deaths: G>H   |                           |      $-$|                    $-$|         |     na|                           na|                              |       |
-| Conflict Civ. Deaths: mid   |                           |    $(-)$|                       |         |       |                             |                              |       |
-| Conflict Civ. Deaths: upp   |                           |         |                       |         |       |                             |                              |       |
-|                             |                           |         |                       |         |       |                             |                              |       |
-| **_One-sided Violence_**    | **Life Expectancy**       | **IMR** |               **IMR** |**DALYs**|**MYS**|**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| OSV                         |                           |    $(-)$|                  $(-)$|         |       |                             |                              |       |
-| OSV: low                    |                           |      $-$|                    $-$|         |    $+$|                          $+$|                              |       |
-| OSV: H>G                    |                           |         |                       |         |     na|                           na|                              |       |
-| OSV: G>H                    |                        $+$|         |                       |         |     na|                           na|                              |       |
-| OSV: mid                    |                        $+$|         |                       |         |       |                             |                              |       |
-| OSV: upp                    |                           |         |                       |         |       |                             |                              |       |
-| OSV Deaths                  |                        $+$|    $(-)$|                  $(-)$|         |       |                          $+$|                              |       |
-| OSV Deaths: low             |                        $+$|    $(-)$|                  $(-)$|         |       |                             |                              |       |
-| OSV Deaths: H>G             |                           |    $(-)$|                       |         |     na|                           na|                              |       |
-| OSV Deaths: G>H             |                           |         |                  $(-)$|         |     na|                           na|                              |       |
-| OSV Deaths: mid             |                           |         |                       |         |       |                             |                              |       |
-| OSV Deaths: upp             |                           |         |                       |         |       |                             |                              |       |
-|                             |                           |         |                       |         |       |                             |                              |       |
-| **_Societal Violence_**     | **Life Expectancy**       | **IMR** |               **IMR** |**DALYs**|**MYS**|**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| NSC                         |                           |         |                       |         |       |                          $+$|                              |       |
-| NSC: low                    |                           |         |                       |         |       |                             |                              |       |
-| NSC: H>G                    |                           |    $(-)$|                  $(-)$|         |     na|                           na|                              |       |
-| NSC: G>H                    |                           |         |                       |         |     na|                           na|                              |       |
-| NSC: mid                    |                           |         |                       |         |       |                             |                              |       |
-| NSC: upp                    |                           |         |                       |         |       |                             |                              |       |
-| NSC Deaths                  |                        $+$|         |                       |         |       |                          $+$|                              |       |
-| NSC Deaths: low             |                        $+$|         |                       |         |       |                             |                              |       |
-| NSC Deaths: H>G             |                           |    $(-)$|                  $(-)$|         |     na|                           na|                              |       |
-| NSC Deaths: G>H             |                      $(-)$|    $(-)$|                       |         |     na|                           na|                              |       |
-| NSC Deaths: mid             |                      $(+)$|         |                       |         |       |                             |                              |       |
-| NSC Deaths: upp             |                           |    $(+)$|                  $(+)$|         |       |                             |                              |       |
-| NSC Civ. Deaths             |                        $+$|         |                       |         |       |                          $+$|                              |       |
-| NSC Civ. Deaths: low        |                        $+$|         |                       |         |       |                             |                              |       |
-| NSC Civ. Deaths: H>G        |                           |    $(-)$|                  $(-)$|         |     na|                           na|                              |       |
-| NSC Civ. Deaths: G>H        |                        $+$|      $+$|                    $+$|         |     na|                           na|                              |       |
-| NSC Civ. Deaths: mid        |                           |         |                       |         |       |                             |                              |       |
-| NSC Civ. Deaths: upp        |                           |    $(+)$|                  $(+)$|         |  $[-]$|                             |                              |       |
-| Homicides                   |                        $-$|      $+$|                    $+$|         |       |                          $+$|                              |       |
-| Homicides: low              |                           |         |                    $+$|         |       |                             |                              |       |
-| Homicides: H>G              |                      $(-)$|         |                    $+$|         |     na|                           na|                              |       |
-| Homicides: G>H              |                           |      $+$|                       |         |     na|                           na|                              |       |
-| Homicides: mid              |                      $(-)$|$+$(prev)|$+$(prev) / $(-)$ / $+$|         |       |                             |                              |       |
-| Homicides: upp              |                        $-$|$+$(prev)|              $+$(prev)|         |       |                             |                              |       |
-|                             |                           |         |                       |         |       |                             |                              |       |
-| **_State Repression_**      | **Life Expectancy**       | **IMR** |               **IMR** |**DALYs**|**MYS**|**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| LPI                         |                           |      $+$|                    $+$|         |    $-$|                        $[+]$|                              |       |
-| LPI: low                    |                           |         |              $+$(prev)|         |       |                             |                              |       |
-| LPI: H>G                    |                           |      $+$|                    $+$|         |     na|                           na|                              |       |
-| LPI: G>H                    |                           |         |                    $+$|         |     na|                           na|                              |       |
-| LPI: mid                    |                           |      $+$|                    $+$|         |       |                             |                              |       |
-| LPI: upp                    |                      $(-)$|      $+$|                    $+$|         |       |                             |                              |       |
-| Killings                    |                           |         |                       |         |       |                             |                              |       |
-| Killings: low               |                 $-$ (prev)|      $-$|                  $(-)$|         |       |                             |                              |       |
-| Killings: H>G               |                           |      $+$|                    $+$|         |     na|                           na|                              |       |
-| Killings: G>H               |                      $(+)$|         |                       |         |     na|                           na|                              |       |
-| Killings: mid               |               $(+)$ (prev)|      $+$|                    $+$|         |       |                             |                              |       |
-| Killings: upp               |                           |    $(+)$|                  $(+)$|         |       |                             |                              |       |
-| Torture                     |                           |      $+$|                    $+$|         |       |                             |                              |       |
-| Torture: low                |                           |    $(-)$|                  $(-)$|         |       |                             |                              |       |
-| Torture: H>G                |                           |      $+$|                    $+$|         |     na|                           na|                              |       |
-| Torture: G>H                |                      $(+)$|         |                       |         |     na|                           na|                              |       |
-| Torture: mid                |                           |      $+$|                    $+$|         |       |                             |                              |       |
-| Torture: upp                |                           |    $(+)$|                  $(+)$|         |       |                             |                              |       |
-|                             |                           |         |                       |         |       |                             |                              |       |
-| **_Types of Violence_**     | **Life Expectancy**       | **IMR** |               **IMR** |**DALYs**|**MYS**|**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| Conflict Deaths (~UCDP)     |                        $-$|         |                       |         |       |                             |                              |       |
-| Conflict Deaths (~hom)      |                           |    $(-)$|                    $-$|         |       |                             |                              |       |
-| Conflict Civ. Deaths (~UCDP)|                      $(-)$|         |                       |         |       |                             |                              |       |
-| Conflict Civ. Deaths (~hom) |                           |         |                       |         |       |                             |                              |       |
-| NSC Deaths (~UCDP)          |                           |    $(+)$|                       |         |       |                             |                              |       |
-| NSC Civ. Deaths (~UCDP)     |                           |    $(+)$|                  $(+)$|         |       |                             |                              |       |
-| OSV Deaths (~UCDP)          |                        $+$|    $(-)$|                  $(-)$|         |       |                             |                              |       |
-| OSV Deaths (~UCDP civ)      |                        $+$|    $(-)$|                  $(-)$|         |       |                             |                              |       |
-| Homicides (UCDP)            |                        $-$|         |                       |         |       |                             |                              |       |
-| Homicides (UCDP civ)        |                        $-$|    $(-)$|                       |         |       |                             |                              |       |
+| **_Base Models_**           | Life Expectancy         | IMR     | UFMR                  | DALYs     | MYS     | Adolescent Fertility Rate   | Labour Participation Ratio   | GII     |
+|:----------------------------|:-----------------------:|:-------:|:---------------------:|:---------:|:-------:|:---------------------------:|:----------------------------:|:-------:|
+| lagged DV                   |                      $+$|      $+$|                    $+$|        $+$|      $+$|                          $+$|                           $+$|      $+$|
+| Life Expectancy             |                       DV|       na|                     na|         na|         |                          $+$|                              |         |
+| Infant Mortality            |                       na|       DV|                     na|         na|         |                          $+$|                              |      $+$|
+| MYS Ratio                   |                      $+$|      $+$|                    $+$|        $+$|       na|                           na|                            na|       na|
+| Adolescent Fertility Rate   |                      $+$|      $-$|                    $-$|        $-$|       na|                           DV|                            na|       na|
+| low classification          |                      $-$|$-$(prev)|              $-$(prev)| $(+)$(mid)|      $-$|                          $-$|                              |         |
+| H>G classification          |               $[+]$(low)|         |                       | $(-)$(low)| $+$(low)|                     $-$(mid)|                              |         |
+| G>H classification          |$[-]$(mid-upp) / $+$(low)|    $(-)$|         $(-)$(mid/upp)| $(+)$(mid)|         |                     $+$(low)|                      $-$(low)|         |
+| mid classification          |                 $+$(low)|         |                       | $(-)$(low)| $+$(low)|                     $+$(low)|                              |         |
+| upp classification          |                 $+$(low)|         |                       |           | $+$(low)|                     $+$(low)|                              |         |
+|                             |                         |         |                       |           |         |                             |                              |         |
+| **_Internal Conflict_**     | **Life Expectancy**     | **IMR** | **IMR**               | **DALYs** | **MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**| **GII** |
+| Conflict                    |                      $+$|         |                       |        $+$|         |                             |                           $-$|      $+$|
+| Conflict: low               |                      $+$|         |                       |           |         |                             |                              |    $(+)$|
+| Conflict: H>G               |                    $(+)$|      $+$|                       |           |         |                          $-$|                              |      $+$|
+| Conflict: G>H               |                         |      $-$|                       |      $(+)$|         |                             |                         $(-)$|         |
+| Conflict: mid               |                         |         |                  $(+)$|           |         |                             |                              |      $+$|
+| Conflict: upp               |                         |$+$(prev)|              $+$(prev)|           |         |                             |                           $-$|         |
+| War                         |                         |         |                       |        $+$|         |                          $-$|                              |         |
+| War: low                    |                         |         |                       |           |         |                             |                              |         |
+| War: H>G                    |                         |         |                       |      $(+)$|         |                          $-$|                              |         |
+| War: G>H                    |                      $-$|      $-$|                    $-$|           |         |                             |                              |      $-$|
+| War: mid                    |                      $-$|         |                       |           |         |                             |                              |    $(+)$|
+| War: upp                    |                         |         |                       |           |         |                             |                              |         |
+| Conflict Deaths             |                         |      $-$|                    $-$|        $+$|         |                          $+$|                              |         |
+| Conflict Deaths: low        |                         |      $-$|                    $-$|        $+$|         |                          $+$|                              |         |
+| Conflict Deaths: H>G        |                         |         |                       |           |         |                          $+$|                              |         |
+| Conflict Deaths: G>H        |                      $-$|      $-$|                    $-$|           |         |                    $(-)$/$-$|                              |         |
+| Conflict Deaths: mid        |             $(-)$ (prev)|         |                       |      $(+)$|      $-$|                          $-$|                              |    $(+)$|
+| Conflict Deaths: upp        |                         |         |                       |        $+$|         |                             |                              |         |
+| Conflict Civ. Deaths        |                      $+$|         |                       |        $+$|         |                          $+$|                              |         |
+| Conflict Civ. Deaths: low   |                      $+$|         |                       |        $+$|         |                          $+$|                              |         |
+| Conflict Civ. Deaths: H>G   |                         |         |                       |           |         |                             |                              |         |
+| Conflict Civ. Deaths: G>H   |                         |      $-$|                    $-$|           |         |                          $-$|                              |         |
+| Conflict Civ. Deaths: mid   |                         |    $(-)$|                       |      $(+)$|         |                          $-$|                              |         |
+| Conflict Civ. Deaths: upp   |                         |         |                       |        $+$|         |                             |                              |         |
+|                             |                         |         |                       |           |         |                             |                              |         |
+| **_One-sided Violence_**    | **Life Expectancy**     | **IMR** | **IMR**               | **DALYs** | **MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**| **GII** |
+| OSV                         |                         |    $(-)$|                  $(-)$|           |         |                             |                              |         |
+| OSV: low                    |                         |      $-$|                    $-$|           |      $+$|                          $+$|                              |         |
+| OSV: H>G                    |                         |         |                       |           |         |                             |                              |      $+$|
+| OSV: G>H                    |                      $+$|         |                       |           |         |                             |                              |         |
+| OSV: mid                    |                      $+$|         |                       |           |      $-$|                        $(-)$|                              |         |
+| OSV: upp                    |                         |         |                       |      $(+)$|         |                             |                              |         |
+| OSV Deaths                  |                      $+$|    $(-)$|                  $(-)$|        $+$|         |                          $+$|                              |         |
+| OSV Deaths: low             |                      $+$|    $(-)$|                  $(-)$|        $+$|         |                          $+$|                         $(-)$|         |
+| OSV Deaths: H>G             |                         |    $(-)$|                       |           |         |                             |                              |         |
+| OSV Deaths: G>H             |                         |         |                  $(-)$|           |      $+$|                             |                              |      $-$|
+| OSV Deaths: mid             |                         |         |                       |           |      $-$|                        $(-)$|                              |         |
+| OSV Deaths: upp             |                         |         |                       |           |         |                             |                           $-$|         |
+|                             |                         |         |                       |           |         |                             |                              |         |
+| **_Societal Violence_**     | **Life Expectancy**     | **IMR** | **IMR**               | **DALYs** | **MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**| **GII** |
+| NSC                         |                         |         |                       |        $+$|         |                          $+$|                              |         |
+| NSC: low                    |                         |         |                       |        $+$|         |                          $+$|                              |         |
+| NSC: H>G                    |                         |    $(-)$|                  $(-)$|           |         |                          $+$|                              |      $-$|
+| NSC: G>H                    |                         |         |                       |           |         |                             |                              |         |
+| NSC: mid                    |                         |         |                       |           |         |                             |                         $(-)$|         |
+| NSC: upp                    |                         |         |                       |           |    $(+)$|                          $+$|                              |         |
+| NSC Deaths                  |                      $+$|         |                       |        $+$|         |                          $+$|                              |         |
+| NSC Deaths: low             |                      $+$|         |                       |        $+$|         |                          $+$|                              |         |
+| NSC Deaths: H>G             |                         |    $(-)$|                  $(-)$|           |         |                          $+$|                              |         |
+| NSC Deaths: G>H             |                    $(-)$|    $(-)$|                       |           |         |                        $(+)$|                              |      $-$|
+| NSC Deaths: mid             |                    $(+)$|         |                       |           |         |                             |                         $(-)$|         |
+| NSC Deaths: upp             |                         |    $(+)$|                  $(+)$|      $(+)$|         |                        $(+)$|                              |         |
+| NSC Civ. Deaths             |                      $+$|         |                       |        $+$|         |                          $+$|                         $(+)$|         |
+| NSC Civ. Deaths: low        |                      $+$|         |                       |        $+$|         |                          $+$|                         $(+)$|         |
+| NSC Civ. Deaths: H>G        |                         |    $(-)$|                  $(-)$|      $(-)$|         |                             |                         $(-)$|         |
+| NSC Civ. Deaths: G>H        |                      $+$|      $+$|                    $+$|$(-)$ / $+$|         |                             |                         $(+)$|         |
+| NSC Civ. Deaths: mid        |                         |         |                       |           |         |                             |                              |         |
+| NSC Civ. Deaths: upp        |                         |    $(+)$|                  $(+)$|      $(+)$|    $(-)$|                             |                              |    $(+)$|
+| Homicides                   |                      $-$|      $+$|                    $+$|      $(-)$|         |                          $+$|                              |         |
+| Homicides: low              |                         |         |                    $+$|        $-$|         |                             |                              |         |
+| Homicides: H>G              |                    $(-)$|         |                    $+$|           |         |                             |                              |         |
+| Homicides: G>H              |                         |      $+$|                       |           |         |                             |                              |         |
+| Homicides: mid              |                    $(-)$|$+$(prev)|$+$(prev) / $(-)$ / $+$|      $(-)$|         |                             |                           $+$|         |
+| Homicides: upp              |                      $-$|$+$(prev)|              $+$(prev)|           |         |                          $+$|                           $-$|         |
+|                             |                         |         |                       |           |         |                             |                              |         |
+| **_State Repression_**      | **Life Expectancy**     | **IMR** | **IMR**               | **DALYs** | **MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**| **GII** |
+| LPI                         |                         |      $+$|                    $+$|        $+$|         |                        $(+)$|                              |      $+$|
+| LPI: low                    |                         |         |              $+$(prev)|           |         |                          $+$|                              |         |
+| LPI: H>G                    |                         |      $+$|                    $+$|      $(+)$|      $-$|                          $-$|                              |         |
+| LPI: G>H                    |                         |         |                    $+$|        $+$|      $-$|                          $+$|                              |         |
+| LPI: mid                    |                         |      $+$|                    $+$|      $(+)$|      $-$|                             |                              |         |
+| LPI: upp                    |                    $(-)$|      $+$|                    $+$|      $(+)$|         |                        $(+)$|                         $(-)$|      $+$|
+| Killings                    |                         |         |                       |           |         |                             |                              |         |
+| Killings: low               |               $-$ (prev)|      $-$|                  $(-)$|           |         |                             |                              |         |
+| Killings: H>G               |                         |      $+$|                    $+$|      $(+)$|         |                             |                              |         |
+| Killings: G>H               |                    $(+)$|         |                       |      $(+)$|         |                             |                              |         |
+| Killings: mid               |             $(+)$ (prev)|      $+$|                    $+$|      $(+)$|         |                             |                              |    $(+)$|
+| Killings: upp               |                         |    $(+)$|                  $(+)$|           |         |                        $(+)$|                              |         |
+| Torture                     |                         |      $+$|                    $+$|        $+$|         |                             |                              |         |
+| Torture: low                |                         |    $(-)$|                  $(-)$|           |         |                             |                              |         |
+| Torture: H>G                |                         |      $+$|                    $+$|      $(+)$|         |                             |                              |         |
+| Torture: G>H                |                    $(+)$|         |                       |      $(+)$|         |                          $+$|                              |         |
+| Torture: mid                |                         |      $+$|                    $+$|        $+$|         |                             |                           $-$|         |
+| Torture: upp                |                         |    $(+)$|                  $(+)$|      $(+)$|    $(+)$|                        $(+)$|                           $-$|         |
+|                             |                         |         |                       |           |         |                             |                              |         |
+| **_Types of Violence_**     | **Life Expectancy**     | **IMR** | **IMR**               | **DALYs** | **MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**| **GII** |
+| Conflict Deaths             |                      $-$|         |                       |           |      $-$|                        $(-)$|                              |         |
+| Conflict Deaths (~hom)      |                         |    $(-)$|                    $-$|        $+$|         |                             |                           $-$|         |
+| Conflict Civ. Deaths        |                    $(-)$|         |                       |        $+$|         |                             |                              |      $-$|
+| Conflict Civ. Deaths (~hom) |                         |         |                       |           |         |                             |                           $-$|         |
+| NSC Deaths                  |                         |    $(+)$|                       |           |         |                        $(+)$|                              |         |
+| NSC Civ. Deaths             |                         |    $(+)$|                  $(+)$|           |         |                          $+$|                         $(+)$|      $+$|
+| OSV Deaths                  |                      $+$|    $(-)$|                  $(-)$|        $+$|         |                             |                              |         |
+| OSV Deaths (~civ)           |                      $+$|    $(-)$|                  $(-)$|           |         |                             |                              |         |
+| Homicides                   |                      $-$|         |                       |        $+$|         |                        $(+)$|                              |         |
+| Homicides (~civ)            |                      $-$|    $(-)$|                       |      $(+)$|         |                             |                           $+$|         |
+
 
 ###### 1995-2015, 1 lag
 
@@ -217,6 +218,7 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 
 |                           |Confl.| War |Confl. Deaths|Conflict Civ. Deaths| OSV |OSV Deaths| NSC | NSC Deaths | NSC Civ. Deaths | LPI   | Torture | Killings | Homicides |
 |:--------------------------|:----:|:---:|:-----------:|:------------------:|:---:|:--------:|:---:|:----------:|:---------------:|:-----:|:-------:|:--------:|:---------:|
+| lagged DV                 |   $+$|     |             |                    |     |          |     |            |                 |       |         |          |           |
 | Life Expectancy           |      |     |             |                 $+$|  $-$|     $[+]$|     |            |                 |    $+$|    $[-]$|          |           |
 | Infant Mortality          |   $-$|     |             |                    |$[-]$|          |     |            |                 |  $[-]$|         |          |           |
 | MYS Ratio                 |      |  $-$|             |                    |     |       $-$|     |            |                 |    $-$|         |          |           |
@@ -227,16 +229,16 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 | mid classification        |      |     |             |                    |     |          |     |            |                 |       |         |          |           |
 | upp classification        |      |     |             |                 $-$|     |          |     |            |                 |    $+$|         |       $+$|        $-$|
 | lagged DV                 |   $+$|  $+$|          $+$|                 $+$|  $+$|          |  $+$|         $+$|              $+$|    $+$|      $+$|       $+$|        $+$|
-| low interaction           |      |  $+$|          $+$|                 $+$|     |          |     |         $+$|                 |    $+$|         |       $+$|        $+$|
-| H>G interaction           |      |     |             |                    |     |          |     |            |                 |       |         |          |           |
-| G>H interaction           |      |     |             |                    |     |          |     |            |                 |       |         |          |           |
-| mid interaction           |      |     |             |                    |     |          |     |            |                 |       |         |          |           |
-| upp interaction           |      |     |             |                    |     |          |     |            |                 |    $+$|         |       $+$|      $[+]$|
-| Conflict Deaths           |      |     |             |                    |     |          |     |            |                 |       |         |
-| NSC Deaths                |      |     |             |                    |     |          |     |            |                 |       |         |
-| OSV Deaths                |      |     |             |                    |     |          |     |            |                 |       |         |
-| LPI                       |      |     |             |                    |     |          |     |            |                 |       |         |
-| homicides                 |      |     |             |                    |     |          |     |            |                 |       |         |
+| low interaction           |   $+$|  $+$|          $+$|                 $+$|     |          |     |         $+$|                 |    $+$|         |       $+$|        $+$|
+| H>G interaction           |   $+$|     |             |                    |     |          |     |            |                 |       |         |          |           |
+| G>H interaction           |   $+$|     |             |                    |     |          |     |            |                 |       |         |          |           |
+| mid interaction           |   $+$|     |             |                    |     |          |     |            |                 |       |         |          |           |
+| upp interaction           |   $+$|     |             |                    |     |          |     |            |                 |    $+$|         |       $+$|      $[+]$|
+| Conflict Deaths           |      |     |             |                    |     |          |     |            |                 |       |         |          |           |
+| NSC Deaths                |      |     |             |                    |     |          |     |            |                 |       |         |          |           |
+| OSV Deaths                |   $+$|     |             |                    |     |          |     |            |                 |       |         |          |           |
+| LPI                       |   $+$|     |             |                    |     |          |     |            |                 |       |         |          |           |
+| homicides                 |   $+$|     |             |                    |     |          |     |            |                 |       |         |          |           |
 
 
 ###### 1995-2015, 1 lag
