@@ -184,9 +184,9 @@ InteractionEffect <- function(
   return(list(est = est, se = se))
 }
 IntPlot <- function(fit, eff_var, 
-  int_vars = c("G>H" = paste(eff_var, ":lag_class_GH", sep = ""), 
+  int_vars = c(low   = paste(eff_var, ":lag_class_low", sep = ""), 
+               "G>H" = paste(eff_var, ":lag_class_GH", sep = ""), 
                "H>G" = paste(eff_var, ":lag_class_HG", sep = ""), 
-               low   = paste(eff_var, ":lag_class_low", sep = ""), 
                mid   = paste(eff_var, ":lag_class_mid", sep = ""), 
                upp   = paste(eff_var, ":lag_class_upp", sep = "")), 
   modvalues = c(0, 1),
