@@ -271,25 +271,6 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r life_exp_war_incidence}
-results <- RunModels(equations = c(
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_life_exp_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE}
 knitr::asis_output("###### Internal conflict deaths")
 ```
 ```{r life_exp_conflict_deaths}
@@ -480,25 +461,6 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### State torture")
-```
-```{r life_exp_torture}
-results <- RunModels(equations = c(
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_life_exp_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE}
 knitr::asis_output("##### DV: Infant Mortality Rate (IMR) {.tabset .tabset-fade .tabset-pills}")
 ```
 ```{r echo = FALSE}
@@ -530,25 +492,6 @@ results$tests
 lapply(c("m2", "m3"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r imr_war_incidence}
-results <- RunModels(equations = c(
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_imr_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
 })
 ```
 
@@ -743,25 +686,6 @@ lapply(c("m2", "m3"), function(mod) {
 ```
 
 
-```{r echo = FALSE}
-knitr::asis_output("###### State torture")
-```
-```{r imr_torture}
-results <- RunModels(equations = c(
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_imr_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
 ```{r echo = FALSE, eval = params$incl_new}
 knitr::asis_output("##### DV: Under-five Mortality Rate (UFMR) {.tabset .tabset-fade .tabset-pills}")
 ```
@@ -794,25 +718,6 @@ results$tests
 lapply(c("m2", "m3"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r ufmr_war_incidence, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_ufmr_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
 })
 ```
 
@@ -1008,25 +913,6 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### State torture")
-```
-```{r ufmr_torture, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_ufmr_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE, eval = params$incl_new}
 knitr::asis_output("##### DV: Disability-adjusted Life Years (DALYs) {.tabset .tabset-fade .tabset-pills}")
 ```
 ```{r echo = FALSE, eval = params$incl_new}
@@ -1058,25 +944,6 @@ results$tests
 lapply(c("m2", "m3"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r daly_war_incidence, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_daly_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
 })
 ```
 
@@ -1271,25 +1138,6 @@ lapply(c("m2", "m3"), function(mod) {
 ```
 
 
-```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### State torture")
-```
-```{r daly_torture, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_daly_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
 #### Gender {.tabset .tabset-fade .tabset-pills}
 
 ```{r echo = FALSE}
@@ -1324,25 +1172,6 @@ results$tests
 lapply(c("m2", "m3"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r mys_war_incidence}
-results <- RunModels(equations = c(
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_mys_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
 })
 ```
 
@@ -1538,25 +1367,6 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### State torture")
-```
-```{r mys_torture}
-results <- RunModels(equations = c(
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_mys_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE}
 knitr::asis_output("##### DV: Adolescent Fertility Rate {.tabset .tabset-fade .tabset-pills}")
 ```
 ```{r echo = FALSE}
@@ -1588,25 +1398,6 @@ results$tests
 lapply(c("m2", "m3"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r asfr_war_incidence}
-results <- RunModels(equations = c(
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_asfr_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
 })
 ```
 
@@ -1801,25 +1592,6 @@ lapply(c("m2", "m3"), function(mod) {
 ```
 
 
-```{r echo = FALSE}
-knitr::asis_output("###### State torture")
-```
-```{r asfr_torture}
-results <- RunModels(equations = c(
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_asfr_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
 ```{r echo = FALSE, eval = params$incl_new}
 knitr::asis_output("##### DV: Labour participation ratio {.tabset .tabset-fade .tabset-pills}")
 ```
@@ -1852,25 +1624,6 @@ results$tests
 lapply(c("m2", "m3"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r labor_war_incidence, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_labor_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
 })
 ```
 
@@ -2066,25 +1819,6 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### State torture")
-```
-```{r labor_torture, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_labor_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE, eval = params$incl_new}
 knitr::asis_output("##### DV: Gender Inequality Index (GII) {.tabset .tabset-fade .tabset-pills}")
 ```
 ```{r echo = FALSE, eval = params$incl_new}
@@ -2116,25 +1850,6 @@ results$tests
 lapply(c("m2", "m3"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
-})
-```
-
-
-```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal war incidence")
-```
-```{r gii_war_incidence, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_gii_war_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
 })
 ```
 
@@ -2329,25 +2044,6 @@ lapply(c("m2", "m3"), function(mod) {
 ```
 
 
-```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### State torture")
-```
-```{r gii_torture, eval = params$incl_new, include = params$incl_new}
-results <- RunModels(equations = c(
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-)
-results$tests
-```
-```{r int_gii_torture, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-
 #### Violence {.tabset .tabset-fade .tabset-pills}
 
 ```{r echo = FALSE, eval = params$incl_new}
@@ -2393,41 +2089,6 @@ results <- RunModels(labelspace = 20, equations = c(
   conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
   conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp)
 )
-results$tests
-```
-
-
-```{r echo = FALSE}
-knitr::asis_output("##### DV: Internal War {.tabset .tabset-fade .tabset-pills}")
-```
-```{r echo = FALSE}
-knitr::asis_output("###### Classifications")
-```
-```{r war_class}
-results <- RunModels(labelspace = 20, equations = c(
-  war_internal ~ lag_war_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp,
-  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_upp,
-  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_war_internal*lag_class_HG + lag_war_internal*lag_class_GH + lag_war_internal*lag_class_mid + lag_war_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-) 
-results$tests
-```
-```{r int_war_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_war_internal", title = "Effect of Internal War (FEGLS)")
-})
-```
-
-```{r echo = FALSE}
-knitr::asis_output("###### Health & Gender")
-```
-```{r war_base}
-results <- RunModels(labelspace = 20, equations = c(
-  war_internal ~ lag_war_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
-  war_internal ~ lag_war_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
-  war_internal ~ lag_war_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
-  war_internal ~ lag_war_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp)
-) 
 results$tests
 ```
 
@@ -2742,41 +2403,6 @@ results <- RunModels(labelspace = 20, equations = c(
   latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
   latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
   latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp)
-) 
-results$tests
-```
-
-
-```{r echo = FALSE}
-knitr::asis_output("##### DV: State Torture {.tabset .tabset-fade .tabset-pills}")
-```
-```{r echo = FALSE}
-knitr::asis_output("###### Classifications")
-```
-```{r torture_class}
-results <- RunModels(labelspace = 20, equations = c(
-  v2cltort ~ lag_v2cltort + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp,
-  v2cltort ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_upp,
-  v2cltort ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2cltort*lag_class_HG + lag_v2cltort*lag_class_GH + lag_v2cltort*lag_class_mid + lag_v2cltort*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
-) 
-results$tests
-```
-```{r int_torture_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
-lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2cltort", title = "Effect of State Torture (FEGLS)")
-})
-```
-
-```{r echo = FALSE}
-knitr::asis_output("###### Health & Gender")
-```
-```{r torture_base}
-results <- RunModels(labelspace = 20, equations = c(
-  v2cltort ~ lag_v2cltort + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
-  v2cltort ~ lag_v2cltort + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
-  v2cltort ~ lag_v2cltort + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_ratio_hdr,
-  v2cltort ~ lag_v2cltort + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp)
 ) 
 results$tests
 ```
