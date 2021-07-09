@@ -216,7 +216,7 @@ IntPlot <- function(fit, eff_var,
     ciupper <- x$est + zscore * x$se
     return(data.frame(est = x$est, cilower = cilower, ciupper = ciupper))
   }))
-  ests <- ests[order(rownames(ests)), ]
+  # ests <- ests[order(rownames(ests)), ]
   ylimits <- range(list(ests, 0))
   if(pdfswitch & !is.null(pdfname)) pdf(file = paste("pdfs/", pdfname, ".pdf", sep = ""), width = 8, height = 4.5)
   plot(x = 1:nrow(ests), y = ests$est, ylim = ylimits, xlim = c(0.5, nrow(ests) + 0.5), 
