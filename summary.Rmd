@@ -81,6 +81,8 @@ The summary tables show the outcome variables (DVs) in colums and covariates (IV
 
 ##### Summary
 
+**Note:** This section will be updated based on the new results.
+
 The panel analyses find more support for vicious than virtuous cycles, and that these are more applicable to violence than gender and health outcomes.
 
 There is some evidence that health and gender outcomes reinforce each other, but the evidence is stronger for health than gender outcomes. Both the mean years of schooling (MYS) ratio in favor of females and the adolescent fertility rate (AFR) are positively associated with increased life expectancy, but only MYS is positively associated with improvements in the infant mortality rate (IMR). Recall here that both the IMR and AFR were inverted for the purpose of the analyses. This means that the higher the MYS ratio, the better the IMR. The AFR, which was also inverted, is negatively associated with the inverted IMR: this means that improvement in the AFR is associated with worsening in the IMR. For the gender outcomes, life expectancy and the IMR are associated with an improved AFR, but they have no statistical effects on MYS. When considering our classification, which operationalizes the vicious and virtuous cycles hypotheses with worst and best combinations of health and gender outcomes, the findings are clear and consistent: the low classification is associated with worse health and gender outcomes across all four variables, but the high classification is never statistically significant. This provides support for vicious cycles between health and gender but not virtuous cycles.
@@ -95,108 +97,92 @@ However, the evidence is much more consistent and supportive of vicious cycles w
 
 ###### 1970-2018, 1 lag
 
-| **_Base Models_**         | Life Expectancy   | IMR                     | UFMR              | DALYs    | MYS    | Adolescent Fertility Rate   | Labour Participation Ratio   | GII   |
-|:--------------------------|:-----------------:|:-----------------------:|:-----------------:|:--------:|:------:|:---------------------------:|:----------------------------:|:-----:|
-| lagged DV                 |                $+$|                      $+$|                $+$|       $+$|     $+$|                          $+$|                           $+$|    $+$|
-| Life Expectancy           |                 DV|                       na|                 na|        na|        |                          $+$|                              |       |
-| Infant Mortality          |                 na|                       DV|                 na|        na|        |                          $+$|                              |    $+$|
-| MYS Ratio                 |                $+$|                      $+$|              $(+)$|       $+$|      DV|                           na|                            na|     na|
-| Adolescent Fertility Rate |                $+$|                      $-$|                $-$|       $-$|      na|                           DV|                            na|     na|
-| low classification        |           $-$[upp]|                         |                   |          |$-$[upp]|                          $-$|                              |       |
-| H>G classification        |         $(+)$[low]|                         |                   |$(-)$[low]|$+$[low]|                     $-$[mid]|                              |       |
-| G>H classification        |$(-)$[upp]/$+$[low]|                    $(-)$|         $(-)$[upp]|          |        |                     $+$[low]|                      $-$[low]|       |
-| mid classification        |           $+$[low]|                         |                   |$(-)$[low]|$+$[low]|                     $+$[low]|                              |       |
-| upp classification        |           $+$[low]|                         |                   |          |$+$[low]|                     $+$[low]|                              |       |
-|                           |                   |                         |                   |          |        |                             |                              |       |
-| **_Internal Conflict_**   |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs** |**MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| Conflict (UCDP)           |                $+$|                         |                   |       $+$|        |                             |                           $-$|    $+$|
-| --- low                   |                $+$|                         |                   |          |        |                             |                              |  $(+)$|
-| --- H>G                   |              $(+)$|                      $+$|                   |          |        |                          $-$|                              |    $+$|
-| --- G>H                   |                   |                      $-$|                   |     $(+)$|        |                             |                         $(-)$|       |
-| --- mid                   |                   |                         |              $(+)$|          |        |                             |                              |    $+$|
-| --- upp                   |                   |                         |                   |          |        |                             |                           $-$|       |
-| Conflict Deaths (UCDP)    |                   |                      $-$|                $-$|       $+$|        |                          $+$|                              |       |
-| --- low                   |          $-$[viol]|                      $-$|              $(-)$|       $+$|        |                          $+$|                              |       |
-| --- H>G                   |                   |                         |                   |          |        |                          $+$|                              |       |
-| --- G>H                   |          $-$[viol]|                $-$[viol]|        $(-)$[viol]|          |        |                    $(-)$/$-$|                              |       |
-| --- mid                   |                   |                         |                   |     $(+)$|     $-$|                          $-$|                              |  $(+)$|
-| --- upp                   |                   |                         |                   |       $+$|        |                             |                              |       |
-| Confl. Civ. Deaths (UCDP) |                $+$|                         |                   |       $+$|        |                          $+$|                              |       |
-| --- low                   |                $+$|                         |                   |       $+$|        |                          $+$|                              |       |
-| --- H>G                   |                   |                         |                   |          |        |                             |                              |       |
-| --- G>H                   |          $-$[viol]|                $-$[viol]|          $-$[viol]|          |        |                          $-$|                              |       |
-| --- mid                   |                   |              $(-)$[viol]|                   |     $(+)$|        |                          $-$|                              |       |
-| --- upp                   |                   |                $+$[viol]|                   |       $+$|        |                             |                              |       |
-|                           |                   |                         |                   |          |        |                             |                              |       |
-| **_One-sided Violence_**  |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs** |**MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| OSV (UCDP)                |                   |                    $(-)$|              $(-)$|          |        |                             |                              |       |
-| --- low                   |                   |                $-$[viol]|    $-$/$(-)$[viol]|          |     $+$|                          $+$|                              |       |
-| --- H>G                   |                   |                         |                   |          |        |                             |                              |    $+$|
-| --- G>H                   |          $+$[viol]|                         |                   |          |        |                             |                              |       |
-| --- mid                   |    $+$/$(+)$[viol]|                         |                   |          |     $-$|                        $(-)$|                              |       |
-| --- upp                   |                   |                         |                   |     $(+)$|        |                             |                              |       |
-| OSV Deaths (UCDP)         |                $+$|                    $(-)$|              $(-)$|       $+$|        |                          $+$|                              |       |
-| --- low                   |          $+$[viol]|               $(-)$(low)|              $(-)$|       $+$|        |                          $+$|                         $(-)$|       |
-| --- H>G                   |                   |                         |                   |          |        |                             |                              |       |
-| --- G>H                   |                   |                    $(-)$|              $(-)$|          |     $+$|                             |                              |    $-$|
-| --- mid                   |          $+$[viol]|                         |                   |          |     $-$|                        $(-)$|                              |       |
-| --- upp                   |        $(+)$[viol]|                         |                   |          |        |                             |                           $-$|       |
-|                           |                   |                         |                   |          |        |                             |                              |       |
-| **_State Repression_**    |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs** |**MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| LPI                       |                   |                      $+$|                $+$|       $+$|        |                        $(+)$|                              |    $+$|
-| --- low                   |                   |                $-$[viol]|          $-$[viol]|          |        |                          $+$|                              |       |
-| --- H>G                   |                   |$+$/$(+)$[viol]/$-$[viol]|    $+$/$(+)$[viol]|     $(+)$|     $-$|                          $-$|                              |       |
-| --- G>H                   |          $+$[viol]|                $+$[viol]|                $+$|       $+$|     $-$|                          $+$|                              |       |
-| --- mid                   |                   |          $+$/$(+)$[viol]|    $+$/$(+)$[viol]|     $(+)$|     $-$|                             |                              |       |
-| --- upp                   |    $(-)$/$-$[viol]|          $+$/$(+)$[viol]|    $+$/$(+)$[viol]|     $(+)$|        |                        $(+)$|                         $(-)$|    $+$|
-| Killings                  |                   |                         |                   |          |        |                             |                              |       |
-| --- low                   |                   |          $(-)$/$-$[viol]|              $(-)$|          |        |                             |                              |       |
-| --- H>G                   |                   |                      $+$|    $+$/$(+)$[viol]|     $(+)$|        |                             |                              |       |
-| --- G>H                   |              $(+)$|                         |                   |     $(+)$|        |                             |                              |       |
-| --- mid                   |                   |          $+$/$(+)$[viol]|                $+$|     $(+)$|        |                             |                              |  $(+)$|
-| --- upp                   |                   |              $(+)$[viol]|              $(+)$|          |        |                        $(+)$|                              |       |
-|                           |                   |                         |                   |          |        |                             |                              |       |
-| **_Societal Violence_**   |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs** |**MYS** |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**|
-| NSC (UCDP)                |                   |                         |                   |       $+$|        |                          $+$|                              |       |
-| --- low                   |                   |                         |                   |       $+$|        |                          $+$|                              |       |
-| --- H>G                   |                   |                    $(-)$|              $(-)$|          |        |                          $+$|                              |    $-$|
-| --- G>H                   |                   |                         |                   |          |        |                             |                              |       |
-| --- mid                   |                   |                         |                   |          |        |                             |                         $(-)$|       |
-| --- upp                   |                   |                         |                   |          |   $(+)$|                          $+$|                              |       |
-| NSC Deaths (UCDP)         |                $+$|                         |                   |       $+$|        |                          $+$|                              |       |
-| --- low                   |                $+$|                $+$[viol]|          $+$[viol]|       $+$|        |                          $+$|                              |       |
-| --- H>G                   |                   |              $(-)$[viol]|        $(-)$[viol]|          |        |                          $+$|                              |       |
-| --- G>H                   |              $(-)$|              $(-)$[viol]|                   |          |        |                        $(+)$|                              |    $-$|
-| --- mid                   |        $(+)$[viol]|                         |                   |          |        |                             |                         $(-)$|       |
-| --- upp                   |                   |              $(+)$[viol]|        $(+)$[viol]|     $(+)$|        |                        $(+)$|                              |       |
-| NSC Civ. Deaths (UCDP)    |                $+$|                         |                   |       $+$|        |                          $+$|                         $(+)$|       |
-| --- low                   |                $+$|                $+$[viol]|                   |       $+$|        |                          $+$|                         $(+)$|       |
-| --- H>G                   |                   |          $(-)$/$-$[viol]|        $(-)$[viol]|     $(-)$|        |                             |                         $(-)$|       |
-| --- G>H                   |          $+$[viol]|                      $+$|          $+$[viol]| $(-)$/$+$|        |                             |                         $(+)$|       |
-| --- mid                   |                   |                         |                   |          |        |                             |                              |       |
-| --- upp                   |        $(+)$[viol]|              $(+)$[viol]|        $(+)$[viol]|     $(+)$|   $(-)$|                             |                              |  $(+)$|
-| Homicides                 |                $-$|                      $+$|                $+$|     $(-)$|        |                          $+$|                              |       |
-| --- low                   |          $-$[viol]|                $-$[viol]|      $+$/$-$[viol]|       $-$|        |                             |                              |       |
-| --- H>G                   |        $(-)$[viol]|                         |                $+$|          |        |                             |                              |       |
-| --- G>H                   |          $-$[viol]|                      $+$|                   |          |        |                             |                              |       |
-| --- mid                   |        $(-)$[viol]|                $-$[viol]|    $(-)$[viol]/$+$|     $(-)$|        |                             |                           $+$|       |
-| --- upp                   |        $(-)$[viol]|                $+$[viol]|          $+$[viol]|          |        |                          $+$|                           $-$|       |
-
-###### 1995-2015, 1 lag
-
-###### 1975-2018, 2 lags
-
-###### 1980-2018, 3 lags
-
-###### Comparisons
-
-- make another type of table
-- VV supported
-- ind measures
-- classifications
-- interactions for different violence measures
-- broken down by GH measure and violence measure
-and alt modelling
+| **_Base Models_**         | Life Expectancy   | IMR                     | UFMR              | DALYs               | MYS       | Adolescent Fertility Rate   | Labour Participation Ratio   | GII         |
+|:--------------------------|:-----------------:|:-----------------------:|:-----------------:|:-------------------:|:---------:|:---------------------------:|:----------------------------:|:-----------:|
+| lagged DV                 |                $+$|                      $+$|                $+$|                  $+$|        $+$|                          $+$|                           $+$|          $+$|
+| Life Expectancy           |                 DV|                       na|                 na|                   na|           |                          $+$|                              |             |
+| Infant Mortality          |                 na|                       DV|                 na|                   na|           |                          $+$|                              |          $+$|
+| MYS Ratio                 |                $+$|                      $+$|              $(+)$|                  $+$|         DV|                           na|                            na|           na|
+| Adolescent Fertility Rate |                $+$|                      $-$|                $-$|                  $-$|         na|                           DV|                            na|           na|
+| low classification        |           $-$[upp]|                         |                   |                     |   $-$[upp]|                          $-$|                              |             |
+| H>G classification        |         $(+)$[low]|                         |                   |           $(-)$[low]|   $+$[low]|                     $-$[upp]|                              |             |
+| G>H classification        |$(-)$[upp]/$+$[low]|                    $(-)$|         $(-)$[upp]|                     |           |                     $+$[low]|                      $-$[low]|             |
+| mid classification        |           $+$[low]|                         |                   |           $(-)$[low]|   $+$[low]|                     $+$[low]|                              |             |
+| upp classification        |           $+$[low]|                         |                   |                     |   $+$[low]|                     $+$[low]|                              |             |
+|                           |                   |                         |                   |                     |           |                             |                              |             |
+| **_Internal Conflict_**   |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs**            |**MYS**    |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**      |
+| Conflict (UCDP)           |                $+$|                         |                   |                  $+$|           |                             |                     $-$[viol]|          $+$|
+| --- low                   |                $+$|                         |                   |                     |           |                             |                              |  $(+)$[viol]|
+| --- H>G                   |              $(+)$|                      $+$|                   |                     |           |                          $-$|                              |    $+$[viol]|
+| --- G>H                   |                   |                      $-$|                   |          $(+)$[viol]|           |                             |                   $(-)$[viol]|             |
+| --- mid                   |                   |                         |              $(+)$|                     |           |        $(-)$[viol]/$+$[viol]|                              |    $+$[viol]|
+| --- upp                   |                   |                         |                   |                     |           |                             |                     $-$[viol]|             |
+| Conflict Deaths (UCDP)    |                   |                      $-$|                $-$|                  $+$|           |                          $+$|                              |             |
+| --- low                   |          $-$[viol]|                      $-$|              $(-)$|                  $+$|           |        $(-)$[viol]/$+$[viol]|                              |             |
+| --- H>G                   |                   |                         |                   |                     |           |                    $+$[viol]|                              |             |
+| --- G>H                   |          $-$[viol]|                $-$[viol]|        $(-)$[viol]|                     |           |        $(+)$[viol]/$-$[viol]|                              |    $-$[viol]|
+| --- mid                   |                   |                         |                   |          $(+)$[viol]|  $-$[viol]|                    $-$[viol]|                              |  $(+)$[viol]|
+| --- upp                   |                   |                         |                   |                  $+$|           |                  $(-)$[viol]|                              |             |
+| Confl. Civ. Deaths (UCDP) |                $+$|                         |                   |                  $+$|           |                          $+$|                              |             |
+| --- low                   |                $+$|                         |                   |            $+$[viol]|           |                          $+$|                              |    $-$[viol]|
+| --- H>G                   |                   |                         |                   |                     |           |                             |                              |             |
+| --- G>H                   |          $-$[viol]|                $-$[viol]|          $-$[viol]|                     |           |                    $-$[viol]|                              |             |
+| --- mid                   |                   |              $(-)$[viol]|                   |          $(+)$[viol]|           |                    $-$[viol]|                              |             |
+| --- upp                   |                   |                $+$[viol]|                   |                  $+$|           |                             |                              |             |
+|                           |                   |                         |                   |                     |           |                             |                              |             |
+| **_One-sided Violence_**  |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs**            |**MYS**    |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**      |
+| OSV (UCDP)                |                   |                    $(-)$|              $(-)$|                     |           |                             |                              |             |
+| --- low                   |                   |                $-$[viol]|    $-$/$(-)$[viol]|                     |  $+$[viol]|                    $+$[viol]|                              |             |
+| --- H>G                   |                   |                         |                   |                     |           |                             |                              |    $+$[viol]|
+| --- G>H                   |          $+$[viol]|                         |                   |                     |           |                             |                              |             |
+| --- mid                   |    $+$/$(+)$[viol]|                         |                   |                     |  $-$[viol]|                  $(-)$[viol]|                              |             |
+| --- upp                   |                   |                         |                   |                $(+)$|           |                             |                              |             |
+| OSV Deaths (UCDP)         |                $+$|                    $(-)$|              $(-)$|                  $+$|           |                          $+$|                              |             |
+| --- low                   |          $+$[viol]|               $(-)$(low)|              $(-)$|            $+$[viol]|           |                          $+$|                         $(+)$|             |
+| --- H>G                   |                   |                         |                   |                     |           |                             |                              |             |
+| --- G>H                   |                   |                    $(-)$|              $(-)$|                     |  $+$[viol]|                             |                              |    $-$[viol]|
+| --- mid                   |          $+$[viol]|                         |                   |                     |  $-$[viol]|                  $(-)$[viol]|                              |             |
+| --- upp                   |        $(+)$[viol]|                         |                   |          $(+)$[viol]|           |                             |                           $-$|             |
+|                           |                   |                         |                   |                     |           |                             |                              |             |
+| **_State Repression_**    |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs**            |**MYS**    |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**      |
+| LPI                       |                   |                      $+$|                $+$|                  $+$|           |                        $(+)$|                         $(-)$|          $+$|
+| --- low                   |                   |                $-$[viol]|          $-$[viol]|                     |           |    $+$/$(-)$[viol]/$-$[viol]|                              |             |
+| --- H>G                   |                   |$+$/$(+)$[viol]/$-$[viol]|    $+$/$(+)$[viol]|          $(+)$[viol]|  $-$[viol]|              $(+)$/$-$[viol]|                              |    $+$[viol]|
+| --- G>H                   |          $+$[viol]|                $+$[viol]|                $+$|                  $+$|  $-$[viol]|                    $+$[viol]|                              |             |
+| --- mid                   |                   |          $+$/$(+)$[viol]|    $+$/$(+)$[viol]|          $(+)$[viol]|  $-$[viol]|                             |                              |             |
+| --- upp                   |    $(-)$/$-$[viol]|          $+$/$(+)$[viol]|    $+$/$(+)$[viol]|          $(+)$[viol]|           |        $(+)$[viol]/$-$[viol]|                   $(-)$[viol]|    $+$[viol]|
+| Killings                  |                   |                         |                   |                     |           |                             |                              |             |
+| --- low                   |                   |          $(-)$/$-$[viol]|              $(-)$|            $-$[viol]|           |                    $-$[viol]|                              |             |
+| --- H>G                   |                   |                      $+$|    $+$/$(+)$[viol]|          $(+)$[viol]|           |                    $-$[viol]|                              |             |
+| --- G>H                   |              $(+)$|                         |                   |          $(+)$[viol]|           |                             |                              |             |
+| --- mid                   |                   |          $+$/$(+)$[viol]|                $+$|          $(+)$[viol]|           |                             |                              |  $(+)$[viol]|
+| --- upp                   |                   |              $(+)$[viol]|              $(+)$|                     |           |                        $(+)$|                              |             |
+|                           |                   |                         |                   |                     |           |                             |                              |             |
+| **_Societal Violence_**   |**Life Expectancy**|**IMR**                  |**UFMR**           |**DALYs**            |**MYS**    |**Adolescent Fertility Rate**|**Labour Participation Ratio**|**GII**      |
+| NSC (UCDP)                |                   |                         |                   |                  $+$|           |                          $+$|                              |             |
+| --- low                   |                   |                         |                   |                  $+$|           |                    $+$[viol]|                              |    $-$[viol]|
+| --- H>G                   |                   |                    $(-)$|              $(-)$|                     |           |                    $+$[viol]|                              |          $-$|
+| --- G>H                   |                   |                         |                   |                     |           |                             |                              |             |
+| --- mid                   |                   |                         |                   |                     |           |                             |                   $(-)$[viol]|             |
+| --- upp                   |                   |                         |                   |                     |$(+)$[viol]|                    $+$[viol]|                              |             |
+| NSC Deaths (UCDP)         |                $+$|                         |                   |                  $+$|           |                          $+$|                              |             |
+| --- low                   |                $+$|                $+$[viol]|          $+$[viol]|                  $+$|  $+$[viol]|                    $+$[viol]|                              |             |
+| --- H>G                   |                   |              $(-)$[viol]|        $(-)$[viol]|                     |           |                    $+$[viol]|                              |             |
+| --- G>H                   |              $(-)$|              $(-)$[viol]|                   |                     |           |                  $(+)$[viol]|                              |    $-$[viol]|
+| --- mid                   |        $(+)$[viol]|                         |                   |                     |           |                             |                         $(-)$|             |
+| --- upp                   |                   |              $(+)$[viol]|        $(+)$[viol]|          $(+)$[viol]|           |                  $(+)$[viol]|                              |             |
+| NSC Civ. Deaths (UCDP)    |                $+$|                         |                   |                  $+$|           |                          $+$|                         $(+)$|             |
+| --- low                   |                $+$|                $+$[viol]|                   |                  $+$|           |                    $+$[viol]|                   $(+)$[viol]|             |
+| --- H>G                   |                   |          $(-)$/$-$[viol]|        $(-)$[viol]|          $(-)$[viol]|           |                             |                   $(-)$[viol]|             |
+| --- G>H                   |          $+$[viol]|                      $+$|          $+$[viol]|$(-)$[viol]/$+$[viol]|           |                             |                   $(+)$[viol]|             |
+| --- mid                   |                   |                         |                   |                     |           |                             |                              |             |
+| --- upp                   |        $(+)$[viol]|              $(+)$[viol]|        $(+)$[viol]|          $(+)$[viol]|      $(-)$|                    $+$[viol]|                   $(+)$[viol]|        $(+)$|
+| Homicides                 |                $-$|                      $+$|                $+$|                $(-)$|           |                          $+$|                              |             |
+| --- low                   |          $-$[viol]|                $-$[viol]|      $+$/$-$[viol]|            $-$[viol]|           |                    $-$[viol]|                     $+$[viol]|    $-$[viol]|
+| --- H>G                   |        $(-)$[viol]|                         |                $+$|                     |           |                    $-$[viol]|                              |             |
+| --- G>H                   |          $-$[viol]|                      $+$|                   |            $-$[viol]|           |                    $-$[viol]|                     $+$[viol]|    $-$[viol]|
+| --- mid                   |        $(-)$[viol]|                $-$[viol]|    $(-)$[viol]/$+$|          $(-)$[viol]|           |                             |                     $+$[viol]|             |
+| --- upp                   |        $(-)$[viol]|                $+$[viol]|          $+$[viol]|                     |           |              $+$/$(+)$[viol]|                     $-$[viol]|    $+$[viol]|
 
 ##### Violence Results {.tabset .tabset-fade .tabset-pills}
 
@@ -219,12 +205,6 @@ and alt modelling
 | --- G>H                   |$+$/$(+)$[viol]|    $(+)$[viol]|             |         |            |$+$[viol]|$+$[viol]~|           |            |                 |          $+$~|
 | --- mid                   |            $+$|      $-$[viol]|             |$+$[viol]|            |$+$[viol]| $+$[viol]|           | $(+)$[viol]|                 |    $+$[viol]~|
 | --- upp                   |$+$/$(+)$[viol]|               |             |      $+$|            |$+$[viol]| $+$[viol]|$(+)$[viol]|            |                 |$+$/$-$[viol]~|
-
-###### 1995-2015, 1 lag
-
-###### 1975-2018, 2 lags
-
-###### 1980-2018, 3 lags
 
 #### Discussion
 
