@@ -429,7 +429,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -655,7 +655,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -881,7 +881,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -1107,7 +1107,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -1335,7 +1335,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  mys_ratio_hdr ~ lag_mys_ratio_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -1561,7 +1561,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -1787,7 +1787,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -2013,7 +2013,7 @@ knitr::asis_output("###### State repression (LPI)")
 results <- RunModels(equations = c(
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_mid + lag_class_GH + lag_class_HG + lag_class_upp,
   gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp,
-  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 )
 results$tests
 ```
@@ -2348,7 +2348,7 @@ knitr::asis_output("###### Classifications")
 results <- RunModels(labelspace = 20, equations = c(
   hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp,
   hom_odcwho_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
-  hom_odcwho_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  hom_odcwho_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
 ) 
 results$tests
 ```
@@ -2383,7 +2383,7 @@ knitr::asis_output("###### Classifications")
 results <- RunModels(labelspace = 20, equations = c(
   latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
-  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 ) 
 results$tests
 ```
@@ -2418,7 +2418,7 @@ knitr::asis_output("###### Classifications")
 results <- RunModels(labelspace = 20, equations = c(
   v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp,
   v2clkill ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
-  v2clkill ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+  v2clkill ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
 ) 
 results$tests
 ```
