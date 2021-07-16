@@ -9,9 +9,14 @@ params:
 source("setup.R")
 ```
 
+### {.tabset .tabset-fade .tabset-pills}
+
+#### Data
+
 ```{r descriptives, rows.print = 15, cols.print = 12, cols.min.print = 12}
 IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_class.RData")
+new <- df
 df <- unique(df[, c("country", "period", "health_class", "gender_class", "class", "class_vv")])
 df$period <- str_sub(df$period, 7, 10)
 df <- df[!is.na(df$class) & df$period != 2020, ]
@@ -28,8 +33,9 @@ df_new[, -1] <- lapply(df_new[, -1], function(col) {
   col[is.na(col)] <- ""
   return(col)
 })
-# as.data.frame(df_new)
 ```
+
+#### Classifications
 
 ```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold"}
 df <- df %>% arrange(country, period)
@@ -44,10 +50,48 @@ lapply(unique(df$country), function(ctry) {
     geom_segment(arrow = arrow(angle = 15, type = "closed")) + 
     geom_point(aes(x = lag_gender_class[period == min(period)], 
                    y = lag_health_class[period == min(period)]), 
-               shape = 22, size = 3, fill = "red") + 
+               shape = 22, size = 3, fill = "green") + 
     geom_point(aes(x = gender_class[period == max(period)], 
                    y = health_class[period == max(period)]), 
                shape = 23, size = 3, fill = "red") + 
     xlim(0.5, 5.5) + ylim(0.5, 5.5) + labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
+})
+```
+
+#### IMR & AFR
+
+```{r new, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
+# vars <- names(new)
+# vars <- vars[!str_detect(vars, "perf_")]
+# lapply(c(variables$health, variables$gender), function(x) {
+#   vars[str_detect(vars, x)]
+# })
+new <- new[, c("country", "year", "period", "life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg")]
+new$period <- as.integer(str_sub(new$period, 7, 10))
+new <- new[new$period == new$year & new$period != 2020, names(new) != "year"]
+cor(new[, c("life_exp_wpp_avg", "imr_wpp_avg", "asfr_adol_wpp_avg", "mys_ratio_hdr_avg")], use = "pairwise.complete.obs")
+new <- new %>% arrange(country, period) %>% group_by(country) %>% mutate(lag_imr_wpp_avg = lag(imr_wpp_avg), lag_asfr_adol_wpp_avg = lag(asfr_adol_wpp_avg))
+missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "Serbia & Montenegro", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR")
+new <- new[, c("country", "period", "imr_wpp_avg", "lag_imr_wpp_avg", "asfr_adol_wpp_avg", "lag_asfr_adol_wpp_avg")]
+new <- new[new$period != 1965 & !(new$country %in% missing_countries), ]
+new <- new[!is.na(new$lag_imr_wpp_avg) & !is.na(new$lag_asfr_adol_wpp_avg), ]
+new <- new %>% arrange(country, period)
+# summary(new)
+new[new$country == "Afghanistan", ]
+
+lapply(unique(new$country), function(ctry) {
+  ggplot(new[new$country == ctry, ]) + 
+    # geom_segment(arrow = arrow(angle = 15, type = "closed", length = unit(0.15, "inches"))) + 
+    geom_segment(aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg), 
+                 lineend = "round") + 
+    geom_point(aes(x = lag_asfr_adol_wpp_avg[period == min(period)],
+                   y = lag_imr_wpp_avg[period == min(period)]), 
+               shape = 22, size = 2.5, fill = "red") + 
+    geom_point(aes(x = asfr_adol_wpp_avg[period == max(period)],
+                   y = imr_wpp_avg[period == max(period)]), 
+               shape = 23, size = 2.5, fill = "green") + 
+    geom_abline(xintercept = mean(asfr_adol_wpp_avg)) + 
+    geom_abline(yintercept = mean(imr_wpp_avg)) + 
+    xlim(-330, -1) + ylim(-240, -1) + labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
 })
 ```
