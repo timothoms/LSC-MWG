@@ -59,6 +59,19 @@ To help us operationalize the vicious and virtuous cycles hypotheses, we develop
 Initial bivariate graphical analyses of the health, gender, and violence variables within classification groups show clear trends over time across measures. First, there is considerable global improvement in the health and gender measures in all classification groups. Second, average improvements are greatest in the low classification, and tend to be less pronounced in the high classification. This suggests ceiling effects for better performers that need to be accounted for in the analyses. 
 Third, low performers on the health and gender dimensions tend to have the most violence on average over time (across different measures and different types of violence), and high performers have much less violence on average. (In a partial exception, average homicide rates are highest in intermediate classification groups rather than in the low classification, but the high classification clearly has the lowest homicide rates.)
 
+\begin{tabular}{lccccc}
+\toprule
+                & \multicolumn{5}{l}{\textbf{Gender}} \\
+\textbf{Health} & 1st quintile & 2nd quintile & 3rd quintile & 4th quintile & 5th quintile \\
+\midrule
+1st quintile    & low & low & G>H & G>H & G>H \\
+2nd quintile    & low & low & G>H & G>H & G>H \\
+3rd quintile    & H>G & H>G & mid & G>H & G>H \\
+4th quintile    & H>G & H>G & H>G & upp & upp \\
+5th quintile    & H>G & H>G & H>G & upp & upp \\
+\bottomrule
+\end{tabular}
+
 ##### Panel Methods
 
 We conducted multivariate cross-sectional and panel models. The cross-sectional analyses examine the longer-term growth rates in outcomes (over 20-25 years, from 1990 or 1995 to 2015). **[Note: A summary of the cross-sectional analyses will be added later.]**
