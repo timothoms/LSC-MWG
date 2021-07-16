@@ -221,3 +221,33 @@ df$authority <- df$v2x_polyarchy_cumulative1996_2015 - df$v2x_polyarchy_cumulati
 hist(df$authority)
 summary(df$authority)
 ```
+
+
+
+```{r new, include = FALSE, eval = FALSE}
+df$class_mid_1990 <- ifelse(df$class_vv_1990 == "mid", 1, 0)
+df$class_HG_1990 <- ifelse(df$class_vv_1990 == "H>G", 1, 0)
+df$class_GH_1990 <- ifelse(df$class_vv_1990 == "G>H", 1, 0)
+summary(as.factor(df$class_vv_1995))
+df$class_mid_1995 <- ifelse(df$class_vv_1995 == "mid", 1, 0)
+df$class_HG_1995 <- ifelse(df$class_vv_1995 == "H>G", 1, 0)
+df$class_GH_1995 <- ifelse(df$class_vv_1995 == "G>H", 1, 0)
+
+names(df)[str_detect(names(df), "deaths")]
+names(df)[str_detect(names(df), "conflict")]
+
+RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + deaths_all_int_rate_cumulative1996_2015 + deaths_all_nsc_rate_cumulative1996_2015 + deaths_civilians_osv_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1996_2015 + class_HG_1995 + class_GH_1995 + class_mid_1995 + class_upp_1995)
+RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015 + class_HG_1995*conflict_internal_cumulative1996_2015+ class_GH_1995*conflict_internal_cumulative1996_2015+ class_mid_1995*conflict_internal_cumulative1996_2015+ class_upp_1995*conflict_internal_cumulative1996_2015)
+# conflict_non_state_cumulative1989_1995 + conflict_non_state_cumulative1996_2015 + conflict_one_sided_cumulative1989_1995 + conflict_one_sided_cumulative1996_2015
+
+v2x_partip_cumulative1991_1995
+RunModel(deaths_civilians_osv_rate_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1996_2015 + deaths_civilians_osv_rate_1995*class_HG_1995 + deaths_civilians_osv_rate_1995*class_GH_1995 + deaths_civilians_osv_rate_1995*class_mid_1995 + deaths_civilians_osv_rate_1995*class_upp_1995)
+RunModel(deaths_all_int_rate_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1996_2015 + deaths_all_int_rate_1995*class_HG_1995 + deaths_all_int_rate_1995*class_GH_1995 + deaths_all_int_rate_1995*class_mid_1995 + deaths_all_int_rate_1995*class_upp_1995)
+RunModel(deaths_all_nsc_rate_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1996_2015 + deaths_all_nsc_rate_1995*class_HG_1995 + deaths_all_nsc_rate_1995*class_GH_1995 + deaths_all_nsc_rate_1995*class_mid_1995 + deaths_all_nsc_rate_1995*class_upp_1995)
+
+RunModel(conflict_internal_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1996_2015 + conflict_internal_cumulative1989_1995*class_HG_1995 + conflict_internal_cumulative1989_1995*class_GH_1995 + conflict_internal_cumulative1989_1995*class_mid_1995 + conflict_internal_cumulative1989_1995*class_upp_1995)
+
+```
+
+
+
