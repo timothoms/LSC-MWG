@@ -1,5 +1,5 @@
 rmarkdown::render('index.Rmd')
-rmarkdown::render('summary.Rmd')
+# rmarkdown::render('summary.Rmd', output_format = "all")
 rmarkdown::render('data.Rmd', params = list(cache = FALSE, optimize = TRUE))
 rmarkdown::render('cases.Rmd', params = list(cache = FALSE, optimize = TRUE))
 rmarkdown::render('classifications.Rmd', params = list(cache = FALSE, optimize = TRUE))

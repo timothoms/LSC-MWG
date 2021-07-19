@@ -17,8 +17,6 @@ left:
     href: panel1995.html
   - text: "1980-2018, 3 lags"
     href: panel3lag.html
-  - text: "Summary"
-    href: summary.html
 - text: "Sequences"
   href: sequences.html
 right:
