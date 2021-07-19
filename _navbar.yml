@@ -11,7 +11,7 @@ left:
   href: regressions.html
 - text: "Panel Models"
   menu:
-  - text: "1970-2018, 1 lag"
+  - text: "main models"
     href: panel.html
   - text: "1995-2015, 1 lag"
     href: panel1995.html
