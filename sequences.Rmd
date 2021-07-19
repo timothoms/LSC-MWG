@@ -50,10 +50,10 @@ lapply(unique(df$country), function(ctry) {
     geom_segment(arrow = arrow(angle = 15, type = "closed")) + 
     geom_point(aes(x = lag_gender_class[period == min(period)], 
                    y = lag_health_class[period == min(period)]), 
-               shape = 22, size = 3, fill = "green") + 
+               shape = 22, size = 3, fill = "red") + 
     geom_point(aes(x = gender_class[period == max(period)], 
                    y = health_class[period == max(period)]), 
-               shape = 23, size = 3, fill = "red") + 
+               shape = 23, size = 3, fill = "green") + 
     xlim(0.5, 5.5) + ylim(0.5, 5.5) + labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
 })
 ```
@@ -77,21 +77,22 @@ new <- new[new$period != 1965 & !(new$country %in% missing_countries), ]
 new <- new[!is.na(new$lag_imr_wpp_avg) & !is.na(new$lag_asfr_adol_wpp_avg), ]
 new <- new %>% arrange(country, period)
 # summary(new)
-new[new$country == "Afghanistan", ]
-
+mean_x <- mean(new$asfr_adol_wpp_avg)
+mean_y <- mean(new$imr_wpp_avg)
+quant_x <- quantile(new$asfr_adol_wpp_avg)
+quant_y <- quantile(new$imr_wpp_avg)
 lapply(unique(new$country), function(ctry) {
-  ggplot(new[new$country == ctry, ]) + 
-    # geom_segment(arrow = arrow(angle = 15, type = "closed", length = unit(0.15, "inches"))) + 
-    geom_segment(aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg), 
-                 lineend = "round") + 
+  ggplot(data = new[new$country == ctry, ], 
+         mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg) )+ 
+    geom_vline(xintercept = quant_x, color = "gray") + 
+    geom_hline(yintercept = quant_y, color = "gray") + 
+    geom_segment(lineend = "round") + 
     geom_point(aes(x = lag_asfr_adol_wpp_avg[period == min(period)],
                    y = lag_imr_wpp_avg[period == min(period)]), 
-               shape = 22, size = 2.5, fill = "red") + 
+               shape = 22, size = 2, fill = "red") + 
     geom_point(aes(x = asfr_adol_wpp_avg[period == max(period)],
                    y = imr_wpp_avg[period == max(period)]), 
-               shape = 23, size = 2.5, fill = "green") + 
-    geom_abline(xintercept = mean(asfr_adol_wpp_avg)) + 
-    geom_abline(yintercept = mean(imr_wpp_avg)) + 
-    xlim(-330, -1) + ylim(-240, -1) + labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
+               shape = 23, size = 2, fill = "green") + 
+    xlim(quant_x[1], quant_x[5]) + ylim(quant_y[1], quant_y[5]) + labs(x = "AFR (-)", y = "IMR (-)") + theme_classic() + ggtitle(ctry)
 })
 ```
