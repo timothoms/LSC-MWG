@@ -1,6 +1,7 @@
 # folders
 _ignore/
 _summary/
+_pdfs/
 
 # specific data files
 _data/LSCMWG_working_class.RData

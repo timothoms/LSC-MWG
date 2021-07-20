@@ -193,7 +193,7 @@ IntPlot <- function(fit, eff_var,
   ref_cat = NULL,
   title = "",
   pdfname = NULL,
-  pdfswitch = FALSE
+  pdfswitch = TRUE
 ){
   confidence = 0.95
   zscore <- qnorm(1 - ((1 - confidence)/2))
@@ -218,7 +218,7 @@ IntPlot <- function(fit, eff_var,
   }))
   # ests <- ests[order(rownames(ests)), ]
   ylimits <- range(list(ests, 0))
-  if(pdfswitch & !is.null(pdfname)) pdf(file = paste("pdfs/", pdfname, ".pdf", sep = ""), width = 8, height = 4.5)
+  if(pdfswitch & !is.null(pdfname)) pdf(file = paste("_pdfs/", pdfname, ".pdf", sep = ""), width = 8, height = 4.5)
   plot(x = 1:nrow(ests), y = ests$est, ylim = ylimits, xlim = c(0.5, nrow(ests) + 0.5), 
        pch = 18, ylab = "", xlab = "", xaxt = "n", main = title)
   segments(x0 = 1:nrow(ests), y0 = ests$cilower, y1 = ests$ciupper, lwd = 2, lend = "butt")
@@ -264,8 +264,8 @@ results$tests
 ```
 ```{r int_life_exp_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -283,8 +283,8 @@ results$tests
 ```
 ```{r int_life_exp_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -302,8 +302,8 @@ results$tests
 ```
 ```{r int_life_exp_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -321,8 +321,8 @@ results$tests
 ```
 ```{r int_life_exp_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -340,8 +340,8 @@ results$tests
 ```
 ```{r int_life_exp_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -359,8 +359,8 @@ results$tests
 ```
 ```{r int_life_exp_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -378,8 +378,8 @@ results$tests
 ```
 ```{r int_life_exp_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -397,8 +397,8 @@ results$tests
 ```
 ```{r int_life_exp_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -416,8 +416,8 @@ results$tests
 ```
 ```{r int_life_exp_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -435,8 +435,8 @@ results$tests
 ```
 ```{r int_life_exp_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -454,8 +454,8 @@ results$tests
 ```
 ```{r int_life_exp_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -490,8 +490,8 @@ results$tests
 ```
 ```{r int_imr_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -509,8 +509,8 @@ results$tests
 ```
 ```{r int_imr_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -528,8 +528,8 @@ results$tests
 ```
 ```{r int_imr_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -547,8 +547,8 @@ results$tests
 ```
 ```{r int_imr_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -566,8 +566,8 @@ results$tests
 ```
 ```{r int_imr_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -585,8 +585,8 @@ results$tests
 ```
 ```{r int_imr_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -604,8 +604,8 @@ results$tests
 ```
 ```{r int_imr_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -623,8 +623,8 @@ results$tests
 ```
 ```{r int_imr_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -642,8 +642,8 @@ results$tests
 ```
 ```{r int_imr_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -661,8 +661,8 @@ results$tests
 ```
 ```{r int_imr_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -680,8 +680,8 @@ results$tests
 ```
 ```{r int_imr_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -716,8 +716,8 @@ results$tests
 ```
 ```{r int_ufmr_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -735,8 +735,8 @@ results$tests
 ```
 ```{r int_ufmr_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -754,8 +754,8 @@ results$tests
 ```
 ```{r int_ufmr_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -773,8 +773,8 @@ results$tests
 ```
 ```{r int_ufmr_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -792,8 +792,8 @@ results$tests
 ```
 ```{r int_ufmr_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -811,8 +811,8 @@ results$tests
 ```
 ```{r int_ufmr_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -830,8 +830,8 @@ results$tests
 ```
 ```{r int_ufmr_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -849,8 +849,8 @@ results$tests
 ```
 ```{r int_ufmr_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -868,8 +868,8 @@ results$tests
 ```
 ```{r int_ufmr_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -887,8 +887,8 @@ results$tests
 ```
 ```{r int_ufmr_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -906,8 +906,8 @@ results$tests
 ```
 ```{r int_ufmr_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -942,8 +942,8 @@ results$tests
 ```
 ```{r int_daly_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -961,8 +961,8 @@ results$tests
 ```
 ```{r int_daly_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -980,8 +980,8 @@ results$tests
 ```
 ```{r int_daly_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -999,8 +999,8 @@ results$tests
 ```
 ```{r int_daly_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1018,8 +1018,8 @@ results$tests
 ```
 ```{r int_daly_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1037,8 +1037,8 @@ results$tests
 ```
 ```{r int_daly_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1056,8 +1056,8 @@ results$tests
 ```
 ```{r int_daly_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1075,8 +1075,8 @@ results$tests
 ```
 ```{r int_daly_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1094,8 +1094,8 @@ results$tests
 ```
 ```{r int_daly_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1113,8 +1113,8 @@ results$tests
 ```
 ```{r int_daly_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1132,8 +1132,8 @@ results$tests
 ```
 ```{r int_daly_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1170,8 +1170,8 @@ results$tests
 ```
 ```{r int_mys_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1189,8 +1189,8 @@ results$tests
 ```
 ```{r int_mys_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1208,8 +1208,8 @@ results$tests
 ```
 ```{r int_mys_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1227,8 +1227,8 @@ results$tests
 ```
 ```{r int_mys_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1246,8 +1246,8 @@ results$tests
 ```
 ```{r int_mys_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1265,8 +1265,8 @@ results$tests
 ```
 ```{r int_mys_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1284,8 +1284,8 @@ results$tests
 ```
 ```{r int_mys_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1303,8 +1303,8 @@ results$tests
 ```
 ```{r int_mys_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1322,8 +1322,8 @@ results$tests
 ```
 ```{r int_mys_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1341,8 +1341,8 @@ results$tests
 ```
 ```{r int_mys_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1360,8 +1360,8 @@ results$tests
 ```
 ```{r int_mys_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1396,8 +1396,8 @@ results$tests
 ```
 ```{r int_asfr_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1415,8 +1415,8 @@ results$tests
 ```
 ```{r int_asfr_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1434,8 +1434,8 @@ results$tests
 ```
 ```{r int_asfr_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1453,8 +1453,8 @@ results$tests
 ```
 ```{r int_asfr_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1472,8 +1472,8 @@ results$tests
 ```
 ```{r int_asfr_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1491,8 +1491,8 @@ results$tests
 ```
 ```{r int_asfr_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1510,8 +1510,8 @@ results$tests
 ```
 ```{r int_asfr_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1529,8 +1529,8 @@ results$tests
 ```
 ```{r int_asfr_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1548,8 +1548,8 @@ results$tests
 ```
 ```{r int_asfr_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1567,8 +1567,8 @@ results$tests
 ```
 ```{r int_asfr_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1586,8 +1586,8 @@ results$tests
 ```
 ```{r int_asfr_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1622,8 +1622,8 @@ results$tests
 ```
 ```{r int_labor_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1641,8 +1641,8 @@ results$tests
 ```
 ```{r int_labor_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1660,8 +1660,8 @@ results$tests
 ```
 ```{r int_labor_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1679,8 +1679,8 @@ results$tests
 ```
 ```{r int_labor_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1698,8 +1698,8 @@ results$tests
 ```
 ```{r int_labor_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1717,8 +1717,8 @@ results$tests
 ```
 ```{r int_labor_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1736,8 +1736,8 @@ results$tests
 ```
 ```{r int_labor_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1755,8 +1755,8 @@ results$tests
 ```
 ```{r int_labor_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1774,8 +1774,8 @@ results$tests
 ```
 ```{r int_labor_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1793,8 +1793,8 @@ results$tests
 ```
 ```{r int_labor_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1812,8 +1812,8 @@ results$tests
 ```
 ```{r int_labor_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1848,8 +1848,8 @@ results$tests
 ```
 ```{r int_gii_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1867,8 +1867,8 @@ results$tests
 ```
 ```{r int_gii_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1886,8 +1886,8 @@ results$tests
 ```
 ```{r int_gii_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Civilian Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1905,8 +1905,8 @@ results$tests
 ```
 ```{r int_gii_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1924,8 +1924,8 @@ results$tests
 ```
 ```{r int_gii_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1943,8 +1943,8 @@ results$tests
 ```
 ```{r int_gii_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1962,8 +1962,8 @@ results$tests
 ```
 ```{r int_gii_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -1981,8 +1981,8 @@ results$tests
 ```
 ```{r int_gii_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-state Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2000,8 +2000,8 @@ results$tests
 ```
 ```{r int_gii_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2019,8 +2019,8 @@ results$tests
 ```
 ```{r int_gii_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2038,8 +2038,8 @@ results$tests
 ```
 ```{r int_gii_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold', eval = params$incl_new, include = params$incl_new}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2074,8 +2074,8 @@ results$tests
 ```
 ```{r int_conflict_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2109,8 +2109,8 @@ results$tests
 ```
 ```{r int_conflict_deaths_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Internal Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Internal Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Internal Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Internal Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2144,8 +2144,8 @@ results$tests
 ```
 ```{r int_conflict_deaths_civ_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Internal Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Internal Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Internal Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Internal Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2179,8 +2179,8 @@ results$tests
 ```
 ```{r int_osv_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2214,8 +2214,8 @@ results$tests
 ```
 ```{r int_osv_deaths_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of One-Sided Violence Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of One-Sided Violence Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of One-Sided Violence Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of One-Sided Violence Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2249,8 +2249,8 @@ results$tests
 ```
 ```{r int_nsc_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-State Conflict (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-State Conflict (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-State Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-State Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2284,8 +2284,8 @@ results$tests
 ```
 ```{r int_deaths_nsc_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-State Conflict Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-State Conflict Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-State Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-State Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2319,8 +2319,8 @@ results$tests
 ```
 ```{r int_nsc_deaths_civ_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-State Conflict Civilian Deaths (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-State Conflict Civilian Deaths (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-State Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-State Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2354,8 +2354,8 @@ results$tests
 ```
 ```{r int_homicides_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2389,8 +2389,8 @@ results$tests
 ```
 ```{r int_lpi_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
@@ -2424,8 +2424,8 @@ results$tests
 ```
 ```{r int_killings_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
 lapply(c("m2", "m3"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)")
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)")
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
 
