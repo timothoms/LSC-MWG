@@ -9,10 +9,10 @@ rmarkdown::render('panel.Rmd', output_file = "panel1995.html", params = list(cac
 rmarkdown::render('panel.Rmd', output_file = "panel3lag.html", params = list(cache = FALSE, optimize = TRUE, lags = 3, incl_new = FALSE, set_title = "Panel Regressions (3 lags)"))
 rmarkdown::render('panel.Rmd', params = list(cache = FALSE, optimize = TRUE))
 
-files <- c('index', 'summary', 'data', 'cases', 'classifications', 'sequences', 'regressions', "panel1995", "panel3lag", 'panel')
+(files <- c('index', 'summary', 'data', 'cases', 'classifications', 'sequences', 'regressions', "panel1995", "panel3lag", 'panel'))
 files <- paste(files, "html", sep = ".")
 (files <- files[files %in% dir()])
-folders <- c("site_libs", paste(str_replace(files, ".html", ""), "files", sep = "_"))
+folders <- c("site_libs", paste(stringr::str_replace(files, ".html", ""), "files", sep = "_"))
 (folders <- folders[folders %in% dir()])
 unlink(paste("docs/", dir("docs"), sep = ""), recursive = TRUE)
 file.rename(files, paste("docs/", files, sep = ""))
