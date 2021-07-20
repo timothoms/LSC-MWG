@@ -25,9 +25,9 @@
 \usepackage[colorlinks=true, linktoc=all, linkcolor=magenta, citecolor=black, urlcolor=magenta, breaklinks=true]{hyperref}
 \usepackage{cleveref}
 
-\author{Oskar Timo Thoms, Dane Rowlands, and Valerie Percival}
-\title{Lancet Commission Metrics Working Group\\Large-N Analyses Summary}
-\date{March 9, 2012}
+\author{Oskar Timo Thoms\thanks{This report builds and expands on a January 2021 report co-authored together with Valerie Percival and Dane Rowlands. Sections that reuse co-authored materials are indicated below.}\\Consultant}
+\title{Lancet Commission Metrics Working Group:\\Large-N Analyses Extensions Draft Report}
+\date{\today}
 
 \begin{document}
 \maketitle
@@ -35,7 +35,7 @@
 
 \section{Introduction}
 
-\todo[inline]{expand intro to explain the what and why of this report}
+\todo[inline]{expand intro to explain the what and why of this report, note that this was written with others}
 
 The objective of the Lancet-SIGHT Commission is to examine if and how gender equality and health equity can contribute to more peaceful societies.
 The central research question which guides the report is \enquote{how does variation in gender equality and health equity (improvements or declines) influence variation in violence and conflict.}
@@ -75,9 +75,9 @@ The large-N analyses carried out by the Lancet Commission Metrics Working Group 
 
 These questions imply considerable complexity due to many directions of statistical effects: between gender and health outcomes: from gender and health outcomes to violence; and from violence to gender and health outcomes. Our analyses test these questions in probabilistic terms, not in deterministic fashion. While there are many other factors influencing health, gender and violence outcomes, we do not develop full causal models of each outcome, but examine whether associations between the three categories of outcomes are consistent with the theoretical framework of virtuous and vicious cycles.
 
-\section{Key Findings to Date}
+\section{Key findings of the previous report}
 
-\todo[inline]{keep this section and make clear this is the previous iteration of the research to build on, and that it was partly co-authored}
+\todo[inline]{keep this section and make clear this is the previous iteration of the research to build on, and that it was partly co-authored with Dane Rowlands}
 
 We examined multivariate models of both cross-sectional and panel data. These two different approaches to modeling cross-national data have complementary advantages and disadvantages.
 First, the cross-sectional models allow us to examine long-term changes in outcome variables, over 20-year periods, while the panel models examine short-term variation, from one five-year period to the next, but over longer study periods than the cross-sectional analyses.
@@ -112,9 +112,37 @@ The remainder of this memo discusses the data, methods, and findings leading us 
 
 \todo[inline]{include new link here}
 
-\section{Data}
+\subsection{Extensions of analyses in this report}
 
-\todo[inline]{keep data explanation mostly as is}
+\todo[inline]{Why these Extensions? include language from contract on what and why}
+
+\todo[inline]{FROM Possible extensions}
+
+\todo[inline]{cut but note in introduction that the extensions were in part called for here}
+
+Throughout the discussion, we have noted possible avenues for extensions of this research.
+Deeper theoretical work and fuller statistical models are needed to address questions arising from these analyses and explore potential pathways from vicious to virtuous cycles.\footnote{Such research should account for other possible factors, including, for instance, quality of institutions, inequality, functioning of economies, etc.}
+
+Our analyses are limited in several ways.
+First, they examine broad associations and include the same covariates across models.
+However, each of the outcome variables may be better modeled with a different set of covariates, based on different literatures.
+Such work may shed light, for instance, on the unexpected association between violence and improved adolescent fertility rates.
+Second, the analyses do not examine interactions between different types of violence, or even control for other types of violence in a given model.
+Third, the analyses use only the low and high classification to operationalize the vicious and virtuous cycles hypotheses.
+However, as noted above, analyses using a richer classification (including the other groups resulting from the classification procedure) and other interactions may uncover other associations pertaining to vicious and virtuous framework.
+For instance, what are the relative statistical contributions of gender and health outcomes to levels of violence?
+Moreover, examining more variation in the classifications could also help with exploring pathways of change. For instance, are there particular sequences of improvements in gender and health outcomes that are more likely to break countries out of vicious cycles?
+Another way to explore pathways may be mapping sequences of change in health and gender over decades to determine which pathways are most common or likely to lead to improvements.\footnote{In addition, case study analyses of outliers in our models, i.e. countries that defy the general prediction of the models, could be helpful in uncovering pathways of change.}
+
+Despite these limitations, the strong support in particular for vicious cycles between health and gender, and with violence, is convincing and novel.
+This result could be further strengthened with robustness checks using other health and gender measures.
+It would also be useful to further explore what accounts for differences in findings between the cross-sectional and panel analyses.
+While we have noted that the evidence for vicious cycles in the panel analyses may be an artifact of our conceptualization, it is plausible that this result is also due to the different time frames of the analyses. It is possible that virtuous cycles are slow-moving, and thus do not show clear patterns in the panel analyses, while vicious cycles may operate faster.
+
+
+\section{Data \& Methods}
+
+\todo[inline]{keep data explanation mostly as is but expand as needed}
 
 Guided by the indicator mapping carried out by the Metrics Working Group, we identified a wide range of health, gender and violence measures as candidates for analyses, and assembled a comprehensive cross-national time-series dataset with the best available data on relevant indicators and key covariates.\footnote{A detailed codebook is available at this \href{https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing}{link}.} Many health and gender measures in particular are subject to many missing data points across countries and over time.
 Based on our evaluation of the quality and coverage of these data, and based on within-category correlations, we chose two representative and commonly accepted variables each for the health (life expectancy and the infant mortality rate, IMR) and gender (the ratio of female-to-male mean years of schooling and the age-specific fertility rate for adolescents) dimensions.
@@ -126,42 +154,12 @@ Guided by the indicator mapping carried out by the Metrics Working Group, we ide
 
 It is important to note that, for easier comparisons of results across variables within each category, we have inverted some variables for the statistical analyses such that higher values of the health and gender variables always indicate \enquote{better} outcomes, while higher values of the violence variables always mean higher levels of violence.
 
-\begin{table}[!htbp]
-\small
-\centering
-\caption{Variables}
-\label{table_vars}
-\begin{tabular}{lccccc}
-\toprule
-Category             & Variable                                                 & Source  \\
-\midrule
-health               & life expectancy                                          & WPP     \\
-health               & \textit{infant mortality rate} (IMR)                     & WPP     \\
-health               & \textit{under-five mortality rate} (UFMR)                & WPP     \\
-health               & \textit{disability-adjusted life years} (DALYs)          & IHME    \\
-gender               & mean years of schooling ratio (MYS)                      & HDR     \\
-gender               & \textit{adolescent fertility rate}                       & WPP     \\
-gender               & labour participation ratio                               & ILO     \\
-gender               & Gender Inequality Index                                  & HDR     \\
-state-based conflict & internal conflict incidence                              & UCDP    \\
-state-based conflict & internal war incidence                                   & UCDP    \\
-state-based conflict & internal conflict deaths (rate per population)           & UCDP    \\
-state-based conflict & internal conflict civilian deaths (rate per population)  & UCDP    \\
-state repression     & one-sided violence (OSV) incidence                       & UCDP    \\
-state repression     & one-sided violence (OSV) deaths (rate per population)    & UCDP    \\
-state repression     & \textit{latent physical integrity measure}               & Fariss  \\
-state repression     & \textit{state torture}                                   & V-Dem   \\
-state repression     & \textit{extra-judicial killings}                         & V-Dem   \\
-societal violence    & non-state conflict (NSC) incidence                       & UCDP    \\
-societal violence    & non-state conflict (NSC) deaths (rate per population)    & UCDP    \\
-societal violence    & non-state conflict civilian deaths (rate per population) & UCDP    \\
-societal violence    & homicides (rate per population)                          & ODC/WHO \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{table_vars.tex}
 
 As data availability and quality generally improves after 1990 and more violence variables exist for this period, the period of analyses is primarily 1990-2015 or 2018. All variables are aggregated to five-year averages because three of the key health and gender variables are provided as such averages by the World Populations Prospects Database.
 It is important to note that, for easier comparisons of results across variables within each category, we have inverted some variables such that higher values of the health and gender variables always indicate "better" outcomes, while higher values of the violence variables always mean higher levels of violence. (The affected variables are indicated by \textit{italics} in the table above.)
+
+\todo[inline]{note on internal war and torture analyses not shown and why}
 
 \subsection{Classifications}
 
@@ -192,24 +190,7 @@ To help us operationalize the vicious and virtuous cycles hypotheses, we develop
 Initial bivariate graphical analyses of the health, gender, and violence variables within classification groups show clear trends over time across measures. First, there is considerable global improvement in the health and gender measures in all classification groups. Second, average improvements are greatest in the low classification, and tend to be less pronounced in the high classification. This suggests ceiling effects for better performers that need to be accounted for in the analyses.
 Third, low performers on the health and gender dimensions tend to have the most violence on average over time (across different measures and different types of violence), and high performers have much less violence on average. (In a partial exception, average homicide rates are highest in intermediate classification groups rather than in the low classification, but the high classification clearly has the lowest homicide rates.)
 
-\begin{table}[!htb]
-\small
-\centering
-\caption{Classification groups}
-\label{table_class}
-\begin{tabular}{lccccc}
-\toprule
-                & \multicolumn{5}{l}{\textbf{Gender}} \\
-\textbf{Health} & 1st quintile & 2nd quintile & 3rd quintile & 4th quintile & 5th quintile \\
-\midrule
-1st quintile    & low & low & G>H & G>H & G>H \\
-2nd quintile    & low & low & G>H & G>H & G>H \\
-3rd quintile    & H>G & H>G & mid & G>H & G>H \\
-4th quintile    & H>G & H>G & H>G & upp & upp \\
-5th quintile    & H>G & H>G & H>G & upp & upp \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{table_class.tex}
 
 Initial graphical analyses of the averages of the health and gender variables at the global level and within the two classification groups show clear improving trends over time (see \Cref{trends}).
 First, there is considerable global improvement in the health and gender measures, regardless of how countries are classified.
@@ -217,7 +198,13 @@ Second, improvements are greatest in the low classification, and tend to be less
 This suggests possible ceiling effects for better performers that need to be accounted for in the analyses; this is discussed further below.
 Other graphical analyses (not shown here) also indicate that low performers on the health and gender dimensions tend to have the most violence on average over time, and high performers experience much less violence.\footnote{In a partial exception, average homicide rates are highest in intermediate rather than the lower classification groups.}
 
+\subsection{Research design of extensions}
+
+\todo[inline]{explain and note what would provide good evidence}
+
 \section{Cross-sectional Analyses}
+
+\todo[inline]{move into intro and appendix as needed}
 
 \subsection{Methods}
 
@@ -243,52 +230,13 @@ In addition, the pace of improvement tends to be significantly faster for those 
 
 The use of per capita income to adjusted performance expectations is linked to the second key observation: countries with higher per capita income also tend to have better initial measures of for health, gender, conflict and violence, and democracy. These strong cross-variable correlations mean that there is often considerable multicollinearity in the model, especially between health and gender variables, as well as with lower levels of violence. This static correlation is indeed suggestive of virtuous and vicious circles, but it does not imply a direct causal and dynamic relationship. Instead, it may simply be the case that a single common variable, such as economic performance, causally affects these measures in the same way. The regression analysis is structured to address this problem, though imperfectly.
 
-\begin{sidewaystable}[!htbp]
-\footnotesize
-\centering
-\caption{Health and Gender Equality Improvements (change during 1995-2015)}
-\label{table_hg}
-\begin{tabular}{lcccccccc}
-\toprule
-                               & Life Expectancy & Life Expectancy & IMR         & IMR        & MYS Ratio       & MYS Ratio   & AFR        & AFR\\
-                               & base            & prediction      & base        & prediction & base            & prediction  & base       & prediction \\
-\midrule
-Life expectancy 1995           & -0.302 †        & -0.259 †        &             &            &                 &             &            & \\
-                               & (0.074)         & (0.080)         &             &            &                 &             &            & \\
-Infant mortality rate 1995     & -0.0643 **      & -0.0606 **      & -0.628 ***  & -0.583 *** &                 &             & 0.136 **   & 0.151 **\\
-                               & (0.012)         & (0.016)         & (0.000)     & (0.000)    &                 &             & (0.017)    & (0.013) \\
-Adolescent fertility rate 1995 & 0.0506 **       & 0.0449 **       & 0.123 ***   & 0.0962 *   & 0.000588 **     & 0.00062 *   & -0.265 *** & -0.271 ***\\
-                               & (0.013)         & (0.011)         & (0.009)     & (0.032)    & (0.023)         & (0.017)     & (0.000)    & (0.000) \\
-Gender schooling ratio 1995    &                 &                 &             &            & -0.368 ***      & -0.354 ***  &            & \\
-                               &                 &                 &             &            & (0.000)         & (0.000)     &            & \\
-Conflict measure 1989-1995     & 0.0601 †        & 0.0318 †        &             &            & 0.000532 †      & -0.000365 † &            & \\
-                               & (0.091)$^a$     & (0.093)$^c$     &             &            & (0.083)$^c$     & (0.079)$^c$ &            & \\
-Conflict measure 1996-2015     & -0.193 *        &                 &             &            & -0.012 ***      &             &            & \\
-                               & (-0.049)$^{b,r}$&                 &             &            & (0.003)$^{c,r}$ &             &            & \\
-GDPpc 1995                     &                 &                 & -0.2361 *** &            &                 &             &            & \\
-                               &                 &                 & (0.009)     &            &                 &             &            & \\
-GDPpc growth 1996-2015         & 0.0630 ***      &                 & 0.137 *     &            &                 &             &            & \\
-                               & (0.008)         &                 & (0.027)     &            &                 &             &            & \\
-Past Polyarchy 1991-1995       &                 & 4.22 ***        & 8.97 **     &            &                 & -0.0558 †   &            & -16.92 † \\
-                               &                 & (0.003)         & (0.02)      &            &                 & (0.071)     &            & (0.052) \\
-Future Polyarchy 1996-2015     & 4.80 ***        &                 &             &            & -0.0619 *       &             & -16.37 **  & \\
-                               & (0.002)         &                 &             &            & (0.041)         &             & (0.024)    & \\
-Constant                       & 22.8 †          & 21.1 †          & -1.30       & 1.824 *    & 0.470 ***       & 0.452 ***   & 16.4 ***   & 16.13 *** \\
-                               & (0.072)         & (0.060)         & (0.676)     & (0.05)     & (0.000)         & (0.000)     & (0.000)    & (0.002) \\
-\midrule
-Sample size                    & 156             & 165             & 156         & 180        & 135             & 135         & 165        & 165 \\
-$R^2$                          & 0.492           & 0.483           & 0.824       & 0.817      & 0.521           & 0.510       & 0.344      & 0.344 \\
-F-test $p$-value               & 0.000           & 0.000           & 0.000       & 0.000      & 0.000           & 0.000       & 0.000      & 0.000 \\
-\bottomrule
-\end{tabular}
-\caption*{P-values in parentheses, derived from robust standard errors; ***, **, *, † indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively; $^a$ internal conflict indicator; $^b$ civilian death rate from internal conflict; $^c$ civilian death rate from one-sided-violence; $^r$ robust to variations in the other conflict measure.}
-\end{sidewaystable}
+\input{table_cs_hg.tex}
 
-\Cref{table_hg} presents the coefficient estimates from the regressions examining improvements in the health and gender outcomes. The first two columns show the results for changes in life expectancy; the reported results are representative of the analysis of life expectancy, and illustrative of many of the findings of other performance measures as well.\footnote{Recall that some variables have been rescaled so that an increase in any health or gender measure represents an improvement in performance; for example, infant mortality has been inverted so that when the measure of infant mortality increases, it represents a decline in infant mortality rates. The only variables where an increase is \enquote{bad} are the conflict and violence measures.}
+\Cref{table_cs_hg} presents the coefficient estimates from the regressions examining improvements in the health and gender outcomes. The first two columns show the results for changes in life expectancy; the reported results are representative of the analysis of life expectancy, and illustrative of many of the findings of other performance measures as well.\footnote{Recall that some variables have been rescaled so that an increase in any health or gender measure represents an improvement in performance; for example, infant mortality has been inverted so that when the measure of infant mortality increases, it represents a decline in infant mortality rates. The only variables where an increase is \enquote{bad} are the conflict and violence measures.}
 
 The base model (column 1) provides the results for the best, most representative stepwise reduced estimating equation. The negative coefficient on both the life expectancy and infant mortality variables is indicative of the common \enquote{ceiling effect} observed in almost all of the regressions. Essentially, if a country is already performing well in terms of health performance, that country is likely to have little room for significantly better performance. For each one-year increase in life expectancy in 1995, the increase in life expectancy over the next 20 years declines is 0.3 years lower; the effect of a decline of one infant death per 1000 is to lower future life expectancy improvement by 0.064 years over the next 20 years.
 
-A result that appeared quite robustly in the different regressions was the positive association between improvements (numerical declines) in the adolescent fertility rate of a country, and subsequent improvements in life expectancy. This association indicates that if the number of children born per 1000 adolescent girls fell by one, future life expectancy would improve by .05 years. The association could be indicative of a broad virtuous relationship between better overall rights for women (to the extent that these are primary factors in decreasing teenage pregnancy), or it could be more directly causal in the sense that reduced physical and emotional stress from adolescent pregnancy and childbirth may increase future life expectancy for a girl as she ages. The robust association, however, is encouraging.
+A result that appeared quite robusty in the different regressions was the positive association between improvements (numerical declines) in the adolescent fertility rate of a country, and subsequent improvements in life expectancy. This association indicates that if the number of children born per 1000 adolescent girls fell by one, future life expectancy would improve by .05 years. The association could be indicative of a broad virtuous relationship between better overall rights for women (to the extent that these are primary factors in decreasing teenage pregnancy), or it could be more directly causal in the sense that reduced physical and emotional stress from adolescent pregnancy and childbirth may increase future life expectancy for a girl as she ages. The robust association, however, is encouraging.
 
 The conflict and violence variables have the expected relationship with life expectancy improvements but are complex. A sensible and fairly robust pattern emerged from the regression analysis: previously high rates of conflict or violence tended to be associated with future improvement in life expectancy, which is possible if previous conflict had artificially reduced life expectancy levels below what would otherwise have been the case. Subsequent life expectancy improvements, therefore, might simply reflect the reversion to expected levels after a conflict ends. By contrast, measures of conflict or violence over the period for which life expectancy improvements are being measured are associated with declines in that improvement, which is again sensible. In some regressions, removing the future conflict and violence measure often led to a reversal of signs for the previous conflict and violence measure, which we think is due to the tendency for violence to have a high degree of inertia, so that the decline in life expectancy is reflecting the likely presence of future conflict, not the presence of past violence.
 
@@ -314,36 +262,7 @@ A key set of relationships for our work involves health, gender, and violent con
 
 \todo[inline]{don't include the cross-sectional regression tables and full discussion, just the summary, also note that written by Dane}
 
-\begin{table}[!htbp]
-\small
-\centering
-\caption{Predicting future conflict/violence phenomena (1996-2015)}
-\label{table_violence}
-\begin{tabular}{lccccc}
-\toprule
-                               & Future          & Future          & Future      & Future     & Future \\
-                               & Internal        & Internal        & Internal    & Civilian   & Civilian \\
-                               & Conflict        & Conflict        & Conflict    & Deaths     & Deaths\\
-                               & Years           & Years           & Years       & (Conflict) & (OSV) \\
-\midrule
-Life expectancy 1995           & -0.103 ***      &                 &             &            & \\
-                               & (0.000)         &                 &             &            & \\
-Infant mortality rate 1995     &                 & -0.0265 ***     &             &            & \\
-                               &                 & (0.000)         &             &            & \\
-Mean years schooling 1995      &                 &                 & -5.00 ***   & -2.20 *    & -1.422 *** \\
-                               &                 &                 & (-0.010)    & (0.030)    & (0.010) \\
-Lagged dependent variable      & 0.407 ***       & 0.404 ***       & 0.374 ***   &            & 0.0683 *** \\
-                               & (0.000)         & (0.000)         & (0.000)     &            & (0.000) \\
-Constant                       & 7.71 ***        & -0.248          & 5.27 ***    & 0.549 *    & 1.37 *** \\
-                               & (0.000)         & (0.498)         & (0.003)     & (0.034)    & (0.008) \\
-\midrule
-Sample size                    & 180             & 180             & 143         & 143        & 143 \\
-$R^2$                          & 0.471           & 0.473           & 0.413       & 0.013      & 0.54 \\
-F-test $p$-value               & 0.000           & 0.000           & 0.000       & 0.030      & 0.000 \\
-\bottomrule
-\end{tabular}
-\caption*{P-values in parentheses, derived from robust standard errors; ***, **, *, † indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively.}
-\end{table}
+\input{table_cs_violence.tex}
 
 In the prediction of future violence the results were consistent. In all cases the best step-wise reduced equation includes one of the health and gender measures, often along with the lagged version of the dependent variable. Past education balance is significantly associated with all three future violent conflict measures, and all four health and gender measures are associated significantly with future death rates from one-sided violence. Both health measures are also statistically significantly associated with the variable measuring the number of conflict years, but not civilian deaths from internal conflict. Therefore, there is considerable evidence that better performance in health and gender generally is associated with fewer future deaths, which in turn is often associated with greater improvements in health and gender in the future.
 
@@ -367,7 +286,7 @@ These are problems in our models and data, as evidenced by a variety of economet
 This is important as the choice of estimator often leads to very different results.
 Based on the results of these tests across models, we chose the fixed effects (or "within") ordinary least squares estimator (OLS run on demeaned within-country data), and more preferably, the fixed effects general (or unrestricted) feasible generalized least squares (GGLS) estimator.
 
-\subsubsection{from site}
+\todo{from site from here}
 
 We conducted multivariate cross-sectional and panel models. The cross-sectional analyses examine the longer-term growth rates in outcomes (over 20-25 years, from 1990 or 1995 to 2015). **[Note: A summary of the cross-sectional analyses will be added later.]**
 The panel models examine short-term changes from one five-year period to the next, over as many periods as data availability allows; they use so-called "wide" panels of many countries but only a small number of time periods (between 6 and 11 periods). The dependent variables of the analyses are the individual health, gender, and violence variables. We test the vicious and virtuous cycles hypotheses by including lagged gender or health variables, or the low and high classification and the violence variables, as independent variables. All the panel models include covariates for logged GDP per capita, logged population size, and participatory democracy, in order to account for socio-economic and institutional conditions. (We also tried other political regime variables, but only included participatory democracy in the final models because the others did not show statistical associations with the outcome variables.) We further include the lagged dependent variable in each model in order to account for trends, autocorrelation and ceiling effects.
@@ -381,64 +300,7 @@ Rather than presenting the many detailed regression tables of these analyses, we
 The summary tables below show the outcome variables (DVs) in columns and explanatory variables and covariates (IVs) in the rows, such that each cell represents a separate statistical model. Statistically positive and negative effects are indicated by \enquote{$+$} and \enquote{$-$}, respectively, and \enquote{$[]$} indicates associations that contradict our expectations. (Effects found in FE OLS estimations but not in the preferred FE GGLS estimations are indicated by \enquote{$()$}; we consider this weaker evidence.)
 \Cref{table_panel_gh} shows the findings of the models with health or gender dependent variables.
 
-\begin{table}[!htbp]
-\footnotesize
-\centering
-\caption{Summary of Findings on Health and Gender Outcomes}
-\label{table_panel_gh}
-\begin{tabular}{lc|c|c|c}
-\toprule
-                                           & Life       & IMR     & MYS     & AFR \\
-                                           & Expectancy &         & Ratio   & \\
-\midrule
-Life Expectancy                                   & $+$   & na      &         & $+$ \\
-Infant Mortality                                  & na    & $+$     &         & $+$ \\
-Mean Years of Schooling ratio                     & $+$   & $+$     & $+$     & na \\
-Adolescent Fertility Rate                         & $+$   & $[-]$   & na      & $+$ \\
-low classification                                & $-$   & $-$     & $-$     & $-$ \\
-high classification                               &       &         &         & \\
-Conflict                                          & $[+]$ &         &         & \\
-\qquad Conflict: low interaction                  &       &         &         & \\
-\qquad Conflict: high interaction                 &       & $+$     &         & \\
-War                                               &       &         &         & $-$ \\
-\qquad War: low interaction                       &       &         &         & \\
-\qquad War: high interaction                      &       &         &         & \\
-Conflict Deaths                                   &       & $-$     &         & $[+]$ \\
-\qquad Conflict Deaths: low interaction           &       &         &         & $[+]$ \\
-\qquad Conflict Deaths: high interaction          &       &         &         & \\
-Conflict Civilian Deaths                          & $[+]$ &         &         & $[+]$ \\
-\qquad Conflict Civilian Deaths: low interaction  & $[+]$ &         &         & $[+]$ \\
-\qquad Conflict Civilian Deaths: high interaction &       &         &         & \\
-OSV                                               &       & $(-)$   &         & \\
-\qquad OSV: low interaction                       &       & $(-)$   & $[+]$   & $[+]$ \\
-\qquad OSV: high interaction                      &       &         &         & \\
-OSV Deaths                                        & $[+]$ & $(-)$   &         & $[+]$ \\
-\qquad OSV Deaths: low interaction                &       &         &         & \\
-\qquad OSV Deaths: high interaction               &       &         &         & \\
-NSC                                               &       &         &         & $[+]$ \\
-\qquad NSC: low interaction                       &       &         &         & \\
-\qquad NSC: high interaction                      &       &         &         & \\
-NSC Deaths                                        & $[+]$ &         &         & $[+]$ \\
-\qquad NSC Deaths: low interaction                &       &         &         & \\
-\qquad NSC Deaths: high interaction               &       & $[(+)]$ &         & \\
-NSC Civilian Deaths                               & $[+]$ &         &         & $[+]$ \\
-\qquad NSC Civilian Deaths: low interaction       &       &         &         & \\
-\qquad NSC Civilian Deaths: high interaction      &       &         & $[(-)]$ & \\
-LPI                                               &       & $[+]$   & $-$     & $[(+)]$ \\
-\qquad LPI: low interaction                       &       &         &         & \\
-\qquad LPI: high interaction                      &       & $(+)$   &         & \\
-Torture                                           &       &         &         & \\
-\qquad Torture: low interaction                   &       &         &         &   \\
-\qquad Torture: high interaction                  &       & $(+)$   &         & \\
-Killings                                          &       &         &         & \\
-\qquad Killings: low interaction                  & $-$   & $-$     &         & \\
-\qquad Killings: high interaction                 &       & $(+)$   &         & \\
-Homicides                                         & $-$   & $[+]$   &         & $[+]$ \\
-\qquad Homicides: low interaction                 &       &         &         & \\
-\qquad Homicides: high interaction                &       &         &         & \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{table_panel_gh.tex}
 
 As in the cross-sectional analyses, there is clear evidence that health and gender outcomes reinforce each other, but the evidence is somewhat stronger for health than gender outcomes, with two caveats.
 Both the mean years of schooling (MYS) ratio in favor of females and the adolescent fertility rate (AFR) are positively associated with increased life expectancy, and MYS is also positively associated with improvements in the infant mortality rate (IMR).
@@ -470,30 +332,7 @@ In the next section, we explore vicious and virtuous cycles in violence outcomes
 
 \todo[inline]{just note briefly the main findings from before, and perhaps include table in appendix for comparison}
 
-\begin{sidewaystable}[!hp]
-\small
-\centering
-\caption{Summary of Findings on Violence Outcomes}
-\label{table_panel_violence}
-\begin{tabular}{lc|c|c|c|c|c|c|c|c|c|c|c|c}
-
-\toprule
-                    & Conflict & War & Conflict & Civilian & OSV   & OSV     & NSC   & NSC    & NSC      & LPI       & Torture & Killings & Homicides \\
-                    &          &     & Deaths   & Conflict &       & Deaths  &       & Deaths & Civilian &           &         &          & \\
-                    &          &     &          & Deaths   &       &         &       &        & Deaths   &           &         &          & \\
-\midrule
-Life Expectancy     &          &     &          & $[+]$    & $-$   & $[(+)]$ &       &        &          & $[+]$     & $(-)$   &          & \\
-IMR                 & $-$      &     &          &          & $(-)$ &         &       &        &          & $(-)$     &         &          & \\
-MYS ratio           &          & $-$ &          &          &       & $-$     &       &        &          & $-$       &         &          & \\
-AFR                 & $-$      &     &          &          &       &         &       &        &          & $[+]/(-)$ &         & $[(+)]$  & $[+]$ \\
-low classification  &          & $+$ & $+$      &          &       &         & $[-]$ & $+$    &          &           &         &          & $+$ \\
-high classification &          &     &          & $-$      &       &         &       &        &          & $[+]$     &         & $[+]$    & $-$ \\
-lagged DV           & $+$      & $+$ & $+$      & $+$      & $+$   &         & $+$   & $+$    & $+$      & $+$       & $+$     & $+$      & $+$ \\
-\qquad low interaction     &          & $+$ & $+$      & $+$      &       &         &       & $+$    &          & $+$       &         & $+$      & $+$ \\
-\qquad high interaction    &          &     &          &          &       &         &       &        &          & $[+]$     &         & $[+]$    & $[(+)]$ \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
+\input{table_panel_violence.tex}
 
 \Cref{table_panel_violence} summarizes the findings of the violence models, with thirteen different measures of violence outcomes.
 These analyses also partially support the theoretical framework, though there are again some contradictory results with respect to the relationship between individual health and gender variables and violence variables, and many null results.
@@ -518,228 +357,41 @@ Few of the violence variables have statistical effects on the gender and health 
 The analyses of various violence outcomes more clearly support the theoretical framework, though there are again several contradictory results with respect to the relationship between individual health and gender variables and violence variables, and many null results. Supporting the theoretical framework, higher life expectancy is associated with less one-sided violence episodes (but more deaths from such violence) and possibly with less state torture; improved infant mortality is associated with less internal conflict and possibly less one-sided violence and physical integrity violations; higher MYS ratios are associated with less internal conflict, one-sided violence deaths and physical integrity violations. While an improved AFR is associated with less internal conflict, it is also associated with more state violence and homicides. Like the analyses of health and gender outcomes, these results are not strongly supportive.
 However, the evidence is much more consistent and supportive of vicious cycles when using our classifications. The low classification is associated with more internal war, internal conflict deaths, non-state conflict deaths and homicides. The high classification (indicating strong performance on both health and gender) is associated with less internal conflict civilian deaths and homicides, but also, surprisingly, with more violent state repression. Importantly, a three-way vicious cycle between health, gender and violence is strongly supported in many models by the interaction of the lagged violence variables with the low classification; these models examine the effect of previous levels of violence in countries that perform poorly on health and gender on subsequent levels of violence. These interactions are associated with more internal war, internal conflict deaths and civilian deaths, non-state conflict deaths, physical integrity violations, extra-judicial killings and homicides, compared to countries not included in the low and high classifications. These findings strongly suggest that violence begets more violence where countries perform very poorly on both health and gender. By contrast, positive interaction effects of the high classification contradict the notion of virtuous cycles.
 
+\section{New Findings}
+
+\todo[inline]{discuss overall findings with illustrative examples and refer to detailed findings in appendix and on website}
+
+\subsection{Health \& Gender Outcomes}
+
+\subsection{Violence Outcomes}
+
 \section{Discussion}
+
+\todo[inline]{rewrite this based on new analyses and list questions to address in the final report}
 
 The findings from the panel analyses suggest much more support for vicious than virtuous cycles, particularly between health and gender and in their effects on violence. The evidence varies by measures used and there are many null findings. The effects of violence on gender and health are less clear and often contradict the theoretical framework. Moreover, the analyses suggests that different types of violence may matter in different ways, pointing to the need for further research into such differences. For instance: Why is violence often associated with improved adolescent fertility rates on average?
 Deep theoretical work and fuller statistical models are needed to address such questions and explore potential pathways out of vicious cycles. These panel analyses are limited in several ways. First, they examine broad associations and include the same covariates across all models. However, each of the outcome variables may be better modelled with a different set of covariates, based on different scholarly literatures. Second, the analyses do not examine interactions between different types of violence, or even control for other types of violence in a given model. Third, the analyses use only the low and high classification to operationalize the vicious and virtuous cycles hypotheses. However, analyses using a richer classification (including the other groups resulting from the classification procedure) and other interactions may uncover other associations pertaining to vicious and virtuous cycles. For instance, what are the relative statistical contributions of gender and health outcomes to levels of violence? Are there sequences of improvements in gender and health outcomes that are more likely to break countries out of vicious cycles? Despite these limitations, the support for vicious cycles between health and gender, and with violence, is convincing and novel. This result could be further strengthened with robustness checks using other health and gender measures.
 
-\section{Possible extensions}
-
-\todo[inline]{cut but note that the extensions were in part called for here}
-
-Throughout the discussion, we have noted possible avenues for extensions of this research.
-Deeper theoretical work and fuller statistical models are needed to address questions arising from these analyses and explore potential pathways from vicious to virtuous cycles.\footnote{Such research should account for other possible factors, including, for instance, quality of institutions, inequality, functioning of economies, etc.}
-
-Our analyses are limited in several ways.
-First, they examine broad associations and include the same covariates across models.
-However, each of the outcome variables may be better modeled with a different set of covariates, based on different literatures.
-Such work may shed light, for instance, on the unexpected association between violence and improved adolescent fertility rates.
-Second, the analyses do not examine interactions between different types of violence, or even control for other types of violence in a given model.
-Third, the analyses use only the low and high classification to operationalize the vicious and virtuous cycles hypotheses.
-However, as noted above, analyses using a richer classification (including the other groups resulting from the classification procedure) and other interactions may uncover other associations pertaining to vicious and virtuous framework.
-For instance, what are the relative statistical contributions of gender and health outcomes to levels of violence?
-Moreover, examining more variation in the classifications could also help with exploring pathways of change. For instance, are there particular sequences of improvements in gender and health outcomes that are more likely to break countries out of vicious cycles?
-Another way to explore pathways may be mapping sequences of change in health and gender over decades to determine which pathways are most common or likely to lead to improvements.\footnote{In addition, case study analyses of outliers in our models, i.e. countries that defy the general prediction of the models, could be helpful in uncovering pathways of change.}
-
-Despite these limitations, the strong support in particular for vicious cycles between health and gender, and with violence, is convincing and novel.
-This result could be further strengthened with robustness checks using other health and gender measures.
-It would also be useful to further explore what accounts for differences in findings between the cross-sectional and panel analyses.
-While we have noted that the evidence for vicious cycles in the panel analyses may be an artifact of our conceptualization, it is plausible that this result is also due to the different time frames of the analyses. It is possible that virtuous cycles are slow-moving, and thus do not show clear patterns in the panel analyses, while vicious cycles may operate faster.
-
-
+\section{Sequencing Analysis}
+\todo[inline]{What has been done and what needs to be figured out?}
 
 \appendix
+\part*{Appendix}
 
-\section{New Summary Tables}
+\section{Tables presented in previous report}
+
+\section{Summary tables for analyses extensions}
+
+\todo[inline]{add notes symbols in legend and make separate legend for old summary tables}
 
 The summary tables show the outcome variables (DVs) in colums and covariates (IVs) in the rows, with the following symbols indicating their statistical effects, based on all models (each cell in the table represents a separate model):
 
-\begin{table}[!htb]
-\small
-\centering
-\caption{Legend}
-\label{table_legend}
-\begin{tabular}{lccccc}
-\toprule
-Symbol    & Note \\
-\midrule
-$+$       & statistically significant positive effect                         \\
-$-$       & statistically significant negative effect                         \\
-$()$      & statistical effect not found in the preferred model (FE GGLS)     \\
-$[]$      & notes                                                             \\
-na/DV/ref & variable not included in the model or is DV or reference category \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{sidewaystable}[!htb]
-\small
-\centering
-\caption{Health \& Gender Results, 1970-2018, 1 lag: base models}
-\label{table_summary}
-\begin{tabular}{lcccccccc}
-\toprule
-                          & Life Expectancy     & IMR                 & UFMR         & DALYs           & MYS      & AFR                           & Labour Participation Ratio     & GII \\
-\midrule
-lagged DV                 & $+$                 & $+$                 & $+$          & $+$             & $+$      & $+$                           & $+$                            & $+$ \\
-Life Expectancy           & DV                  & na                  & na           & na              &          & $+$                           &                                & \\
-Infant Mortality          & na                  & DV                  & na           & na              &          & $+$                           &                                & $+$ \\
-MYS Ratio                 & $+$                 & $+$                 & $(+)$        & $+$             & DV       & na                            & na                             & na \\
-Adolescent Fertility Rate & $+$                 & $-$                 & $-$          & $-$             & na       & DV                            & na                             & na \\
-low classification        & $-$[u]              &                     &              &                 & $-$[u]   & $-$                           &                                & \\
-H>G classification        & $(+)$[l]            &                     &              & $(-)$[l]        & $+$[l]   & $-$[u]                        &                                & \\
-G>H classification        & $(-)$[u]/$+$[l]     & $(-)$               & $(-)$[u]     &                 &          & $+$[l]                        & $-$[l]                         & \\
-mid classification        & $+$[l]              &                     &              & $(-)$[l]        & $+$[l]   & $+$[l]                        &                                & \\
-upp classification        & $+$[l]              &                     &              &                 & $+$[l]   & $+$[l]                        &                                & \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
-
-\begin{sidewaystable}[!htb]
-\small
-\centering
-\caption{Health \& Gender Results, 1970-2018, 1 lag: Internal conflict}
-\label{table_summary}
-\begin{tabular}{lcccccccc}
-\toprule
-                          & Life Expectancy     & IMR                 & UFMR         & DALYs           & MYS      & AFR                           & Labour Participation Ratio     & GII \\
-\midrule
-Conflict (UCDP)           & $+$                 &                     &              & $+$             &          &                               & $-$[v]                         & $+$ \\
---- low                   & $+$                 &                     &              &                 &          &                               &                                & $(+)$[v] \\
---- H>G                   & $(+)$               & $+$                 &              &                 &          & $-$                           &                                & $+$[v] \\
---- G>H                   &                     & $-$                 &              & $(+)$[v]        &          &                               & $(-)$[v]                       & \\
---- mid                   &                     &                     & $(+)$        &                 &          & $(-)$[v]/$+$[v]               &                                & $+$[v] \\
---- upp                   &                     &                     &              &                 &          &                               & $-$[v]                         & \\
-Conflict Deaths (UCDP)    &                     & $-$                 & $-$          & $+$             &          & $+$                           &                                & \\
---- low                   & $-$[v]              & $-$                 & $(-)$        & $+$             &          & $(-)$[v]/$+$[v]               &                                & \\
---- H>G                   &                     &                     &              &                 &          & $+$[v]                        &                                & \\
---- G>H                   & $-$[v]              & $-$[v]              & $(-)$[v]     &                 &          & $(+)$[v]/$-$[v]               &                                & $-$[v] \\
---- mid                   &                     &                     &              & $(+)$[v]        & $-$[v]   & $-$[v]                        &                                & $(+)$[v] \\
---- upp                   &                     &                     &              & $+$             &          & $(-)$[v]                      &                                & \\
-Confl. Civ. Deaths (UCDP) & $+$                 &                     &              & $+$             &          & $+$                           &                                & \\
---- low                   & $+$                 &                     &              & $+$[v]          &          & $+$                           &                                & $-$[v] \\
---- H>G                   &                     &                     &              &                 &          &                               &                                & \\
---- G>H                   & $-$[v]              & $-$[v]              & $-$[v]       &                 &          & $-$[v]                        &                                & \\
---- mid                   &                     & $(-)$[v]            &              & $(+)$[v]        &          & $-$[v]                        &                                & \\
---- upp                   &                     & $+$[v]              &              & $+$             &          &                               &                                & \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
-
-\begin{sidewaystable}[!htb]
-\small
-\centering
-\caption{Health \& Gender Results, 1970-2018, 1 lag: One-sided Violence}
-\label{table_summary}
-\begin{tabular}{lcccccccc}
-\toprule
-                          & Life Expectancy     & IMR                 & UFMR         & DALYs           & MYS      & AFR                           & Labour Participation Ratio     & GII \\
-\midrule
-OSV (UCDP)                &                     & $(-)$               & $(-)$        &                 &          &                               &                                & \\
---- low                   &                     & $-$[v]              & $-$/$(-)$[v] &                 & $+$[v]   & $+$[v]                        &                                & \\
---- H>G                   &                     &                     &              &                 &          &                               &                                & $+$[v] \\
---- G>H                   & $+$[v]              &                     &              &                 &          &                               &                                & \\
---- mid                   & $+$/$(+)$[v]        &                     &              &                 & $-$[v]   & $(-)$[v]                      &                                & \\
---- upp                   &                     &                     &              & $(+)$           &          &                               &                                & \\
-OSV Deaths (UCDP)         & $+$                 & $(-)$               & $(-)$        & $+$             &          & $+$                           &                                & \\
---- low                   & $+$[v]              & $(-)$(low)          & $(-)$        & $+$[v]          &          & $+$                           & $(+)$                          & \\
---- H>G                   &                     &                     &              &                 &          &                               &                                & \\
---- G>H                   &                     & $(-)$               & $(-)$        &                 & $+$[v]   &                               &                                & $-$[v] \\
---- mid                   & $+$[v]              &                     &              &                 & $-$[v]   & $(-)$[v]                      &                                & \\
---- upp                   & $(+)$[v]            &                     &              & $(+)$[v]        &          &                               & $-$                            & \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
-
-\begin{sidewaystable}[!htb]
-\small
-\centering
-\caption{Health \& Gender Results, 1970-2018, 1 lag: State Repression}
-\label{table_summary}
-\begin{tabular}{lcccccccc}
-\toprule
-                          & Life Expectancy     & IMR                 & UFMR         & DALYs           & MYS      & AFR                           & Labour Participation Ratio     & GII \\
-\midrule
-LPI                       &                     & $+$                 & $+$          & $+$             &          & $(+)$                         & $(-)$                          & $+$ \\
---- low                   &                     & $-$[v]              & $-$[v]       &                 &          & $+$/$(-)$[v]/$-$[v]           &                                & \\
---- H>G                   &                     & $+$/$(+)$[v]/$-$[v] & $+$/$(+)$[v] & $(+)$[v]        & $-$[v]   & $(+)$/$-$[v]                  &                                & $+$[v] \\
---- G>H                   & $+$[v]              & $+$[v]              & $+$          & $+$             & $-$[v]   & $+$[v]                        &                                & \\
---- mid                   &                     & $+$/$(+)$[v]        & $+$/$(+)$[v] & $(+)$[v]        & $-$[v]   &                               &                                & \\
---- upp                   & $(-)$/$-$[v]        & $+$/$(+)$[v]        & $+$/$(+)$[v] & $(+)$[v]        &          & $(+)$[v]/$-$[v]               & $(-)$[v]                       & $+$[v] \\
-Killings                  &                     &                     &              &                 &          &                               &                                & \\
---- low                   &                     & $(-)$/$-$[v]        & $(-)$        & $-$[v]          &          & $-$[v]                        &                                & \\
---- H>G                   &                     & $+$                 & $+$/$(+)$[v] & $(+)$[v]        &          & $-$[v]                        &                                & \\
---- G>H                   & $(+)$               &                     &              & $(+)$[v]        &          &                               &                                & \\
---- mid                   &                     & $+$/$(+)$[v]        & $+$          & $(+)$[v]        &          &                               &                                & $(+)$[v] \\
---- upp                   &                     & $(+)$[v]            & $(+)$        &                 &          & $(+)$                         &                                & \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
-
-\begin{sidewaystable}[!htb]
-\small
-\centering
-\caption{Health \& Gender Results, 1970-2018, 1 lag: Societal Violence}
-\label{table_summary}
-\begin{tabular}{lcccccccc}
-\toprule
-                          & Life Expectancy     & IMR                 & UFMR         & DALYs           & MYS      & AFR                           & Labour Participation Ratio     & GII \\
-\midrule
-NSC (UCDP)                &                     &                     &              & $+$             &          & $+$                           &                                & \\
---- low                   &                     &                     &              & $+$             &          & $+$[v]                        &                                & $-$[v] \\
---- H>G                   &                     & $(-)$               & $(-)$        &                 &          & $+$[v]                        &                                & $-$ \\
---- G>H                   &                     &                     &              &                 &          &                               &                                & \\
---- mid                   &                     &                     &              &                 &          &                               & $(-)$[v]                       & \\
---- upp                   &                     &                     &              &                 & $(+)$[v] & $+$[v]                        &                                & \\
-NSC Deaths (UCDP)         & $+$                 &                     &              & $+$             &          & $+$                           &                                & \\
---- low                   & $+$                 & $+$[v]              & $+$[v]       & $+$             & $+$[v]   & $+$[v]                        &                                & \\
---- H>G                   &                     & $(-)$[v]            & $(-)$[v]     &                 &          & $+$[v]                        &                                & \\
---- G>H                   & $(-)$               & $(-)$[v]            &              &                 &          & $(+)$[v]                      &                                & $-$[v] \\
---- mid                   & $(+)$[v]            &                     &              &                 &          &                               & $(-)$                          & \\
---- upp                   &                     & $(+)$[v]            & $(+)$[v]     & $(+)$[v]        &          & $(+)$[v]                      &                                & \\
-NSC Civ. Deaths (UCDP)    & $+$                 &                     &              & $+$             &          & $+$                           & $(+)$                          & \\
---- low                   & $+$                 & $+$[v]              &              & $+$             &          & $+$[v]                        & $(+)$[v]                       & \\
---- H>G                   &                     & $(-)$/$-$[v]        & $(-)$[v]     & $(-)$[v]        &          &                               & $(-)$[v]                       & \\
---- G>H                   & $+$[v]              & $+$                 & $+$[v]       & $(-)$[v]/$+$[v] &          &                               & $(+)$[v]                       & \\
---- mid                   &                     &                     &              &                 &          &                               &                                & \\
---- upp                   & $(+)$[v]            & $(+)$[v]            & $(+)$[v]     & $(+)$[v]        & $(-)$    & $+$[v]                        & $(+)$[v]                       & $(+)$ \\
-Homicides                 & $-$                 & $+$                 & $+$          & $(-)$           &          & $+$                           &                                & \\
---- low                   & $-$[v]              & $-$[v]              & $+$/$-$[v]   & $-$[v]          &          & $-$[v]                        & $+$[v]                         & $-$[v] \\
---- H>G                   & $(-)$[v]            &                     & $+$          &                 &          & $-$[v]                        &                                & \\
---- G>H                   & $-$[v]              & $+$                 &              & $-$[v]          &          & $-$[v]                        & $+$[v]                         & $-$[v] \\
---- mid                   & $(-)$[v]            & $-$[v]              & $(-)$[v]/$+$ & $(-)$[v]        &          &                               & $+$[v]                         & \\
---- upp                   & $(-)$[v]            & $+$[v]              & $+$[v]       &                 &          & $+$/$(+)$[v]                  & $-$[v]                         & $+$[v] \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
-
-\begin{sidewaystable}[!htb]
-\small
-\centering
-\caption{Violence Results, 1970-2018, 1 lag}
-\label{table_violence}
-\begin{tabular}{lccccccccccc}
-\toprule
-                          & Conflict     & Conflict & Civilian & OSV    & OSV    & LPI    & Killings & NSC      & NSC      & NSC Civilian & Homicides \\
-                          & Conflict     & Deaths   & Deaths   &        & Deaths &        &          &          & Deaths   & Deaths       & \\
-\midrule
-Life Expectancy           &              &          & $+$      & $-$    &        & $+$    &          &          &          &              & \\
-Infant Mortality          & $-$          &          &          & $(-)$  &        & $(-)$  &          &          &          &              & \\
-MYS Ratio                 &              &          &          &        & $-$    & $-$    &          &          &          &              & \\
-Adolescent Fertility Rate & $-$          &          &          &        &        & $+$    & $(+)$    &          &          &              & $+$ \\
-low classification        & ref          & ref      & ref      & ref    & ref    & [ref]  & [ref]    & [ref]    & [ref]    & [ref]        & [ref] \\
-H>G classification        &              & $-$      &          &        &        & $+$    &          & $+$      & $-$      &              & \\
-G>H classification        &              &          &          &        &        & $+$    &          & $+$      & $-$      &              & \\
-mid classification        &              & $-$      &          &        &        & $+$    &          & $+$      & $-$      &              & \\
-upp classification        &              & $-$      & $-$      &        &        & $+$    &          & $+$      & $-$      &              & \\
-lagged DV                 & $+$          & $+$      & $+$      & $+$    &        & $+$    & $+$      & $(+)$    & $+$      & $+$          & $+$ \\
---- low                   & $+$[v]       & $+$[v]   & $+$[v]   & $+$[v] &        & $+$[v] & $+$[v]~  &          & $+$[v]   & $+$[v]       & $+$/$-$[v]~ \\
---- H>G                   & $+$          & $+$[v]   & $(-)$[v] & $(+)$  &        & $+$[v] & $+$[v]~  & $+$[v]   & $(+)$[v] &              & $+$[v]~ \\
---- G>H                   & $+$/$(+)$[v] & $(+)$[v] &          &        &        & $+$[v] & $+$[v]~  &          &          &              & $+$~ \\
---- mid                   & $+$          & $-$[v]   &          & $+$[v] &        & $+$[v] & $+$[v]   &          & $(+)$[v] &              & $+$[v]~ \\
---- upp                   & $+$/$(+)$[v] &          &          & $+$    &        & $+$[v] & $+$[v]   & $(+)$[v] &          &              & $+$/$-$[v]~ \\
-\bottomrule
-\end{tabular}
-\end{sidewaystable}
+\input{table_legend.tex}
+\input{table_hg_base.tex}
+\input{table_hg_conflict.tex}
+\input{table_hg_repression.tex}
+\input{table_hg_societal.tex}
+\input{table_violence.tex}
 
 \end{document}
+

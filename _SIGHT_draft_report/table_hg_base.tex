@@ -1,0 +1,25 @@
+\begin{landscape}
+\begin{table}[!htbp]
+\centering
+\caption{Health \& Gender Outcomes: base models}
+\label{table_hg_base}
+\begin{tabular}{lcccccccc}
+\toprule
+                          & Life              & IMR   & UFMR     & DALYs    & MYS    & AFR    & Labour        & GII \\
+                          & Expectancy        &       &          &          &        &        & Participation & \\
+                          &                   &       &          &          &        &        & Ratio         & \\
+\midrule
+lagged DV                 & $+$               & $+$   & $+$      & $+$      & $+$    & $+$    & $+$           & $+$ \\
+Life Expectancy           & DV                & na    & na       & na       &        & $+$    &               & \\
+Infant Mortality          & na                & DV    & na       & na       &        & $+$    &               & $+$ \\
+MYS Ratio                 & $+$               & $+$   & $(+)$    & $+$      & DV     & na     & na            & na \\
+Adolescent Fertility Rate & $+$               & $-$   & $-$      & $-$      & na     & DV     & na            & na \\
+low classification        & $-$[u]            &       &          &          & $-$[u] & $-$    &               & \\
+H>G classification        & $(+)$[l]          &       &          & $(-)$[l] & $+$[l] & $-$[u] &               & \\
+G>H classification        & $(-)$[u] / $+$[l] & $(-)$ & $(-)$[u] &          &        & $+$[l] & $-$[l]        & \\
+mid classification        & $+$[l]            &       &          & $(-)$[l] & $+$[l] & $+$[l] &               & \\
+upp classification        & $+$[l]            &       &          &          & $+$[l] & $+$[l] &               & \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{landscape}
