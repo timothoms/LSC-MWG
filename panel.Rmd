@@ -193,7 +193,7 @@ IntPlot <- function(fit, eff_var,
   ref_cat = NULL,
   title = "",
   pdfname = NULL,
-  pdfswitch = TRUE
+  pdfswitch = FALSE
 ){
   confidence = 0.95
   zscore <- qnorm(1 - ((1 - confidence)/2))
