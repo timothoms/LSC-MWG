@@ -9,14 +9,15 @@ params:
 source("setup.R")
 ```
 
-### {.tabset .tabset-fade .tabset-pills}
+<!-- ### {.tabset .tabset-fade .tabset-pills} -->
 
-#### Data
-
-```{r descriptives, rows.print = 15, cols.print = 12, cols.min.print = 12}
+```{r data, rows.print = 15, cols.print = 12, cols.min.print = 12}
 IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_class.RData")
-new <- df
+```
+
+<!-- #### Classifications -->
+```{r class, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", eval = FALSE, echo = FALSE}
 df <- unique(df[, c("country", "period", "health_class", "gender_class", "class", "class_vv")])
 df$period <- str_sub(df$period, 7, 10)
 df <- df[!is.na(df$class) & df$period != 2020, ]
@@ -33,11 +34,6 @@ df_new[, -1] <- lapply(df_new[, -1], function(col) {
   col[is.na(col)] <- ""
   return(col)
 })
-```
-
-#### Classifications
-
-```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold"}
 df <- df %>% arrange(country, period)
 df <- df %>% group_by(country) %>% 
   mutate(lag_health_class = lag(health_class), lag_gender_class = lag(gender_class), lag_class = lag(class))
@@ -58,31 +54,29 @@ lapply(unique(df$country), function(ctry) {
 })
 ```
 
-#### IMR & AFR
-
-```{r new, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
-# vars <- names(new)
+```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
+# vars <- names(df)
 # vars <- vars[!str_detect(vars, "perf_")]
 # lapply(c(variables$health, variables$gender), function(x) {
 #   vars[str_detect(vars, x)]
 # })
-new <- new[, c("country", "year", "period", "life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg")]
-new$period <- as.integer(str_sub(new$period, 7, 10))
-new <- new[new$period == new$year & new$period != 2020, names(new) != "year"]
-cor(new[, c("life_exp_wpp_avg", "imr_wpp_avg", "asfr_adol_wpp_avg", "mys_ratio_hdr_avg")], use = "pairwise.complete.obs")
-new <- new %>% arrange(country, period) %>% group_by(country) %>% mutate(lag_imr_wpp_avg = lag(imr_wpp_avg), lag_asfr_adol_wpp_avg = lag(asfr_adol_wpp_avg))
+df <- df[, c("country", "year", "period", "life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg")]
+df$period <- as.integer(str_sub(df$period, 7, 10))
+df <- df[df$period == df$year & df$period != 2020, names(df) != "year"]
+cor(df[, c("life_exp_wpp_avg", "imr_wpp_avg", "asfr_adol_wpp_avg", "mys_ratio_hdr_avg")], use = "pairwise.complete.obs")
+df <- df %>% arrange(country, period) %>% group_by(country) %>% mutate(lag_imr_wpp_avg = lag(imr_wpp_avg), lag_asfr_adol_wpp_avg = lag(asfr_adol_wpp_avg))
 missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "Serbia & Montenegro", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR")
-new <- new[, c("country", "period", "imr_wpp_avg", "lag_imr_wpp_avg", "asfr_adol_wpp_avg", "lag_asfr_adol_wpp_avg")]
-new <- new[new$period != 1965 & !(new$country %in% missing_countries), ]
-new <- new[!is.na(new$lag_imr_wpp_avg) & !is.na(new$lag_asfr_adol_wpp_avg), ]
-new <- new %>% arrange(country, period)
-# summary(new)
-mean_x <- mean(new$asfr_adol_wpp_avg)
-mean_y <- mean(new$imr_wpp_avg)
-quant_x <- quantile(new$asfr_adol_wpp_avg)
-quant_y <- quantile(new$imr_wpp_avg)
-lapply(unique(new$country), function(ctry) {
-  ggplot(data = new[new$country == ctry, ], 
+df <- df[, c("country", "period", "imr_wpp_avg", "lag_imr_wpp_avg", "asfr_adol_wpp_avg", "lag_asfr_adol_wpp_avg")]
+df <- df[df$period != 1965 & !(df$country %in% missing_countries), ]
+df <- df[!is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_asfr_adol_wpp_avg), ]
+df <- df %>% arrange(country, period)
+# summary(df)
+mean_x <- mean(df$asfr_adol_wpp_avg)
+mean_y <- mean(df$imr_wpp_avg)
+quant_x <- quantile(df$asfr_adol_wpp_avg)
+quant_y <- quantile(df$imr_wpp_avg)
+lapply(unique(df$country), function(ctry) {
+  ggplot(data = df[df$country == ctry, ], 
          mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg) )+ 
     geom_vline(xintercept = quant_x, color = "gray") + 
     geom_hline(yintercept = quant_y, color = "gray") + 
