@@ -10,7 +10,13 @@ left:
 - text: "Cross-sectional Models"
   href: regressions.html
 - text: "Panel Models"
-  href: panel.html
+  menu:
+  - text: "main models"
+    href: panel.html
+  - text: "1995-2015, 1 lag"
+    href: panel1995.html
+  - text: "1980-2018, 3 lags"
+    href: panel3lag.html
 - text: "Sequences"
   href: sequences.html
 right:
