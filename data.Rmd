@@ -179,3 +179,19 @@ performance_measures <- Reduce(f = function(...) merge(..., by = c("country", "y
 data <- merge(data, performance_measures, by = c("country", "year"), all.x = TRUE)
 save(data, codebook, categories, variables, file = "_data/LSCMWG_working_data.RData")
 ```
+
+#### Unit root testing 
+```{r}
+# names(data)[str_detect(names(data), "avg")]
+# vars <- c("life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg", "pc_rgdpe_pwt_avg")
+vars <- c("life_exp_wpp_avg", "pc_rgdpe_pwt_avg")
+df <- plm::pdata.frame(na.omit(data[data$year %in% seq(1970, 2015, 5), c("country", "year", vars)]), index = c("country", "year"))
+# df$country <- droplevels(df$country)
+table(df$year)
+new <- plm::make.pbalanced(df, balance.type = "shared.individuals")
+new$country <- droplevels(new$country)
+table(new$year)
+new <- data.frame(split(new$life_exp_wpp_avg, new$country))
+plm::purtest(new, exo = "intercept", test = "levinlin", lags = "AIC", pmax = 3)
+```
+
