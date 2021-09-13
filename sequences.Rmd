@@ -75,6 +75,10 @@ mean_x <- mean(df$asfr_adol_wpp_avg)
 mean_y <- mean(df$imr_wpp_avg)
 quant_x <- quantile(df$asfr_adol_wpp_avg)
 quant_y <- quantile(df$imr_wpp_avg)
+
+```
+
+```{r countries, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
 lapply(unique(df$country), function(ctry) {
   ggplot(data = df[df$country == ctry, ], 
          mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg) )+ 
@@ -83,10 +87,10 @@ lapply(unique(df$country), function(ctry) {
     geom_segment(lineend = "round") + 
     geom_point(aes(x = lag_asfr_adol_wpp_avg[period == min(period)],
                    y = lag_imr_wpp_avg[period == min(period)]), 
-               shape = 22, size = 2, fill = "red") + 
+               shape = 23, size = 2, fill = "green") + 
     geom_point(aes(x = asfr_adol_wpp_avg[period == max(period)],
                    y = imr_wpp_avg[period == max(period)]), 
-               shape = 23, size = 2, fill = "green") + 
+               shape = 22, size = 2, fill = "red") + 
     xlim(quant_x[1], quant_x[5]) + ylim(quant_y[1], quant_y[5]) + labs(x = "AFR (-)", y = "IMR (-)") + theme_classic() + ggtitle(ctry)
 })
 ```
