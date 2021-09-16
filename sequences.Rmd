@@ -1,15 +1,14 @@
 ---
 title: "Mapping trajectories"
 params: 
-  cache: false
+  cache: true
   optimize: false
 ---
 
 ```{r setup, include = FALSE}
 source("setup.R")
 ```
-
-<!-- ### {.tabset .tabset-fade .tabset-pills} -->
+### {.tabset .tabset-fade .tabset-pills}
 
 ```{r data, rows.print = 15, cols.print = 12, cols.min.print = 12}
 IsTrue <- function(x) { !is.na(x) & x }
@@ -21,7 +20,6 @@ load("_data/LSCMWG_working_class.RData")
 df <- unique(df[, c("country", "period", "health_class", "gender_class", "class", "class_vv")])
 df$period <- str_sub(df$period, 7, 10)
 df <- df[!is.na(df$class) & df$period != 2020, ]
-# table(df$class_vv)
 # noquote(tapply(X = df$class_vv, INDEX = list(health = df$health_class, gender = df$gender_class), function(set) { paste(unique(set), collapse = "; ") }))
 df_new <- pivot_wider(df[, c("country", "period", "class_vv")], names_from = period, values_from = class_vv)
 df_new[, -1] <- lapply(df_new[, -1], function(col) {
@@ -60,37 +58,208 @@ lapply(unique(df$country), function(ctry) {
 # lapply(c(variables$health, variables$gender), function(x) {
 #   vars[str_detect(vars, x)]
 # })
-df <- df[, c("country", "year", "period", "life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg")]
+# vars[str_detect(vars, "class") ]
+df <- df[, c("country", "year", "period", "health_class", "gender_class", "class", "class_vv", "class1990", "class_vv1990", "class1995", "class_vv1995", "life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg")]
 df$period <- as.integer(str_sub(df$period, 7, 10))
 df <- df[df$period == df$year & df$period != 2020, names(df) != "year"]
-cor(df[, c("life_exp_wpp_avg", "imr_wpp_avg", "asfr_adol_wpp_avg", "mys_ratio_hdr_avg")], use = "pairwise.complete.obs")
-df <- df %>% arrange(country, period) %>% group_by(country) %>% mutate(lag_imr_wpp_avg = lag(imr_wpp_avg), lag_asfr_adol_wpp_avg = lag(asfr_adol_wpp_avg))
-missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "Serbia & Montenegro", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR")
-df <- df[, c("country", "period", "imr_wpp_avg", "lag_imr_wpp_avg", "asfr_adol_wpp_avg", "lag_asfr_adol_wpp_avg")]
-df <- df[df$period != 1965 & !(df$country %in% missing_countries), ]
-df <- df[!is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_asfr_adol_wpp_avg), ]
-df <- df %>% arrange(country, period)
-# summary(df)
-mean_x <- mean(df$asfr_adol_wpp_avg)
-mean_y <- mean(df$imr_wpp_avg)
-quant_x <- quantile(df$asfr_adol_wpp_avg)
-quant_y <- quantile(df$imr_wpp_avg)
 
+cor(df[, c("life_exp_wpp_avg", "imr_wpp_avg", "asfr_adol_wpp_avg", "mys_ratio_hdr_avg")], use = "pairwise.complete.obs")
+data.frame(class = table(df$period, is.na(df$class))[, 1], 
+           life = table(df$period, is.na(df$life_exp_wpp_avg))[, 1],
+           imr = table(df$period, is.na(df$imr_wpp_avg))[, 1],
+           asfr = table(df$period, is.na(df$asfr_adol_wpp_avg))[, 1],
+           mys = table(df$period, is.na(df$mys_ratio_hdr_avg))[, 1])
+
+class1975 <- df[df$period == 1975, c("country", "class", "health_class", "gender_class")]
+class1975$class_vv <- NA
+class1975$class_vv[class1975$health_class < 3 & class1975$gender_class < 3] <- "low"
+class1975$class_vv[class1975$health_class > 3 & class1975$gender_class > 3] <- "upp"
+class1975$class_vv[!(class1975$health_class < 3 & class1975$gender_class < 3) & !(class1975$health_class > 3 & class1975$gender_class > 3)] <- "mid"
+class1975$class_vv[class1975$class_vv == "mid" & class1975$health_class > class1975$gender_class] <- "H>G"
+class1975$class_vv[class1975$class_vv == "mid" & class1975$health_class < class1975$gender_class] <- "G>H"
+names(class1975)[-1] <- paste(names(class1975)[-1], "1975", sep = "")
+df <- merge(df, class1975, by = "country", all.x = TRUE)
+
+df$life_exp_wpp_avg <- as.numeric(scale(df$life_exp_wpp_avg))
+df$imr_wpp_avg <- as.numeric(scale(df$imr_wpp_avg))
+df$mys_ratio_hdr_avg <- as.numeric(scale(df$mys_ratio_hdr_avg))
+df$asfr_adol_wpp_avg <- as.numeric(scale(df$asfr_adol_wpp_avg))
+df$health <- rowMeans(df[, c("life_exp_wpp_avg", "imr_wpp_avg")], na.rm = TRUE)
+df$gender <- rowMeans(df[, c("mys_ratio_hdr_avg", "asfr_adol_wpp_avg")], na.rm = TRUE)
+
+df <- df %>% 
+  arrange(country, period) %>% 
+  group_by(country) %>% 
+  mutate(lag_imr_wpp_avg = lag(imr_wpp_avg), 
+         lag_asfr_adol_wpp_avg = lag(asfr_adol_wpp_avg),
+         lag_life_exp_wpp_avg = lag(life_exp_wpp_avg),
+         lag_mys_ratio_hdr_avg = lag(mys_ratio_hdr_avg),
+         lag_health = lag(health),
+         lag_gender = lag(gender))
+missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "Serbia & Montenegro", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan")
+df <- df[!(df$country %in% missing_countries), ]
+df <- df %>% arrange(country, period)
+
+mean_asfr <- mean(df$asfr_adol_wpp_avg, na.rm = TRUE)
+range_asfr <- range(df$asfr_adol_wpp_avg, na.rm = TRUE)
+mean_mys <- mean(df$mys_ratio_hdr_avg, na.rm = TRUE)
+range_mys <- range(df$mys_ratio_hdr_avg, na.rm = TRUE)
+mean_imr <- mean(df$imr_wpp_avg, na.rm = TRUE)
+range_imr <- range(df$imr_wpp_avg, na.rm = TRUE)
+mean_health <- mean(df$health, na.rm = TRUE)
+range_health <- range(df$health, na.rm = TRUE)
+mean_gender <- mean(df$gender, na.rm = TRUE)
+range_gender <- range(df$gender, na.rm = TRUE)
+df$color <- ifelse((df$period %% 2) == 0, 1, 2)
+
+# df <- df[df$period != 1965, c("country", "period", "class_vv", "class_vv1975", "class_vv1990", "class_vv1995", "health", "gender", "lag_health", "lag_gender", "imr_wpp_avg", "asfr_adol_wpp_avg", "lag_imr_wpp_avg", "lag_asfr_adol_wpp_avg")]
+df <- df[df$period != 1965, ]
+df$distance <- sqrt((df$lag_health - df$health)^2 + (df$lag_gender - df$gender)^2)
+df$slope <- (df$lag_health - df$health)/(df$lag_gender - df$gender)
+# df$new <- ifelse(df$slope > 0 & df$slope < 1, "0 < health < gender", NA)
+# df$new[df$slope > 1] <- "0 < gender < health"
+# df$new[df$slope < 0] <- "gender < 0 < health"
+# df$new[df$slope == -Inf] <- "health more"
+
+df$health_chg <- df$health - df$lag_health
+df$gender_chg <- df$gender - df$lag_gender
+# table(df$health_chg > 0, df$gender_chg > 0)
+df <- df %>% group_by(country) %>% mutate(total = sum(distance, na.rm = TRUE))
+# df[, c("country", "period", "class_vv", "health", "gender", "lag_health", "lag_gender", "distance", "total", "slope", "change", "health_chg", "gender_chg")]
+
+df$change[df$health_chg <= 0 & df$gender_chg <= 0] <- "worse"
+df$change[df$health_chg <= 0 & df$gender_chg > 0] <- "health worse"
+df$change[df$health_chg > 0 & df$gender_chg <= 0] <- "gender worse"
+df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg < df$gender_chg] <- "gender more"
+df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg > df$gender_chg] <- "health more"
+tapply(df$change, df$country, I)
+
+temp <- df[, c("country", "period", "change")]
+temp <- temp %>% arrange(country, period) %>% group_by(country) %>% mutate(lag = lag(change))
+temp <- temp[is.na(temp$lag) | temp$change != temp$lag, c("country", "period", "change")]
+temp <- temp[!is.na(temp$change), ]
+tapply(temp$change, temp$country, I)
+
+df <- df %>% group_by(country) %>% mutate(first = min(period), last = max(period), periods = length(unique(period)))
+first <- df[df$period == df$first, c("country", "first", "periods", "class_vv1975", "class_vv1990", "class_vv1995", "total", "health", "gender")]
+names(first)[8:9] <- paste("first", names(first)[8:9], sep = "_")
+last <- df[df$period == df$last, c("country", "health", "gender")]
+names(last)[-1] <- paste("last", names(last)[-1], sep = "_")
+new <- merge(first, last, by = "country")
+new$distance <- sqrt((new$last_health - new$first_health)^2 + (new$last_gender - new$first_gender)^2)
+new$slope <- (new$last_health - new$first_health)/(new$last_gender - new$first_gender)
+new$dist_total <- new$distance / new$total
+new$dist_periods <- new$distance / new$periods
+new[, c("total", "distance", "dist_total", "dist_periods", "slope")] <- lapply(new[, c("total", "distance", "dist_total", "dist_periods", "slope")], round, 3)
+new[, c("country", "first", "periods", "class_vv1975", "class_vv1990", "class_vv1995", "total", "distance", "dist_total", "dist_periods", "slope")]
 ```
 
+#### By 1975 classification
+```{r c1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
+  ggplot(data = df[df$class_vv1975 == class & df$period >= 1975 & !is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_asfr_adol_wpp_avg), ], 
+         mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg, group = country, color = country)) + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(7, "points"))) + 
+    # facet_wrap( ~ class_vv1975, ncol = 5) + 
+    geom_vline(xintercept = mean_asfr, color = "gray") + 
+    geom_hline(yintercept = mean_imr, color = "gray") + 
+    labs(x = "AFR", y = "IMR") + 
+    xlim(range_asfr[1], range_asfr[2]) +
+    ylim(range_imr[1], range_imr[2]) +
+    theme_classic() + theme(legend.position = "none") + ggtitle(class)
+})
+```
+
+#### By 1990 classification
+```{r c1990, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
+  ggplot(data = df[df$class_vv1990 == class & df$period >= 1990 & !is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_asfr_adol_wpp_avg), ], 
+         mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg, group = country, color = country)) + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(7, "points"))) + 
+    geom_vline(xintercept = mean_asfr, color = "gray") + 
+    geom_hline(yintercept = mean_imr, color = "gray") + 
+    labs(x = "AFR", y = "IMR") + 
+    xlim(range_asfr[1], range_asfr[2]) +
+    ylim(range_imr[1], range_imr[2]) +
+    theme_classic() + theme(legend.position = "none") + ggtitle(class)
+})
+```
+
+#### By 1995 classification
+```{r c1995, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
+  ggplot(data = df[df$class_vv1995 == class & df$period >= 1995 & !is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_asfr_adol_wpp_avg), ], 
+         mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg, group = country, color = country)) + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(7, "points"))) + 
+    geom_vline(xintercept = mean_asfr, color = "gray") + 
+    geom_hline(yintercept = mean_imr, color = "gray") + 
+    labs(x = "AFR", y = "IMR") + 
+    xlim(range_asfr[1], range_asfr[2]) +
+    ylim(range_imr[1], range_imr[2]) +
+    theme_classic() + theme(legend.position = "none") + ggtitle(class)
+})
+```
+
+#### Countries
 ```{r countries, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
 lapply(unique(df$country), function(ctry) {
-  ggplot(data = df[df$country == ctry, ], 
-         mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg) )+ 
-    geom_vline(xintercept = quant_x, color = "gray") + 
-    geom_hline(yintercept = quant_y, color = "gray") + 
-    geom_segment(lineend = "round") + 
+  ggplot(data = df[df$country == ctry & !is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_asfr_adol_wpp_avg), ]) + 
+    geom_segment(lineend = "round", color = "orange",
+         mapping = aes(x = lag_asfr_adol_wpp_avg, y = lag_imr_wpp_avg, xend = asfr_adol_wpp_avg, yend = imr_wpp_avg)) + 
     geom_point(aes(x = lag_asfr_adol_wpp_avg[period == min(period)],
                    y = lag_imr_wpp_avg[period == min(period)]), 
                shape = 23, size = 2, fill = "green") + 
     geom_point(aes(x = asfr_adol_wpp_avg[period == max(period)],
                    y = imr_wpp_avg[period == max(period)]), 
                shape = 22, size = 2, fill = "red") + 
-    xlim(quant_x[1], quant_x[5]) + ylim(quant_y[1], quant_y[5]) + labs(x = "AFR (-)", y = "IMR (-)") + theme_classic() + ggtitle(ctry)
+    geom_segment(data = df[df$country == ctry & !is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_mys_ratio_hdr_avg), ], 
+         mapping = aes(x = lag_mys_ratio_hdr_avg, y = lag_imr_wpp_avg, xend = mys_ratio_hdr_avg, yend = imr_wpp_avg, color = color),
+         lineend = "round") + 
+    geom_point(data = df[df$country == ctry & !is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_mys_ratio_hdr_avg), ],
+               aes(x = lag_mys_ratio_hdr_avg[period == min(period)],
+                   y = lag_imr_wpp_avg[period == min(period)]), 
+               shape = 23, size = 2, fill = "green") + 
+    geom_point(data = df[df$country == ctry & !is.na(df$lag_imr_wpp_avg) & !is.na(df$lag_mys_ratio_hdr_avg), ],
+               aes(x = mys_ratio_hdr_avg[period == max(period)],
+                   y = imr_wpp_avg[period == max(period)]), 
+               shape = 22, size = 2, fill = "red") + 
+    geom_vline(xintercept = mean_asfr, color = "gray") + 
+    geom_vline(xintercept = mean_mys, color = "gray") + 
+    geom_hline(yintercept = mean_imr, color = "gray") + 
+    xlim(min(range_asfr[1], range_mys[1]), max(range_asfr[2], range_mys[2])) + 
+    ylim(range_imr[1], range_imr[2]) + 
+    labs(x = "AFR / MYS", y = "IMR") + 
+    theme_classic() + theme(legend.position = "none") + ggtitle(ctry)
 })
+```
+
+#### Combined variables
+```{r combined_countries, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
+lapply(unique(df$country), function(ctry) {
+  ggplot(data = df[df$country == ctry & !is.na(df$lag_health) & !is.na(df$lag_gender), ], 
+         mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health) )+ 
+    geom_vline(xintercept = mean_gender, color = "gray") + 
+    geom_hline(yintercept = mean_health, color = "gray") + 
+    geom_segment(lineend = "round") + 
+    geom_point(aes(x = lag_gender[period == min(period)],
+                   y = lag_health[period == min(period)]), 
+               shape = 23, size = 2, fill = "green") + 
+    geom_point(aes(x = gender[period == max(period)],
+                   y = health[period == max(period)]), 
+               shape = 22, size = 2, fill = "red") + 
+    xlim(range_gender[1], range_gender[2]) + 
+    ylim(range_health[1], range_health[2]) + 
+    labs(x = "Gender", y = "Health") + 
+    theme_classic() + ggtitle(ctry)
+})
+```
+
+#### Overall Changes
+```{r table, rows.print = 15, cols.print = 12, cols.min.print = 12}
+new[, c("country", "first", "class_vv1975", "class_vv1990", "class_vv1995", "distance", "total", "dist_total", "dist_periods")]
+# do.call(rbind, tapply(new$distance, new$class_vv1995, summary))
+# tapply(new$distance, new$class_vv1995, mean)
+# tapply(new$dist_period, new$class_vv1995, mean)
+# ggplot(data = new) + geom_density(aes(x = distance, group = class_vv1995, color = class_vv1995)) + theme_classic()
+# ggplot(data = new, aes(y = distance, group = class_vv1995)) + stat_summary(fun="mean", geom="bar", na.rm = TRUE, size = 1) 
 ```
