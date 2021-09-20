@@ -47,7 +47,7 @@ variables <- list(
   conflict_incidence = c("conflict_internal", "war_internal",  "conflict_non_state", "conflict_one_sided"),
   health_full = c("imr_wpp", "ufmr_wpp", "life_exp_wpp", "daly_ihme"),
   gender_full = c("labor_mod_ratio15_ilo", "wmn_parl_wdi", "tfr_wpp", 
-                  "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr"),
+                  "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr", "mys_ratio_bl"),
   political = c("polity2_p4", "dem_bmr", "v2x_polyarchy", "v2x_libdem", 
                 "v2x_liberal", "v2x_partipdem", "v2x_partip")
 )
@@ -55,6 +55,12 @@ variables <- lapply(variables, function(set) {
   names(set) <- set 
   return(set)
 })
+
+
+
+table(hdr = !is.na(data$mys_ratio_hdr), bl = !is.na(data$mys_ratio_uis))
+cor(data[, c("mys_ratio_hdr", "mys_ratio_bl", "mys_ratio_uis")], use = "pairwise.complete.obs")
+data[!is.na(data$mys_ratio_hdr) | !is.na(data$mys_ratio_bl), c("country", "year", "mys_ratio_hdr", "mys_ratio_bl", "mys_ratio_uis")]
 ```
 
 #### Country data coverage over time
