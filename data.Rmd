@@ -47,7 +47,7 @@ variables <- list(
   conflict_incidence = c("conflict_internal", "war_internal",  "conflict_non_state", "conflict_one_sided"),
   health_full = c("imr_wpp", "ufmr_wpp", "life_exp_wpp", "daly_ihme"),
   gender_full = c("labor_mod_ratio15_ilo", "wmn_parl_wdi", "tfr_wpp", 
-                  "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr", "mys_ratio_bl"),
+                  "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr", "mys_ratio_bl", "mys_age_ratio_ihme", "mys_pop_ratio_ihme" ),
   political = c("polity2_p4", "dem_bmr", "v2x_polyarchy", "v2x_libdem", 
                 "v2x_liberal", "v2x_partipdem", "v2x_partip")
 )
@@ -55,12 +55,6 @@ variables <- lapply(variables, function(set) {
   names(set) <- set 
   return(set)
 })
-
-
-
-table(hdr = !is.na(data$mys_ratio_hdr), bl = !is.na(data$mys_ratio_uis))
-cor(data[, c("mys_ratio_hdr", "mys_ratio_bl", "mys_ratio_uis")], use = "pairwise.complete.obs")
-data[!is.na(data$mys_ratio_hdr) | !is.na(data$mys_ratio_bl), c("country", "year", "mys_ratio_hdr", "mys_ratio_bl", "mys_ratio_uis")]
 ```
 
 #### Country data coverage over time
@@ -143,15 +137,15 @@ summary(data[, c(variables$negative[1:9])])
 data <- data %>% dplyr::arrange(country, year) %>% 
   mutate(period = cut(year, seq(1960, 2020, 5), right = TRUE))
 names(variables$health) <- variables$health <- c("life_exp_wpp", "imr_wpp")
-names(variables$gender) <- variables$gender <- c("mys_ratio_hdr", "asfr_adol_wpp")
-vars <- c(variables$health, variables$gender, "pc_rgdpe_pwt")
+names(variables$gender) <- variables$gender <- c("asfr_adol_wpp", "mys_ratio_hdr")
+vars <- c(variables$health, variables$gender, "mys_age_ratio_ihme", "pc_rgdpe_pwt")
 data <- data %>% group_by(country, period) %>% 
   mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}_avg"), .keep = "all")
 data[, paste(vars, "avg", sep = "_")] <- lapply(data[, paste(vars, "avg", sep = "_")], function(col) {
   col[is.nan(col)] <- NA
   return(col)
 })
-take_logs <- c("pc_rgdpe_pwt", "life_exp_wpp", "mys_ratio_hdr")
+take_logs <- c("pc_rgdpe_pwt", "life_exp_wpp")
 take_logs <- c(take_logs, paste(take_logs, "avg", sep = "_"))
 take_logs_negative <- c("imr_wpp", "asfr_adol_wpp")
 take_logs_negative <- c(take_logs_negative, paste(take_logs_negative, "avg", sep = "_"))
@@ -168,8 +162,8 @@ CodePerformance <- function(y_var, x_vars, df) {
   df[, paste("perf", y_var, sep = "_")] <- df[, y_var] - df$predicted
   return(df[, c("country", "year", paste("perf", y_var, sep = "_"))])
 }
-vars <- c(variables$health, variables$gender)
-names(vars) <- vars <- c(vars, paste(vars, "avg", sep = "_"))
+# vars <- c(variables$health, variables$gender)
+names(vars) <- vars <- paste(vars, "avg", sep = "_")
 names(years) <- years <- c(seq(1965, 2015, 5), 2018)
 performance_measures <- lapply(vars, function(var) {
   results <- lapply(years, function(year) {
@@ -186,8 +180,8 @@ data <- merge(data, performance_measures, by = c("country", "year"), all.x = TRU
 save(data, codebook, categories, variables, file = "_data/LSCMWG_working_data.RData")
 ```
 
-#### Unit root testing 
-```{r}
+<!-- #### Unit root testing  -->
+```{r, echo = FALSE, eval = FALSE}
 # names(data)[str_detect(names(data), "avg")]
 # vars <- c("life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg", "pc_rgdpe_pwt_avg")
 vars <- c("life_exp_wpp_avg", "pc_rgdpe_pwt_avg")
