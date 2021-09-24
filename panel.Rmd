@@ -1,8 +1,8 @@
 ---
 params: 
   set_title: "Panel Regressions"
-  cache: true
-  optimize: false
+  cache: false
+  optimize: true
   lags: 1
   begin: 1975
   end: 2015
