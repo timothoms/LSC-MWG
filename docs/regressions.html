@@ -13,8 +13,8 @@
 
 <title>Cross-sectional regressions</title>
 
-<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -354,23 +354,8 @@ $(document).ready(function () {
 <li>
   <a href="regressions.html">Cross-sectional Models</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Panel Models
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="panel.html">main models</a>
-    </li>
-    <li>
-      <a href="panel1995.html">1995-2015, 1 lag</a>
-    </li>
-    <li>
-      <a href="panel3lag.html">1980-2018, 3 lags</a>
-    </li>
-  </ul>
+<li>
+  <a href="panel.html">Panel Models</a>
 </li>
 <li>
   <a href="sequences.html">Sequences</a>
@@ -423,36 +408,36 @@ $(document).ready(function () {
 <h4 class="tabset tabset-fade tabset-pills">Life expectancy regressions</h4>
 <div id="column-1" class="section level5">
 <h5>Column 1</h5>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> life_exp_wpp_1995 <span class="sc">+</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(life_exp_wpp_avg_growth1995_2015 <span class="sc">~</span> life_exp_wpp_avg_1995 <span class="sc">+</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + 
-##     imr_wpp_1995 + asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + 
+## lm(formula = life_exp_wpp_avg_growth1995_2015 ~ life_exp_wpp_avg_1995 + 
+##     imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + conflict_internal_cumulative1989_1995 + 
 ##     deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + 
 ##     v2x_polyarchy_cumulative1996_2015, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -17.6774  -1.1287   0.2922   1.6213  16.8870 
+## -17.8290  -1.0988   0.2661   1.5589  17.1606 
 ## 
 ## Coefficients:
 ##                                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                                    2.283e+01  7.850e+00   2.909 0.004191 ** 
-## life_exp_wpp_1995                             -3.023e-01  1.025e-01  -2.949 0.003707 ** 
-## imr_wpp_1995                                  -6.427e-02  2.615e-02  -2.458 0.015141 *  
-## asfr_adol_wpp_1995                             5.056e-02  8.917e-03   5.670 7.25e-08 ***
-## conflict_internal_cumulative1989_1995          6.015e-02  3.399e-02   1.770 0.078817 .  
-## deaths_civilians_int_rate_cumulative1996_2015 -1.930e-01  3.088e-01  -0.625 0.532826    
-## pc_rgdpe_avg_growth1995_2015                   6.300e-05  2.935e-05   2.147 0.033443 *  
-## v2x_polyarchy_cumulative1996_2015              4.802e+00  1.418e+00   3.388 0.000904 ***
+## (Intercept)                                    2.343e+01  7.749e+00   3.023  0.00293 ** 
+## life_exp_wpp_avg_1995                         -2.995e-01  1.013e-01  -2.955  0.00362 ** 
+## imr_wpp_avg_1995                              -6.072e-02  2.572e-02  -2.360  0.01952 *  
+## asfr_adol_wpp_avg_1995                         5.084e-02  8.804e-03   5.775 4.15e-08 ***
+## conflict_internal_cumulative1989_1995          5.600e-02  3.352e-02   1.670  0.09687 .  
+## deaths_civilians_int_rate_cumulative1996_2015 -1.658e-01  2.165e-01  -0.766  0.44494    
+## pc_rgdpe_avg_growth1995_2015                   4.202e-05  2.336e-05   1.799  0.07394 .  
+## v2x_polyarchy_cumulative1996_2015              4.141e+00  1.320e+00   3.137  0.00205 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 3.574 on 148 degrees of freedom
-##   (45 observations deleted due to missingness)
-## Multiple R-squared:  0.4917, Adjusted R-squared:  0.4676 
-## F-statistic: 20.45 on 7 and 148 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 3.544 on 153 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.4853, Adjusted R-squared:  0.4617 
+## F-statistic: 20.61 on 7 and 153 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
@@ -460,52 +445,52 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                                  Estimate  Std. Error t value Pr(&gt;|t|)   
-## (Intercept)                                    2.2831e+01  1.2595e+01  1.8127 0.071909 . 
-## life_exp_wpp_1995                             -3.0228e-01  1.6772e-01 -1.8023 0.073530 . 
-## imr_wpp_1995                                  -6.4271e-02  2.5243e-02 -2.5461 0.011917 * 
-## asfr_adol_wpp_1995                             5.0559e-02  2.0100e-02  2.5153 0.012960 * 
-## conflict_internal_cumulative1989_1995          6.0149e-02  3.5341e-02  1.7020 0.090864 . 
-## deaths_civilians_int_rate_cumulative1996_2015 -1.9302e-01  9.7286e-02 -1.9840 0.049100 * 
-## pc_rgdpe_avg_growth1995_2015                   6.2996e-05  2.3245e-05  2.7101 0.007522 **
-## v2x_polyarchy_cumulative1996_2015              4.8021e+00  1.5203e+00  3.1587 0.001922 **
+## (Intercept)                                    2.3429e+01  1.2767e+01  1.8351 0.068438 . 
+## life_exp_wpp_avg_1995                         -2.9953e-01  1.6941e-01 -1.7680 0.079046 . 
+## imr_wpp_avg_1995                              -6.0716e-02  2.4995e-02 -2.4291 0.016293 * 
+## asfr_adol_wpp_avg_1995                         5.0843e-02  2.0397e-02  2.4926 0.013745 * 
+## conflict_internal_cumulative1989_1995          5.5995e-02  3.5168e-02  1.5922 0.113396   
+## deaths_civilians_int_rate_cumulative1996_2015 -1.6578e-01  6.7326e-02 -2.4624 0.014911 * 
+## pc_rgdpe_avg_growth1995_2015                   4.2023e-05  1.7857e-05  2.3533 0.019881 * 
+## v2x_polyarchy_cumulative1996_2015              4.1414e+00  1.4297e+00  2.8967 0.004324 **
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>samplelife <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>country <span class="sc">%in%</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(fit<span class="sc">$</span>call<span class="sc">$</span>formula, <span class="at">data =</span> df, <span class="at">country =</span> country))[, <span class="st">&quot;country&quot;</span>], <span class="dv">1</span>, <span class="dv">0</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1996_2015)</span></span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ life_exp_wpp_avg_1995 + imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1996_2015)</span></span></code></pre></div>
 </div>
 <div id="column-2-no-lag-dv" class="section level5">
 <h5>Column 2 (no lag DV)</h5>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + 
-##     conflict_internal_cumulative1989_1995 + deaths_civilians_int_rate_cumulative1996_2015 + 
-##     pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995, 
-##     data = data)
+## lm(formula = life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + conflict_internal_cumulative1989_1995 + 
+##     deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + 
+##     v2x_polyarchy_cumulative1991_1995, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -16.0744  -1.4512   0.2744   1.6872  19.1672 
+## -16.3552  -1.2498   0.0991   1.5124  19.4721 
 ## 
 ## Coefficients:
 ##                                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                                   -1.363e-01  1.232e+00  -0.111 0.912026    
-## imr_wpp_1995                                  -1.345e-01  1.305e-02 -10.311  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                             4.738e-02  8.995e-03   5.267 4.76e-07 ***
-## conflict_internal_cumulative1989_1995          6.478e-02  3.472e-02   1.866 0.064023 .  
-## deaths_civilians_int_rate_cumulative1996_2015 -2.317e-01  3.121e-01  -0.742 0.459068    
-## pc_rgdpe_avg_growth1995_2015                   5.446e-05  2.957e-05   1.842 0.067477 .  
-## v2x_polyarchy_cumulative1991_1995              4.736e+00  1.371e+00   3.455 0.000718 ***
+## (Intercept)                                    5.670e-01  1.102e+00   0.514  0.60772    
+## imr_wpp_avg_1995                              -1.306e-01  1.263e-02 -10.344  &lt; 2e-16 ***
+## asfr_adol_wpp_avg_1995                         4.790e-02  8.862e-03   5.405 2.42e-07 ***
+## conflict_internal_cumulative1989_1995          6.071e-02  3.417e-02   1.777  0.07760 .  
+## deaths_civilians_int_rate_cumulative1996_2015 -1.933e-01  2.185e-01  -0.885  0.37766    
+## pc_rgdpe_avg_growth1995_2015                   3.453e-05  2.348e-05   1.470  0.14349    
+## v2x_polyarchy_cumulative1991_1995              4.177e+00  1.267e+00   3.297  0.00121 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 3.632 on 149 degrees of freedom
-##   (45 observations deleted due to missingness)
-## Multiple R-squared:  0.4715, Adjusted R-squared:  0.4502 
-## F-statistic: 22.16 on 6 and 149 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 3.595 on 154 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.4669, Adjusted R-squared:  0.4462 
+## F-statistic: 22.48 on 6 and 154 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
@@ -513,54 +498,54 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                                  Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                                   -1.3630e-01  1.4032e+00 -0.0971 0.9227476    
-## imr_wpp_1995                                  -1.3453e-01  3.6797e-02 -3.6560 0.0003545 ***
-## asfr_adol_wpp_1995                             4.7381e-02  2.1088e-02  2.2469 0.0261171 *  
-## conflict_internal_cumulative1989_1995          6.4785e-02  3.4306e-02  1.8884 0.0609101 .  
-## deaths_civilians_int_rate_cumulative1996_2015 -2.3171e-01  9.6238e-02 -2.4077 0.0172777 *  
-## pc_rgdpe_avg_growth1995_2015                   5.4462e-05  2.3665e-05  2.3014 0.0227561 *  
-## v2x_polyarchy_cumulative1991_1995              4.7361e+00  1.6544e+00  2.8626 0.0048068 ** 
+## (Intercept)                                    5.6701e-01  1.2480e+00  0.4543 0.6502340    
+## imr_wpp_avg_1995                              -1.3061e-01  3.6384e-02 -3.5899 0.0004442 ***
+## asfr_adol_wpp_avg_1995                         4.7897e-02  2.1364e-02  2.2419 0.0263953 *  
+## conflict_internal_cumulative1989_1995          6.0715e-02  3.3979e-02  1.7868 0.0759315 .  
+## deaths_civilians_int_rate_cumulative1996_2015 -1.9331e-01  6.2826e-02 -3.0769 0.0024765 ** 
+## pc_rgdpe_avg_growth1995_2015                   3.4528e-05  1.7422e-05  1.9819 0.0492738 *  
+## v2x_polyarchy_cumulative1991_1995              4.1772e+00  1.4694e+00  2.8427 0.0050796 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_int_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + deaths_civilians_osv_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_int_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + deaths_civilians_int_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + deaths_civilians_int_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + conflict_internal_cumulative1989_1995 + deaths_civilians_osv_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + deaths_civilians_osv_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + deaths_civilians_int_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + deaths_civilians_osv_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + deaths_civilians_int_rate_1995 + conflict_internal_cumulative1996_2015 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span></code></pre></div>
 </div>
 <div id="column-3-prediction" class="section level5">
 <h5>Column 3 (prediction)</h5>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> life_exp_wpp_1995 <span class="sc">+</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_avg_growth1995_2015 <span class="sc">~</span> life_exp_wpp_avg_1995 <span class="sc">+</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + 
-##     imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + 
+## lm(formula = life_exp_wpp_avg_growth1995_2015 ~ life_exp_wpp_avg_1995 + 
+##     imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1991_1995 + 
 ##     deaths_civilians_osv_rate_1995, data = data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -17.4799  -1.4390   0.1647   1.7759  16.1383 
+##     Min      1Q  Median      3Q     Max 
+## -17.596  -1.361   0.251   1.778  16.258 
 ## 
 ## Coefficients:
 ##                                    Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                       21.098206   7.490453   2.817 0.005468 ** 
-## life_exp_wpp_1995                 -0.259428   0.097265  -2.667 0.008439 ** 
-## imr_wpp_1995                      -0.060609   0.024975  -2.427 0.016354 *  
-## asfr_adol_wpp_1995                 0.044871   0.008668   5.177 6.73e-07 ***
-## v2x_polyarchy_cumulative1991_1995  4.218479   1.230965   3.427 0.000777 ***
-## deaths_civilians_osv_rate_1995     0.031814   0.014156   2.247 0.025995 *  
+## (Intercept)                       21.331034   7.387262   2.888 0.004410 ** 
+## life_exp_wpp_avg_1995             -0.259617   0.095954  -2.706 0.007542 ** 
+## imr_wpp_avg_1995                  -0.059649   0.024596  -2.425 0.016394 *  
+## asfr_adol_wpp_avg_1995             0.045217   0.008549   5.289 3.91e-07 ***
+## v2x_polyarchy_cumulative1991_1995  3.969809   1.159118   3.425 0.000778 ***
+## deaths_civilians_osv_rate_1995     0.031368   0.013996   2.241 0.026366 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 3.525 on 159 degrees of freedom
-##   (36 observations deleted due to missingness)
-## Multiple R-squared:  0.483,  Adjusted R-squared:  0.4667 
-## F-statistic:  29.7 on 5 and 159 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 3.487 on 163 degrees of freedom
+##   (32 observations deleted due to missingness)
+## Multiple R-squared:  0.4832, Adjusted R-squared:  0.4674 
+## F-statistic: 30.48 on 5 and 163 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
@@ -568,49 +553,49 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                    Estimate Std. Error t value Pr(&gt;|t|)   
-## (Intercept)                       21.098206  11.129314  1.8957 0.059810 . 
-## life_exp_wpp_1995                 -0.259428   0.147355 -1.7606 0.080236 . 
-## imr_wpp_1995                      -0.060609   0.024931 -2.4311 0.016166 * 
-## asfr_adol_wpp_1995                 0.044871   0.017417  2.5764 0.010894 * 
-## v2x_polyarchy_cumulative1991_1995  4.218479   1.407135  2.9979 0.003155 **
-## deaths_civilians_osv_rate_1995     0.031814   0.018834  1.6891 0.093154 . 
+## (Intercept)                       21.331034  11.160371  1.9113 0.057718 . 
+## life_exp_wpp_avg_1995             -0.259617   0.147463 -1.7606 0.080190 . 
+## imr_wpp_avg_1995                  -0.059649   0.024588 -2.4260 0.016359 * 
+## asfr_adol_wpp_avg_1995             0.045217   0.017548  2.5768 0.010858 * 
+## v2x_polyarchy_cumulative1991_1995  3.969809   1.276309  3.1104 0.002206 **
+## deaths_civilians_osv_rate_1995     0.031368   0.018961  1.6543 0.099992 . 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_int_rate_1995)</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_growth1995_2015 ~ life_exp_wpp_1995 + imr_wpp_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + conflict_internal_cumulative1989_1995)</span></span></code></pre></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ life_exp_wpp_avg_1995 + imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_int_rate_1995)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(life_exp_wpp_avg_growth1995_2015 ~ life_exp_wpp_avg_1995 + imr_wpp_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1991_1995 + conflict_internal_cumulative1989_1995)</span></span></code></pre></div>
 </div>
 <div id="column-4-performance-version" class="section level5">
 <h5>Column 4 (performance version)</h5>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(perf_life_exp_wpp_growth1995_2015 <span class="sc">~</span> perf_imr_wpp_1995 <span class="sc">+</span> perf_asfr_adol_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> pc_rgdpe_pwt_avg_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(perf_life_exp_wpp_avg_growth1995_2015 <span class="sc">~</span> perf_imr_wpp_avg_1995 <span class="sc">+</span> perf_asfr_adol_wpp_avg_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995 <span class="sc">+</span> pc_rgdpe_pwt_avg_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = perf_life_exp_wpp_growth1995_2015 ~ perf_imr_wpp_1995 + 
-##     perf_asfr_adol_wpp_1995 + conflict_internal_cumulative1989_1995 + 
+## lm(formula = perf_life_exp_wpp_avg_growth1995_2015 ~ perf_imr_wpp_avg_1995 + 
+##     perf_asfr_adol_wpp_avg_1995 + conflict_internal_cumulative1989_1995 + 
 ##     pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995, 
 ##     data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -16.4210  -1.4487   0.3323   1.5494   9.4071 
+## -16.4936  -1.1287  -0.0289   1.7552  10.0934 
 ## 
 ## Coefficients:
 ##                                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                           -2.306e+00  6.717e-01  -3.434 0.000772 ***
-## perf_imr_wpp_1995                     -4.016e-02  1.432e-02  -2.805 0.005701 ** 
-## perf_asfr_adol_wpp_1995                4.471e-02  8.443e-03   5.295 4.18e-07 ***
-## conflict_internal_cumulative1989_1995  7.571e-02  3.182e-02   2.379 0.018604 *  
-## pc_rgdpe_pwt_avg_1995                 -9.572e-05  4.779e-05  -2.003 0.047017 *  
-## pc_rgdpe_avg_growth1995_2015           5.920e-05  3.026e-05   1.957 0.052266 .  
-## v2x_polyarchy_cumulative1991_1995      4.742e+00  1.393e+00   3.404 0.000854 ***
+## (Intercept)                           -1.906e+00  6.172e-01  -3.088  0.00239 ** 
+## perf_imr_wpp_avg_1995                 -3.629e-02  1.397e-02  -2.598  0.01029 *  
+## perf_asfr_adol_wpp_avg_1995            4.284e-02  8.270e-03   5.181 6.82e-07 ***
+## conflict_internal_cumulative1989_1995  7.355e-02  3.155e-02   2.331  0.02103 *  
+## pc_rgdpe_pwt_avg_1995                 -2.267e-05  2.462e-05  -0.921  0.35870    
+## pc_rgdpe_avg_growth1995_2015           2.305e-05  2.064e-05   1.117  0.26583    
+## v2x_polyarchy_cumulative1991_1995      3.287e+00  1.096e+00   2.998  0.00317 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 3.317 on 149 degrees of freedom
-##   (45 observations deleted due to missingness)
-## Multiple R-squared:  0.2138, Adjusted R-squared:  0.1821 
-## F-statistic: 6.753 on 6 and 149 DF,  p-value: 2.4e-06
+## Residual standard error: 3.3 on 154 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.2018, Adjusted R-squared:  0.1707 
+## F-statistic: 6.488 on 6 and 154 DF,  p-value: 4.039e-06
 ## 
 ## 
 ## $robust
@@ -618,145 +603,145 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                          Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                           -2.3063e+00  9.0631e-01 -2.5447 0.0119557 *  
-## perf_imr_wpp_1995                     -4.0163e-02  2.3517e-02 -1.7078 0.0897525 .  
-## perf_asfr_adol_wpp_1995                4.4710e-02  1.2603e-02  3.5475 0.0005204 ***
-## conflict_internal_cumulative1989_1995  7.5710e-02  3.3879e-02  2.2347 0.0269220 *  
-## pc_rgdpe_pwt_avg_1995                 -9.5721e-05  4.1330e-05 -2.3160 0.0219197 *  
-## pc_rgdpe_avg_growth1995_2015           5.9202e-05  2.3780e-05  2.4896 0.0138889 *  
-## v2x_polyarchy_cumulative1991_1995      4.7417e+00  1.5541e+00  3.0511 0.0026997 ** 
+## (Intercept)                           -1.9058e+00  7.9762e-01 -2.3893 0.0180890 *  
+## perf_imr_wpp_avg_1995                 -3.6290e-02  2.3829e-02 -1.5229 0.1298379    
+## perf_asfr_adol_wpp_avg_1995            4.2844e-02  1.2650e-02  3.3868 0.0008977 ***
+## conflict_internal_cumulative1989_1995  7.3546e-02  3.3890e-02  2.1701 0.0315298 *  
+## pc_rgdpe_pwt_avg_1995                 -2.2669e-05  2.5910e-05 -0.8749 0.3829864    
+## pc_rgdpe_avg_growth1995_2015           2.3055e-05  1.4448e-05  1.5957 0.1126032    
+## v2x_polyarchy_cumulative1991_1995      3.2867e+00  1.1131e+00  2.9528 0.0036426 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(perf_life_exp_wpp_growth1995_2015 ~ perf_imr_wpp_1995 + perf_asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995 + pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span></code></pre></div>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(perf_life_exp_wpp_avg_growth1995_2015 ~ perf_imr_wpp_avg_1995 + perf_asfr_adol_wpp_avg_1995 + deaths_civilians_osv_rate_1995 + pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995)</span></span></code></pre></div>
 </div>
 <div id="no-health-variables-not-reported" class="section level5">
 <h5>no health variables (not reported)</h5>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## no health variables (not reported)</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015)</span></code></pre></div>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(life_exp_wpp_avg_growth1995_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> deaths_civilians_int_rate_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = life_exp_wpp_growth1995_2015 ~ mys_ratio_hdr_1995 + 
+## lm(formula = life_exp_wpp_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + 
 ##     deaths_civilians_int_rate_cumulative1996_2015, data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -16.690  -1.350  -0.124   1.295  36.538 
+## -15.043  -1.717  -0.084   1.424  36.313 
 ## 
 ## Coefficients:
 ##                                               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                                    12.6545     1.3994   9.043 1.13e-15 ***
-## mys_ratio_hdr_1995                             -8.5350     1.6707  -5.109 1.04e-06 ***
-## deaths_civilians_int_rate_cumulative1996_2015  -0.6014     0.3833  -1.569    0.119    
+## (Intercept)                                    12.6696     1.0387  12.198  &lt; 2e-16 ***
+## mys_age_ratio_ihme_avg_1995                    -8.9998     1.3132  -6.853 1.15e-10 ***
+## deaths_civilians_int_rate_cumulative1996_2015  -0.5068     0.2503  -2.024   0.0444 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 4.548 on 140 degrees of freedom
-##   (58 observations deleted due to missingness)
-## Multiple R-squared:  0.1621, Adjusted R-squared:  0.1501 
-## F-statistic: 13.54 on 2 and 140 DF,  p-value: 4.203e-06
+## Residual standard error: 4.184 on 177 degrees of freedom
+##   (21 observations deleted due to missingness)
+## Multiple R-squared:  0.2149, Adjusted R-squared:  0.2061 
+## F-statistic: 24.23 on 2 and 177 DF,  p-value: 5.007e-10
 ## 
 ## 
 ## $robust
 ## 
 ## t test of coefficients:
 ## 
-##                                               Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                                   12.65452    1.63756  7.7276 1.920e-12 ***
-## mys_ratio_hdr_1995                            -8.53503    1.73123 -4.9301 2.292e-06 ***
-## deaths_civilians_int_rate_cumulative1996_2015 -0.60141    0.12247 -4.9106 2.495e-06 ***
+##                                                Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)                                   12.669648   1.267039  9.9994 &lt; 2.2e-16 ***
+## mys_age_ratio_ihme_avg_1995                   -8.999765   1.435136 -6.2710 2.666e-09 ***
+## deaths_civilians_int_rate_cumulative1996_2015 -0.506756   0.072104 -7.0281 4.361e-11 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;life_exp_wpp_1995&quot;</span>, <span class="st">&quot;imr_wpp_1995&quot;</span>)])</span></code></pre></div>
-<pre><code>##                   life_exp_wpp_1995 imr_wpp_1995
-## life_exp_wpp_1995         1.0000000    0.9615578
-## imr_wpp_1995              0.9615578    1.0000000</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;life_exp_wpp_avg_1995&quot;</span>, <span class="st">&quot;imr_wpp_avg_1995&quot;</span>)])</span></code></pre></div>
+<pre><code>##                       life_exp_wpp_avg_1995 imr_wpp_avg_1995
+## life_exp_wpp_avg_1995             1.0000000        0.9620378
+## imr_wpp_avg_1995                  0.9620378        1.0000000</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;v2x_polyarchy_cumulative1996_2015&quot;</span>, <span class="st">&quot;v2x_polyarchy_cumulative1991_1995&quot;</span>)])</span></code></pre></div>
 <pre><code>##                                   v2x_polyarchy_cumulative1996_2015 v2x_polyarchy_cumulative1991_1995
-## v2x_polyarchy_cumulative1996_2015                         1.0000000                         0.9027603
-## v2x_polyarchy_cumulative1991_1995                         0.9027603                         1.0000000</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;perf_life_exp_wpp_growth1995_2015&quot;</span>, <span class="st">&quot;life_exp_wpp_1995&quot;</span>)])</span></code></pre></div>
-<pre><code>##                                   perf_life_exp_wpp_growth1995_2015 life_exp_wpp_1995
-## perf_life_exp_wpp_growth1995_2015                        1.00000000        0.07597425
-## life_exp_wpp_1995                                        0.07597425        1.00000000</code></pre>
+## v2x_polyarchy_cumulative1996_2015                         1.0000000                         0.9130576
+## v2x_polyarchy_cumulative1991_1995                         0.9130576                         1.0000000</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;perf_life_exp_wpp_avg_growth1995_2015&quot;</span>, <span class="st">&quot;life_exp_wpp_avg_1995&quot;</span>)])</span></code></pre></div>
+<pre><code>##                                       perf_life_exp_wpp_avg_growth1995_2015 life_exp_wpp_avg_1995
+## perf_life_exp_wpp_avg_growth1995_2015                             1.0000000             0.0764723
+## life_exp_wpp_avg_1995                                             0.0764723             1.0000000</code></pre>
 </div>
 </div>
 <div id="imr-regressions" class="section level4 tabset tabset-fade tabset-pills">
 <h4 class="tabset tabset-fade tabset-pills">IMR regressions</h4>
 <div id="base-model" class="section level5">
 <h5>Base model</h5>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(imr_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> pc_rgdpe_pwt_avg_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(imr_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> pc_rgdpe_pwt_avg_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + 
-##     pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995, 
-##     data = data)
+## lm(formula = imr_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + 
+##     v2x_polyarchy_cumulative1991_1995, data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -32.444  -3.100   0.671   4.527  40.262 
+## -32.337  -3.570   0.613   4.866  40.519 
 ## 
 ## Coefficients:
 ##                                     Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                       -1.300e+00  3.201e+00  -0.406   0.6852    
-## imr_wpp_1995                      -6.283e-01  3.505e-02 -17.927  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                 1.234e-01  2.497e-02   4.941 2.05e-06 ***
-## pc_rgdpe_pwt_avg_1995             -2.361e-04  1.491e-04  -1.584   0.1153    
-## pc_rgdpe_avg_growth1995_2015       1.367e-04  8.955e-05   1.526   0.1291    
-## v2x_polyarchy_cumulative1991_1995  8.966e+00  4.089e+00   2.193   0.0299 *  
+## (Intercept)                       -1.277e+00  3.060e+00  -0.417   0.6769    
+## imr_wpp_avg_1995                  -6.282e-01  3.453e-02 -18.192  &lt; 2e-16 ***
+## asfr_adol_wpp_avg_1995             1.161e-01  2.426e-02   4.788  3.9e-06 ***
+## pc_rgdpe_pwt_avg_1995             -4.135e-05  7.747e-05  -0.534   0.5943    
+## pc_rgdpe_avg_growth1995_2015       5.380e-05  6.325e-05   0.851   0.3963    
+## v2x_polyarchy_cumulative1991_1995  5.619e+00  3.371e+00   1.667   0.0975 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 9.756 on 150 degrees of freedom
-##   (45 observations deleted due to missingness)
-## Multiple R-squared:  0.8237, Adjusted R-squared:  0.8178 
-## F-statistic: 140.2 on 5 and 150 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 9.689 on 155 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.8237, Adjusted R-squared:  0.818 
+## F-statistic: 144.8 on 5 and 155 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
 ## 
 ## t test of coefficients:
 ## 
-##                                      Estimate  Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                       -1.3005e+00  3.1101e+00 -0.4181 0.676439    
-## imr_wpp_1995                      -6.2831e-01  7.9151e-02 -7.9381 4.44e-13 ***
-## asfr_adol_wpp_1995                 1.2340e-01  4.6823e-02  2.6356 0.009283 ** 
-## pc_rgdpe_pwt_avg_1995             -2.3611e-04  8.9850e-05 -2.6278 0.009488 ** 
-## pc_rgdpe_avg_growth1995_2015       1.3666e-04  6.1377e-05  2.2265 0.027469 *  
-## v2x_polyarchy_cumulative1991_1995  8.9656e+00  3.8235e+00  2.3448 0.020345 *  
+##                                      Estimate  Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)                       -1.2773e+00  2.8803e+00 -0.4434   0.65806    
+## imr_wpp_avg_1995                  -6.2825e-01  7.8736e-02 -7.9792 3.054e-13 ***
+## asfr_adol_wpp_avg_1995             1.1614e-01  4.6496e-02  2.4978   0.01354 *  
+## pc_rgdpe_pwt_avg_1995             -4.1348e-05  7.0342e-05 -0.5878   0.55751    
+## pc_rgdpe_avg_growth1995_2015       5.3799e-05  4.0928e-05  1.3145   0.19063    
+## v2x_polyarchy_cumulative1991_1995  5.6189e+00  3.1308e+00  1.7947   0.07465 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">vif</span>(fit)</span></code></pre></div>
-<pre><code>##                      imr_wpp_1995                asfr_adol_wpp_1995             pc_rgdpe_pwt_avg_1995      pc_rgdpe_avg_growth1995_2015 v2x_polyarchy_cumulative1991_1995 
-##                          3.421349                          2.826401                          3.050122                          1.703255                          1.962740</code></pre>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
+<pre><code>##                  imr_wpp_avg_1995            asfr_adol_wpp_avg_1995             pc_rgdpe_pwt_avg_1995      pc_rgdpe_avg_growth1995_2015 v2x_polyarchy_cumulative1991_1995 
+##                          3.446330                          2.782918                          1.650908                          1.259310                          1.454765</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> pc_rgdpe_avg_growth1995_2015 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + 
-##     pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995, 
+## lm(formula = imr_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_polyarchy_cumulative1991_1995, 
 ##     data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -31.940  -3.829   0.631   5.039  40.076 
+## -32.121  -3.993   0.460   5.182  40.299 
 ## 
 ## Coefficients:
 ##                                     Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                       -2.345e+00  3.148e+00  -0.745    0.458    
-## imr_wpp_1995                      -6.343e-01  3.502e-02 -18.113  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                 1.134e-01  2.428e-02   4.670  6.6e-06 ***
-## pc_rgdpe_avg_growth1995_2015       6.844e-05  7.891e-05   0.867    0.387    
-## v2x_polyarchy_cumulative1991_1995  5.793e+00  3.583e+00   1.617    0.108    
+## (Intercept)                       -1.888e+00  2.831e+00  -0.667    0.506    
+## imr_wpp_avg_1995                  -6.319e-01  3.376e-02 -18.717  &lt; 2e-16 ***
+## asfr_adol_wpp_avg_1995             1.139e-01  2.382e-02   4.780 4.03e-06 ***
+## pc_rgdpe_avg_growth1995_2015       4.956e-05  6.260e-05   0.792    0.430    
+## v2x_polyarchy_cumulative1991_1995  5.334e+00  3.320e+00   1.606    0.110    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 9.804 on 151 degrees of freedom
-##   (45 observations deleted due to missingness)
-## Multiple R-squared:  0.8208, Adjusted R-squared:  0.816 
-## F-statistic: 172.9 on 4 and 151 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 9.667 on 156 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.8233, Adjusted R-squared:  0.8188 
+## F-statistic: 181.8 on 4 and 156 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
@@ -764,39 +749,39 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                      Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                       -2.3447e+00  3.0532e+00 -0.7680   0.44371    
-## imr_wpp_1995                      -6.3430e-01  7.8520e-02 -8.0782 1.941e-13 ***
-## asfr_adol_wpp_1995                 1.1341e-01  4.6422e-02  2.4429   0.01572 *  
-## pc_rgdpe_avg_growth1995_2015       6.8444e-05  4.9415e-05  1.3851   0.16807    
-## v2x_polyarchy_cumulative1991_1995  5.7926e+00  3.4269e+00  1.6903   0.09303 .  
+## (Intercept)                       -1.8883e+00  2.6058e+00 -0.7247   0.46975    
+## imr_wpp_avg_1995                  -6.3193e-01  7.6877e-02 -8.2200 7.381e-14 ***
+## asfr_adol_wpp_avg_1995             1.1387e-01  4.6518e-02  2.4478   0.01548 *  
+## pc_rgdpe_avg_growth1995_2015       4.9558e-05  3.5726e-05  1.3872   0.16737    
+## v2x_polyarchy_cumulative1991_1995  5.3340e+00  3.0060e+00  1.7745   0.07794 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> pc_rgdpe_pwt_avg_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> pc_rgdpe_pwt_avg_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + 
-##     pc_rgdpe_pwt_avg_1995 + v2x_polyarchy_cumulative1991_1995, 
+## lm(formula = imr_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + pc_rgdpe_pwt_avg_1995 + v2x_polyarchy_cumulative1991_1995, 
 ##     data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -32.902  -2.869   0.770   4.638  40.818 
+## -32.663  -3.519   0.512   4.912  40.757 
 ## 
 ## Coefficients:
 ##                                     Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                        0.3767356  3.0199654   0.125   0.9009    
-## imr_wpp_1995                      -0.6192508  0.0346939 -17.849  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                 0.1227485  0.0250792   4.894 2.51e-06 ***
-## pc_rgdpe_pwt_avg_1995             -0.0001267  0.0001313  -0.965   0.3359    
-## v2x_polyarchy_cumulative1991_1995  6.7246256  3.8330061   1.754   0.0814 .  
+## (Intercept)                       -2.885e-01  2.828e+00  -0.102    0.919    
+## imr_wpp_avg_1995                  -6.231e-01  3.398e-02 -18.339  &lt; 2e-16 ***
+## asfr_adol_wpp_avg_1995             1.181e-01  2.412e-02   4.895 2.43e-06 ***
+## pc_rgdpe_pwt_avg_1995             -3.307e-05  7.678e-05  -0.431    0.667    
+## v2x_polyarchy_cumulative1991_1995  5.266e+00  3.342e+00   1.576    0.117    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 9.798 on 151 degrees of freedom
-##   (45 observations deleted due to missingness)
-## Multiple R-squared:  0.821,  Adjusted R-squared:  0.8162 
-## F-statistic: 173.1 on 4 and 151 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 9.681 on 156 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.8228, Adjusted R-squared:  0.8183 
+## F-statistic: 181.2 on 4 and 156 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
@@ -804,36 +789,36 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                      Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                        3.7674e-01  2.8316e+00  0.1330   0.89433    
-## imr_wpp_1995                      -6.1925e-01  7.8932e-02 -7.8453 7.306e-13 ***
-## asfr_adol_wpp_1995                 1.2275e-01  4.7162e-02  2.6027   0.01017 *  
-## pc_rgdpe_pwt_avg_1995             -1.2672e-04  8.2751e-05 -1.5313   0.12778    
-## v2x_polyarchy_cumulative1991_1995  6.7246e+00  3.4972e+00  1.9228   0.05638 .  
+## (Intercept)                       -2.8854e-01  2.6407e+00 -0.1093   0.91313    
+## imr_wpp_avg_1995                  -6.2314e-01  7.8195e-02 -7.9690 3.151e-13 ***
+## asfr_adol_wpp_avg_1995             1.1809e-01  4.6661e-02  2.5308   0.01237 *  
+## pc_rgdpe_pwt_avg_1995             -3.3070e-05  5.3392e-05 -0.6194   0.53657    
+## v2x_polyarchy_cumulative1991_1995  5.2659e+00  2.9700e+00  1.7730   0.07818 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_pwt_avg_1995&quot;</span>, <span class="st">&quot;pc_rgdpe_avg_growth1995_2015&quot;</span>)])</span></code></pre></div>
 <pre><code>##                              pc_rgdpe_pwt_avg_1995 pc_rgdpe_avg_growth1995_2015
-## pc_rgdpe_pwt_avg_1995                    1.0000000                    0.5629647
-## pc_rgdpe_avg_growth1995_2015             0.5629647                    1.0000000</code></pre>
+## pc_rgdpe_pwt_avg_1995                      1.00000                      0.33888
+## pc_rgdpe_avg_growth1995_2015               0.33888                      1.00000</code></pre>
 </div>
 <div id="prediction-model" class="section level5">
 <h5>Prediction model</h5>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995, 
-##     data = data)
+## lm(formula = imr_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995, data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
 ## -32.523  -2.572   0.160   4.370  46.318 
 ## 
 ## Coefficients:
-##                    Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)         1.82430    1.28442   1.420    0.157    
-## imr_wpp_1995       -0.58266    0.02761 -21.104  &lt; 2e-16 ***
-## asfr_adol_wpp_1995  0.09618    0.02192   4.388 1.96e-05 ***
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             1.82430    1.28442   1.420    0.157    
+## imr_wpp_avg_1995       -0.58266    0.02761 -21.104  &lt; 2e-16 ***
+## asfr_adol_wpp_avg_1995  0.09618    0.02192   4.388 1.96e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
@@ -847,44 +832,44 @@ $(document).ready(function () {
 ## 
 ## t test of coefficients:
 ## 
-##                     Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)         1.824303   0.923965  1.9744   0.04989 *  
-## imr_wpp_1995       -0.582661   0.067295 -8.6583 2.896e-15 ***
-## asfr_adol_wpp_1995  0.096178   0.044498  2.1614   0.03201 *  
+##                         Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)             1.824303   0.923965  1.9744   0.04989 *  
+## imr_wpp_avg_1995       -0.582661   0.067295 -8.6583 2.896e-15 ***
+## asfr_adol_wpp_avg_1995  0.096178   0.044498  2.1614   0.03201 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995, <span class="at">data =</span> df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, ])</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(imr_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995, <span class="at">data =</span> df[df<span class="sc">$</span>samplelife <span class="sc">==</span> <span class="dv">1</span>, ])</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = imr_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995, 
-##     data = data)
+## lm(formula = imr_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995, data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -33.088  -2.691   0.678   4.585  42.255 
+## -33.028  -2.607   0.700   4.312  42.219 
 ## 
 ## Coefficients:
-##                    Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)         2.50881    1.40996   1.779   0.0772 .  
-## imr_wpp_1995       -0.60508    0.03077 -19.665  &lt; 2e-16 ***
-## asfr_adol_wpp_1995  0.11356    0.02412   4.708 5.56e-06 ***
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             2.38937    1.35303   1.766   0.0793 .  
+## imr_wpp_avg_1995       -0.60583    0.03027 -20.013  &lt; 2e-16 ***
+## asfr_adol_wpp_avg_1995  0.11343    0.02366   4.794 3.75e-06 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 9.836 on 153 degrees of freedom
-## Multiple R-squared:  0.8172, Adjusted R-squared:  0.8148 
-## F-statistic:   342 on 2 and 153 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 9.697 on 158 degrees of freedom
+## Multiple R-squared:   0.82,  Adjusted R-squared:  0.8177 
+## F-statistic: 359.8 on 2 and 158 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
 ## 
 ## t test of coefficients:
 ## 
-##                     Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)         2.508809   0.974347  2.5749   0.01098 *  
-## imr_wpp_1995       -0.605078   0.071949 -8.4098 2.684e-14 ***
-## asfr_adol_wpp_1995  0.113563   0.048050  2.3634   0.01936 *  
+##                         Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)             2.389371   0.934687  2.5563   0.01152 *  
+## imr_wpp_avg_1995       -0.605829   0.071714 -8.4478 1.827e-14 ***
+## asfr_adol_wpp_avg_1995  0.113425   0.047756  2.3751   0.01874 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -893,34 +878,34 @@ $(document).ready(function () {
 <h4 class="tabset tabset-fade tabset-pills">MYS regressions</h4>
 <div id="column-1-base-model" class="section level5">
 <h5>Column 1 (base model)</h5>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015 <span class="sc">+</span> deaths_civilians_osv_rate_1995 <span class="sc">+</span> deaths_civilians_osv_rate_cumulative1996_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">RunModel</span>(mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015 <span class="sc">+</span> deaths_civilians_osv_rate_1995 <span class="sc">+</span> deaths_civilians_osv_rate_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + 
-##     asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + 
+## lm(formula = mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + 
 ##     deaths_civilians_osv_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015, 
 ##     data = data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.31990 -0.03001 -0.00116  0.03829  0.22606 
+##       Min        1Q    Median        3Q       Max 
+## -0.083964 -0.014214  0.000344  0.016428  0.068561 
 ## 
 ## Coefficients:
 ##                                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                                    0.4703940  0.0369701  12.724  &lt; 2e-16 ***
-## mys_ratio_hdr_1995                            -0.3679736  0.0366792 -10.032  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                             0.0005884  0.0001570   3.748 0.000268 ***
-## v2x_polyarchy_cumulative1996_2015             -0.0619265  0.0289468  -2.139 0.034293 *  
-## deaths_civilians_osv_rate_1995                 0.0005321  0.0007670   0.694 0.489092    
-## deaths_civilians_osv_rate_cumulative1996_2015 -0.0120285  0.0075595  -1.591 0.114016    
+## (Intercept)                                    1.301e-01  9.566e-03  13.602  &lt; 2e-16 ***
+## mys_age_ratio_ihme_avg_1995                   -5.309e-02  1.051e-02  -5.053 1.16e-06 ***
+## asfr_adol_wpp_avg_1995                         9.486e-05  4.290e-05   2.211   0.0284 *  
+## v2x_polyarchy_cumulative1996_2015             -2.219e-02  8.237e-03  -2.694   0.0078 ** 
+## deaths_civilians_osv_rate_1995                 4.931e-05  9.591e-05   0.514   0.6079    
+## deaths_civilians_osv_rate_cumulative1996_2015 -1.248e-03  1.720e-03  -0.725   0.4693    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.07593 on 129 degrees of freedom
-##   (66 observations deleted due to missingness)
-## Multiple R-squared:  0.5207, Adjusted R-squared:  0.5021 
-## F-statistic: 28.03 on 5 and 129 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.02303 on 163 degrees of freedom
+##   (32 observations deleted due to missingness)
+## Multiple R-squared:  0.2795, Adjusted R-squared:  0.2574 
+## F-statistic: 12.65 on 5 and 163 DF,  p-value: 2.192e-10
 ## 
 ## 
 ## $robust
@@ -928,40 +913,41 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                                  Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                                    0.47039395  0.05822775  8.0785 4.058e-13 ***
-## mys_ratio_hdr_1995                            -0.36797358  0.05698236 -6.4577 1.976e-09 ***
-## asfr_adol_wpp_1995                             0.00058841  0.00025587  2.2996  0.023076 *  
-## v2x_polyarchy_cumulative1996_2015             -0.06192649  0.02998664 -2.0651  0.040913 *  
-## deaths_civilians_osv_rate_1995                 0.00053207  0.00030452  1.7472  0.082981 .  
-## deaths_civilians_osv_rate_cumulative1996_2015 -0.01202851  0.00403426 -2.9816  0.003429 ** 
+## (Intercept)                                    1.3011e-01  1.2591e-02 10.3339 &lt; 2.2e-16 ***
+## mys_age_ratio_ihme_avg_1995                   -5.3095e-02  1.3295e-02 -3.9935  9.83e-05 ***
+## asfr_adol_wpp_avg_1995                         9.4858e-05  5.7849e-05  1.6397  0.102987    
+## v2x_polyarchy_cumulative1996_2015             -2.2189e-02  6.9661e-03 -3.1854  0.001733 ** 
+## deaths_civilians_osv_rate_1995                 4.9310e-05  3.5408e-05  1.3926  0.165634    
+## deaths_civilians_osv_rate_cumulative1996_2015 -1.2478e-03  1.2749e-03 -0.9788  0.329145    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>samplemys <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>country <span class="sc">%in%</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(fit<span class="sc">$</span>call<span class="sc">$</span>formula, <span class="at">data =</span> df, <span class="at">country =</span> country))[, <span class="st">&quot;country&quot;</span>], <span class="dv">1</span>, <span class="dv">0</span>)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="do">## (checks)</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015)</span></code></pre></div>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + 
-##     asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015, data = data)
+## lm(formula = mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015, 
+##     data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -0.31620 -0.03485 -0.00049  0.03812  0.23190 
+## -0.08353 -0.01386  0.00069  0.01626  0.06934 
 ## 
 ## Coefficients:
 ##                                     Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                        0.4540970  0.0356750  12.729  &lt; 2e-16 ***
-## mys_ratio_hdr_1995                -0.3521799  0.0353851  -9.953  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                 0.0006143  0.0001567   3.922 0.000141 ***
-## v2x_polyarchy_cumulative1996_2015 -0.0579819  0.0289274  -2.004 0.047089 *  
+## (Intercept)                        1.292e-01  9.326e-03  13.850  &lt; 2e-16 ***
+## mys_age_ratio_ihme_avg_1995       -5.199e-02  1.027e-02  -5.064 1.09e-06 ***
+## asfr_adol_wpp_avg_1995             9.828e-05  4.249e-05   2.313  0.02197 *  
+## v2x_polyarchy_cumulative1996_2015 -2.192e-02  8.194e-03  -2.675  0.00823 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.07616 on 131 degrees of freedom
-##   (66 observations deleted due to missingness)
-## Multiple R-squared:  0.5104, Adjusted R-squared:  0.4992 
-## F-statistic: 45.52 on 3 and 131 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.02293 on 165 degrees of freedom
+##   (32 observations deleted due to missingness)
+## Multiple R-squared:  0.2768, Adjusted R-squared:  0.2637 
+## F-statistic: 21.05 on 3 and 165 DF,  p-value: 1.345e-11
 ## 
 ## 
 ## $robust
@@ -969,37 +955,37 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                      Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                        0.45409698  0.05671760  8.0063 5.586e-13 ***
-## mys_ratio_hdr_1995                -0.35217995  0.05547580 -6.3484 3.285e-09 ***
-## asfr_adol_wpp_1995                 0.00061434  0.00025367  2.4218   0.01681 *  
-## v2x_polyarchy_cumulative1996_2015 -0.05798192  0.02997314 -1.9345   0.05521 .  
+## (Intercept)                        1.2916e-01  1.2291e-02 10.5084 &lt; 2.2e-16 ***
+## mys_age_ratio_ihme_avg_1995       -5.1985e-02  1.2989e-02 -4.0023 9.459e-05 ***
+## asfr_adol_wpp_avg_1995             9.8276e-05  5.6912e-05  1.7268  0.086076 .  
+## v2x_polyarchy_cumulative1996_2015 -2.1920e-02  6.9013e-03 -3.1762  0.001781 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> deaths_civilians_osv_rate_cumulative1996_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> deaths_civilians_osv_rate_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + 
-##     asfr_adol_wpp_1995 + deaths_civilians_osv_rate_cumulative1996_2015, 
+## lm(formula = mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + deaths_civilians_osv_rate_cumulative1996_2015, 
 ##     data = data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.33205 -0.03716 -0.00080  0.03107  0.25119 
+##       Min        1Q    Median        3Q       Max 
+## -0.078163 -0.016189  0.001554  0.016851  0.069759 
 ## 
 ## Coefficients:
 ##                                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                                    0.4430044  0.0355191  12.472  &lt; 2e-16 ***
-## mys_ratio_hdr_1995                            -0.3853944  0.0348511 -11.058  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                             0.0005098  0.0001531   3.329  0.00112 ** 
-## deaths_civilians_osv_rate_cumulative1996_2015 -0.0077667  0.0056477  -1.375  0.17130    
+## (Intercept)                                    1.279e-01  9.258e-03  13.820  &lt; 2e-16 ***
+## mys_age_ratio_ihme_avg_1995                   -6.585e-02  9.129e-03  -7.214 1.56e-11 ***
+## asfr_adol_wpp_avg_1995                         9.255e-05  4.168e-05   2.221   0.0277 *  
+## deaths_civilians_osv_rate_cumulative1996_2015 -8.728e-04  1.603e-03  -0.544   0.5869    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.07653 on 138 degrees of freedom
-##   (59 observations deleted due to missingness)
-## Multiple R-squared:  0.4958, Adjusted R-squared:  0.4849 
-## F-statistic: 45.24 on 3 and 138 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.02293 on 176 degrees of freedom
+##   (21 observations deleted due to missingness)
+## Multiple R-squared:  0.2542, Adjusted R-squared:  0.2415 
+## F-statistic: 19.99 on 3 and 176 DF,  p-value: 3.371e-11
 ## 
 ## 
 ## $robust
@@ -1007,36 +993,37 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                                  Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                                    0.44300440  0.05574523  7.9469 6.087e-13 ***
-## mys_ratio_hdr_1995                            -0.38539437  0.05222073 -7.3801 1.346e-11 ***
-## asfr_adol_wpp_1995                             0.00050976  0.00024098  2.1154   0.03619 *  
-## deaths_civilians_osv_rate_cumulative1996_2015 -0.00776666  0.00330679 -2.3487   0.02026 *  
+## (Intercept)                                    1.2795e-01  1.2066e-02 10.6042 &lt; 2.2e-16 ***
+## mys_age_ratio_ihme_avg_1995                   -6.5854e-02  1.1572e-02 -5.6907 5.194e-08 ***
+## asfr_adol_wpp_avg_1995                         9.2545e-05  5.4912e-05  1.6853    0.0937 .  
+## deaths_civilians_osv_rate_cumulative1996_2015 -8.7276e-04  1.3652e-03 -0.6393    0.5235    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + 
-##     asfr_adol_wpp_1995 + deaths_civilians_osv_rate_1995, data = data)
+## lm(formula = mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + deaths_civilians_osv_rate_1995, 
+##     data = data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.32901 -0.03781 -0.00205  0.02889  0.25218 
+##       Min        1Q    Median        3Q       Max 
+## -0.077979 -0.016883  0.001943  0.016865  0.070424 
 ## 
 ## Coefficients:
 ##                                  Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                     0.4326449  0.0348616  12.410  &lt; 2e-16 ***
-## mys_ratio_hdr_1995             -0.3735969  0.0339026 -11.020  &lt; 2e-16 ***
-## asfr_adol_wpp_1995              0.0005287  0.0001533   3.448  0.00075 ***
-## deaths_civilians_osv_rate_1995 -0.0002817  0.0005778  -0.487  0.62670    
+## (Intercept)                     1.267e-01  9.122e-03  13.889  &lt; 2e-16 ***
+## mys_age_ratio_ihme_avg_1995    -6.449e-02  8.906e-03  -7.241 1.34e-11 ***
+## asfr_adol_wpp_avg_1995          9.376e-05  4.164e-05   2.252   0.0256 *  
+## deaths_civilians_osv_rate_1995  2.046e-05  8.951e-05   0.229   0.8194    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.07699 on 138 degrees of freedom
-##   (59 observations deleted due to missingness)
-## Multiple R-squared:  0.4898, Adjusted R-squared:  0.4787 
-## F-statistic: 44.16 on 3 and 138 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.02294 on 176 degrees of freedom
+##   (21 observations deleted due to missingness)
+## Multiple R-squared:  0.2531, Adjusted R-squared:  0.2404 
+## F-statistic: 19.89 on 3 and 176 DF,  p-value: 3.801e-11
 ## 
 ## 
 ## $robust
@@ -1044,38 +1031,38 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                   Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                     0.43264491  0.05528980  7.8250 1.193e-12 ***
-## mys_ratio_hdr_1995             -0.37359686  0.05167064 -7.2304 3.004e-11 ***
-## asfr_adol_wpp_1995              0.00052871  0.00024076  2.1960   0.02976 *  
-## deaths_civilians_osv_rate_1995 -0.00028167  0.00021614 -1.3032   0.19469    
+## (Intercept)                     1.2670e-01  1.1964e-02 10.5898 &lt; 2.2e-16 ***
+## mys_age_ratio_ihme_avg_1995    -6.4488e-02  1.1352e-02 -5.6807 5.456e-08 ***
+## asfr_adol_wpp_avg_1995          9.3755e-05  5.4699e-05  1.7140   0.08829 .  
+## deaths_civilians_osv_rate_1995  2.0464e-05  4.8998e-05  0.4176   0.67672    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015 <span class="sc">+</span> deaths_civilians_osv_rate_cumulative1996_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1996_2015 <span class="sc">+</span> deaths_civilians_osv_rate_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + 
-##     asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + 
+## lm(formula = mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + 
 ##     deaths_civilians_osv_rate_cumulative1996_2015, data = data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.31986 -0.02988 -0.00078  0.03859  0.22660 
+##       Min        1Q    Median        3Q       Max 
+## -0.083805 -0.014330  0.000761  0.016245  0.068666 
 ## 
 ## Coefficients:
 ##                                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                                    0.4691358  0.0368518  12.730  &lt; 2e-16 ***
-## mys_ratio_hdr_1995                            -0.3673320  0.0365943 -10.038  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                             0.0005910  0.0001566   3.773 0.000244 ***
-## v2x_polyarchy_cumulative1996_2015             -0.0608017  0.0288437  -2.108 0.036953 *  
-## deaths_civilians_osv_rate_cumulative1996_2015 -0.0085193  0.0056064  -1.520 0.131052    
+## (Intercept)                                    1.303e-01  9.539e-03  13.657  &lt; 2e-16 ***
+## mys_age_ratio_ihme_avg_1995                   -5.317e-02  1.048e-02  -5.072 1.06e-06 ***
+## asfr_adol_wpp_avg_1995                         9.650e-05  4.269e-05   2.261  0.02509 *  
+## v2x_polyarchy_cumulative1996_2015             -2.208e-02  8.215e-03  -2.688  0.00794 ** 
+## deaths_civilians_osv_rate_cumulative1996_2015 -9.392e-04  1.608e-03  -0.584  0.56009    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.07578 on 130 degrees of freedom
-##   (66 observations deleted due to missingness)
-## Multiple R-squared:  0.5189, Adjusted R-squared:  0.5041 
-## F-statistic: 35.06 on 4 and 130 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.02298 on 164 degrees of freedom
+##   (32 observations deleted due to missingness)
+## Multiple R-squared:  0.2783, Adjusted R-squared:  0.2607 
+## F-statistic: 15.81 on 4 and 164 DF,  p-value: 5.775e-11
 ## 
 ## 
 ## $robust
@@ -1083,55 +1070,55 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                                  Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                                    0.46913575  0.05809470  8.0754 3.975e-13 ***
-## mys_ratio_hdr_1995                            -0.36733204  0.05684898 -6.4615 1.902e-09 ***
-## asfr_adol_wpp_1995                             0.00059103  0.00025452  2.3221   0.02178 *  
-## v2x_polyarchy_cumulative1996_2015             -0.06080170  0.02975832 -2.0432   0.04306 *  
-## deaths_civilians_osv_rate_cumulative1996_2015 -0.00851929  0.00343039 -2.4835   0.01428 *  
+## (Intercept)                                    1.3028e-01  1.2523e-02 10.4032 &lt; 2.2e-16 ***
+## mys_age_ratio_ihme_avg_1995                   -5.3166e-02  1.3242e-02 -4.0150 9.029e-05 ***
+## asfr_adol_wpp_avg_1995                         9.6505e-05  5.7422e-05  1.6806  0.094740 .  
+## v2x_polyarchy_cumulative1996_2015             -2.2080e-02  6.9366e-03 -3.1831  0.001744 ** 
+## deaths_civilians_osv_rate_cumulative1996_2015 -9.3920e-04  1.2154e-03 -0.7728  0.440770    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(df[df<span class="sc">$</span>samplemys <span class="sc">==</span> <span class="dv">1</span>, <span class="fu">c</span>(<span class="st">&quot;deaths_civilians_osv_rate_1995&quot;</span>, <span class="st">&quot;deaths_civilians_osv_rate_cumulative1996_2015&quot;</span>)])</span></code></pre></div>
 <pre><code>##                                               deaths_civilians_osv_rate_1995 deaths_civilians_osv_rate_cumulative1996_2015
-## deaths_civilians_osv_rate_1995                                     1.0000000                                     0.6895246
-## deaths_civilians_osv_rate_cumulative1996_2015                      0.6895246                                     1.0000000</code></pre>
+## deaths_civilians_osv_rate_1995                                     1.0000000                                     0.3470914
+## deaths_civilians_osv_rate_cumulative1996_2015                      0.3470914                                     1.0000000</code></pre>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_int_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015)</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + deaths_civilians_osv_rate_cumulative1996_2015)</span></span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_osv_rate_1995 + conflict_internal_cumulative1996_2015)</span></span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015)</span></span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_int_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015)</span></span>
-<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_int_rate_1995 + conflict_internal_cumulative1996_2015)</span></span>
-<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015)</span></span>
-<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + deaths_civilians_int_rate_cumulative1996_2015)</span></span></code></pre></div>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_int_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015)</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + deaths_civilians_osv_rate_cumulative1996_2015)</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_osv_rate_1995 + conflict_internal_cumulative1996_2015)</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_osv_rate_1995 + deaths_civilians_int_rate_cumulative1996_2015)</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_int_rate_1995 + deaths_civilians_osv_rate_cumulative1996_2015)</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + deaths_civilians_int_rate_1995 + conflict_internal_cumulative1996_2015)</span></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015)</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1996_2015 + conflict_internal_cumulative1989_1995 + deaths_civilians_int_rate_cumulative1996_2015)</span></span></code></pre></div>
 </div>
 <div id="column-2-prediction-model" class="section level5">
 <h5>Column 2 (prediction model)</h5>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_ratio_hdr_growth1995_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> v2x_polyarchy_cumulative1991_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + 
-##     asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + 
+## lm(formula = mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1991_1995 + 
 ##     deaths_civilians_osv_rate_1995, data = data)
 ## 
 ## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.31906 -0.03509 -0.00162  0.03749  0.24241 
+##       Min        1Q    Median        3Q       Max 
+## -0.084351 -0.012733  0.000389  0.016584  0.069970 
 ## 
 ## Coefficients:
 ##                                     Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                        0.4522830  0.0357438  12.653  &lt; 2e-16 ***
-## mys_ratio_hdr_1995                -0.3535040  0.0363858  -9.715  &lt; 2e-16 ***
-## asfr_adol_wpp_1995                 0.0006197  0.0001583   3.916 0.000145 ***
-## v2x_polyarchy_cumulative1991_1995 -0.0558200  0.0285711  -1.954 0.052882 .  
-## deaths_civilians_osv_rate_1995    -0.0003653  0.0005752  -0.635 0.526509    
+## (Intercept)                        1.272e-01  9.247e-03  13.751  &lt; 2e-16 ***
+## mys_age_ratio_ihme_avg_1995       -4.772e-02  1.035e-02  -4.613 7.97e-06 ***
+## asfr_adol_wpp_avg_1995             1.006e-04  4.217e-05   2.384 0.018250 *  
+## v2x_polyarchy_cumulative1991_1995 -2.648e-02  7.891e-03  -3.356 0.000983 ***
+## deaths_civilians_osv_rate_1995    -1.291e-05  8.929e-05  -0.145 0.885214    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.07643 on 130 degrees of freedom
-##   (66 observations deleted due to missingness)
-## Multiple R-squared:  0.5106, Adjusted R-squared:  0.4956 
-## F-statistic: 33.91 on 4 and 130 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 0.02272 on 164 degrees of freedom
+##   (32 observations deleted due to missingness)
+## Multiple R-squared:  0.2942, Adjusted R-squared:  0.277 
+## F-statistic: 17.09 on 4 and 164 DF,  p-value: 9.832e-12
 ## 
 ## 
 ## $robust
@@ -1139,46 +1126,47 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                      Estimate  Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                        0.45228297  0.05762723  7.8484 1.364e-12 ***
-## mys_ratio_hdr_1995                -0.35350403  0.05630502 -6.2784 4.726e-09 ***
-## asfr_adol_wpp_1995                 0.00061975  0.00025583  2.4225   0.01679 *  
-## v2x_polyarchy_cumulative1991_1995 -0.05582001  0.03069189 -1.8187   0.07126 .  
-## deaths_civilians_osv_rate_1995    -0.00036530  0.00020619 -1.7716   0.07880 .  
+## (Intercept)                        1.2716e-01  1.2558e-02 10.1259 &lt; 2.2e-16 ***
+## mys_age_ratio_ihme_avg_1995       -4.7719e-02  1.3014e-02 -3.6667 0.0003316 ***
+## asfr_adol_wpp_avg_1995             1.0055e-04  5.7392e-05  1.7521 0.0816323 .  
+## v2x_polyarchy_cumulative1991_1995 -2.6482e-02  6.7158e-03 -3.9432 0.0001189 ***
+## deaths_civilians_osv_rate_1995    -1.2910e-05  4.5157e-05 -0.2859 0.7753180    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># auxilliary checks</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_int_rate_1995)</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_ratio_hdr_growth1995_2015 ~ mys_ratio_hdr_1995 + asfr_adol_wpp_1995 + v2x_polyarchy_cumulative1991_1995 + conflict_internal_cumulative1989_1995)</span></span></code></pre></div>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1991_1995 + deaths_civilians_int_rate_1995)</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co"># RunModel(mys_age_ratio_ihme_avg_growth1995_2015 ~ mys_age_ratio_ihme_avg_1995 + asfr_adol_wpp_avg_1995 + v2x_polyarchy_cumulative1991_1995 + conflict_internal_cumulative1989_1995)</span></span></code></pre></div>
 </div>
 </div>
 <div id="asfr-regressions" class="section level4 tabset tabset-fade tabset-pills">
 <h4 class="tabset tabset-fade tabset-pills">ASFR regressions</h4>
 <div id="column-3-base-model" class="section level5">
 <h5>Column 3 (base model)</h5>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(asfr_adol_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_partip_cumulative1996_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(asfr_adol_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> v2x_partip_cumulative1996_2015)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = asfr_adol_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + 
-##     v2x_partip_cumulative1996_2015, data = data)
+## lm(formula = asfr_adol_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + v2x_partip_cumulative1996_2015, 
+##     data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -34.911  -7.445  -1.282   7.761  61.765 
+## -34.947  -7.569  -1.213   7.850  61.841 
 ## 
 ## Coefficients:
 ##                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                     16.40420    4.56065   3.597 0.000428 ***
-## imr_wpp_1995                     0.13589    0.04772   2.848 0.004976 ** 
-## asfr_adol_wpp_1995              -0.26485    0.03617  -7.322  1.1e-11 ***
-## v2x_partip_cumulative1996_2015 -16.37478    7.31741  -2.238 0.026607 *  
+## (Intercept)                     16.15559    4.26705   3.786 0.000214 ***
+## imr_wpp_avg_1995                 0.13568    0.04675   2.902 0.004215 ** 
+## asfr_adol_wpp_avg_1995          -0.26871    0.03566  -7.536 3.04e-12 ***
+## v2x_partip_cumulative1996_2015 -16.52370    6.89169  -2.398 0.017618 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 15.08 on 161 degrees of freedom
-##   (36 observations deleted due to missingness)
-## Multiple R-squared:  0.3436, Adjusted R-squared:  0.3314 
-## F-statistic: 28.09 on 3 and 161 DF,  p-value: 1.154e-14
+## Residual standard error: 14.91 on 165 degrees of freedom
+##   (32 observations deleted due to missingness)
+## Multiple R-squared:  0.354,  Adjusted R-squared:  0.3423 
+## F-statistic: 30.14 on 3 and 165 DF,  p-value: 1.368e-15
 ## 
 ## 
 ## $robust
@@ -1186,39 +1174,40 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                  Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                     16.404200   4.523728  3.6263 0.0003855 ***
-## imr_wpp_1995                     0.135888   0.056584  2.4015 0.0174663 *  
-## asfr_adol_wpp_1995              -0.264851   0.040582 -6.5263  8.36e-10 ***
-## v2x_partip_cumulative1996_2015 -16.374776   7.167537 -2.2846 0.0236437 *  
+## (Intercept)                     16.155591   4.044070  3.9949 9.732e-05 ***
+## imr_wpp_avg_1995                 0.135679   0.055097  2.4625   0.01482 *  
+## asfr_adol_wpp_avg_1995          -0.268709   0.040384 -6.6538 4.019e-10 ***
+## v2x_partip_cumulative1996_2015 -16.523701   6.488711 -2.5465   0.01179 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="column-4-prediction-model" class="section level5">
 <h5>Column 4 (prediction model)</h5>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(asfr_adol_wpp_growth1995_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> asfr_adol_wpp_1995 <span class="sc">+</span> v2x_partip_cumulative1991_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(asfr_adol_wpp_avg_growth1995_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> asfr_adol_wpp_avg_1995 <span class="sc">+</span> v2x_partip_cumulative1991_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = asfr_adol_wpp_growth1995_2015 ~ imr_wpp_1995 + asfr_adol_wpp_1995 + 
-##     v2x_partip_cumulative1991_1995, data = data)
+## lm(formula = asfr_adol_wpp_avg_growth1995_2015 ~ imr_wpp_avg_1995 + 
+##     asfr_adol_wpp_avg_1995 + v2x_partip_cumulative1991_1995, 
+##     data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -38.678  -7.391  -1.063   7.520  59.743 
+## -38.714  -7.863  -0.857   7.645  59.512 
 ## 
 ## Coefficients:
 ##                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                     16.12952    4.38460   3.679 0.000319 ***
-## imr_wpp_1995                     0.15124    0.05002   3.023 0.002909 ** 
-## asfr_adol_wpp_1995              -0.27077    0.03644  -7.431 5.98e-12 ***
-## v2x_partip_cumulative1991_1995 -16.91978    7.41271  -2.283 0.023766 *  
+## (Intercept)                     16.14403    3.95810   4.079 7.03e-05 ***
+## imr_wpp_avg_1995                 0.15314    0.04838   3.165  0.00185 ** 
+## asfr_adol_wpp_avg_1995          -0.27597    0.03584  -7.701 1.18e-12 ***
+## v2x_partip_cumulative1991_1995 -17.71843    6.70339  -2.643  0.00900 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 15.07 on 161 degrees of freedom
-##   (36 observations deleted due to missingness)
-## Multiple R-squared:  0.3444, Adjusted R-squared:  0.3322 
-## F-statistic: 28.19 on 3 and 161 DF,  p-value: 1.047e-14
+## Residual standard error: 14.85 on 165 degrees of freedom
+##   (32 observations deleted due to missingness)
+## Multiple R-squared:  0.3586, Adjusted R-squared:  0.347 
+## F-statistic: 30.76 on 3 and 165 DF,  p-value: 7.587e-16
 ## 
 ## 
 ## $robust
@@ -1226,10 +1215,10 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                  Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                     16.129525   5.026114  3.2091  0.001607 ** 
-## imr_wpp_1995                     0.151241   0.060255  2.5100  0.013061 *  
-## asfr_adol_wpp_1995              -0.270770   0.040426 -6.6979 3.358e-10 ***
-## v2x_partip_cumulative1991_1995 -16.919783   8.630271 -1.9605  0.051661 .  
+## (Intercept)                     16.144032   4.283983  3.7685 0.0002283 ***
+## imr_wpp_avg_1995                 0.153138   0.057886  2.6455 0.0089456 ** 
+## asfr_adol_wpp_avg_1995          -0.275974   0.040473 -6.8188 1.651e-10 ***
+## v2x_partip_cumulative1991_1995 -17.718429   7.474768 -2.3704 0.0189219 *  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -1238,67 +1227,67 @@ $(document).ready(function () {
 <h4 class="tabset tabset-fade tabset-pills">Conflict regressions</h4>
 <div id="column-1-1" class="section level5">
 <h5>Column 1</h5>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> life_exp_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> life_exp_wpp_avg_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = conflict_internal_cumulative1996_2015 ~ life_exp_wpp_1995 + 
+## lm(formula = conflict_internal_cumulative1996_2015 ~ life_exp_wpp_avg_1995 + 
 ##     conflict_internal_cumulative1989_1995, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -14.1947  -1.2910  -0.4390   0.2839  17.2139 
+## -14.1922  -1.3876  -0.4345   0.2877  17.2186 
 ## 
 ## Coefficients:
 ##                                       Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                            7.71326    2.05804   3.748 0.000241 ***
-## life_exp_wpp_1995                     -0.10295    0.03066  -3.358 0.000961 ***
-## conflict_internal_cumulative1989_1995  0.40713    0.03702  10.997  &lt; 2e-16 ***
+## (Intercept)                            7.68880    2.05921   3.734 0.000254 ***
+## life_exp_wpp_avg_1995                 -0.10267    0.03068  -3.347 0.000998 ***
+## conflict_internal_cumulative1989_1995  0.40726    0.03704  10.994  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 4.046 on 177 degrees of freedom
+## Residual standard error: 4.048 on 177 degrees of freedom
 ##   (21 observations deleted due to missingness)
-## Multiple R-squared:  0.471,  Adjusted R-squared:  0.465 
-## F-statistic: 78.79 on 2 and 177 DF,  p-value: &lt; 2.2e-16
+## Multiple R-squared:  0.4707, Adjusted R-squared:  0.4647 
+## F-statistic: 78.69 on 2 and 177 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
 ## 
 ## t test of coefficients:
 ## 
-##                                        Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                            7.713265   1.938085  3.9798 0.0001005 ***
-## life_exp_wpp_1995                     -0.102954   0.028389 -3.6266 0.0003754 ***
-## conflict_internal_cumulative1989_1995  0.407134   0.057764  7.0483 3.896e-11 ***
+##                                       Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)                            7.68880    1.93968  3.9640 0.0001068 ***
+## life_exp_wpp_avg_1995                 -0.10267    0.02841 -3.6139 0.0003929 ***
+## conflict_internal_cumulative1989_1995  0.40726    0.05776  7.0509 3.839e-11 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="column-2" class="section level5">
 <h5>Column 2</h5>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> imr_wpp_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> imr_wpp_avg_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = conflict_internal_cumulative1996_2015 ~ imr_wpp_1995 + 
+## lm(formula = conflict_internal_cumulative1996_2015 ~ imr_wpp_avg_1995 + 
 ##     conflict_internal_cumulative1989_1995, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -14.1504  -1.2528  -0.2816   0.1024  17.0852 
+## -14.1482  -1.3054  -0.2777   0.1051  17.0902 
 ## 
 ## Coefficients:
 ##                                        Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                           -0.247889   0.477170  -0.519 0.604063    
-## imr_wpp_1995                          -0.026544   0.007672  -3.460 0.000677 ***
-## conflict_internal_cumulative1989_1995  0.404067   0.037110  10.888  &lt; 2e-16 ***
+## (Intercept)                           -0.250173   0.477456  -0.524 0.600955    
+## imr_wpp_avg_1995                      -0.026464   0.007677  -3.447 0.000707 ***
+## conflict_internal_cumulative1989_1995  0.404209   0.037132  10.886  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 4.038 on 177 degrees of freedom
+## Residual standard error: 4.041 on 177 degrees of freedom
 ##   (21 observations deleted due to missingness)
-## Multiple R-squared:  0.4729, Adjusted R-squared:  0.467 
-## F-statistic: 79.41 on 2 and 177 DF,  p-value: &lt; 2.2e-16
+## Multiple R-squared:  0.4726, Adjusted R-squared:  0.4666 
+## F-statistic: 79.29 on 2 and 177 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
@@ -1306,37 +1295,37 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                         Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                           -0.2478888  0.3651575 -0.6789 0.4981168    
-## imr_wpp_1995                          -0.0265442  0.0073516 -3.6107 0.0003975 ***
-## conflict_internal_cumulative1989_1995  0.4040668  0.0580755  6.9576 6.467e-11 ***
+## (Intercept)                           -0.2501728  0.3652536 -0.6849 0.4942846    
+## imr_wpp_avg_1995                      -0.0264636  0.0073553 -3.5979 0.0004161 ***
+## conflict_internal_cumulative1989_1995  0.4042088  0.0580715  6.9605 6.362e-11 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="column-3" class="section level5">
 <h5>Column 3</h5>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(conflict_internal_cumulative1996_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> conflict_internal_cumulative1989_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
-## lm(formula = conflict_internal_cumulative1996_2015 ~ mys_ratio_hdr_1995 + 
+## lm(formula = conflict_internal_cumulative1996_2015 ~ mys_age_ratio_ihme_avg_1995 + 
 ##     conflict_internal_cumulative1989_1995, data = data)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -13.3847  -1.3420  -0.5707   0.1365  15.5020 
+## -13.9737  -1.2889  -0.3448   0.0648  16.6845 
 ## 
 ## Coefficients:
 ##                                       Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                            5.26590    1.46941   3.584 0.000467 ***
-## mys_ratio_hdr_1995                    -5.00249    1.68116  -2.976 0.003445 ** 
-## conflict_internal_cumulative1989_1995  0.37396    0.04491   8.326 6.81e-14 ***
+## (Intercept)                            4.16612    1.07575   3.873  0.00015 ***
+## mys_age_ratio_ihme_avg_1995           -4.17921    1.29661  -3.223  0.00151 ** 
+## conflict_internal_cumulative1989_1995  0.40454    0.03714  10.893  &lt; 2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 4.437 on 140 degrees of freedom
-##   (58 observations deleted due to missingness)
-## Multiple R-squared:  0.4134, Adjusted R-squared:  0.405 
-## F-statistic: 49.32 on 2 and 140 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 4.026 on 180 degrees of freedom
+##   (18 observations deleted due to missingness)
+## Multiple R-squared:  0.4698, Adjusted R-squared:  0.464 
+## F-statistic: 79.76 on 2 and 180 DF,  p-value: &lt; 2.2e-16
 ## 
 ## 
 ## $robust
@@ -1344,83 +1333,84 @@ $(document).ready(function () {
 ## t test of coefficients:
 ## 
 ##                                        Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                            5.265902   1.742356  3.0223  0.002984 ** 
-## mys_ratio_hdr_1995                    -5.002492   1.927099 -2.5959  0.010441 *  
-## conflict_internal_cumulative1989_1995  0.373965   0.070379  5.3136 4.136e-07 ***
+## (Intercept)                            4.166124   1.183654  3.5197 0.0005472 ***
+## mys_age_ratio_ihme_avg_1995           -4.179210   1.398431 -2.9885 0.0031951 ** 
+## conflict_internal_cumulative1989_1995  0.404539   0.059527  6.7959 1.523e-10 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="column-4" class="section level5">
 <h5>Column 4</h5>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">~</span> mys_ratio_hdr_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(deaths_civilians_int_rate_cumulative1996_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
 ## lm(formula = deaths_civilians_int_rate_cumulative1996_2015 ~ 
-##     mys_ratio_hdr_1995, data = data)
+##     mys_age_ratio_ihme_avg_1995, data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -0.3920 -0.1561 -0.0910 -0.0562 11.4696 
+## -0.4567 -0.2222 -0.0769 -0.0265 16.2784 
 ## 
 ## Coefficients:
-##                    Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)          0.5487     0.3040   1.805   0.0732 .
-## mys_ratio_hdr_1995  -0.4975     0.3647  -1.364   0.1747  
+##                             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)                   0.6331     0.3042   2.081   0.0388 *
+## mys_age_ratio_ihme_avg_1995  -0.6241     0.3853  -1.620   0.1070  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.9993 on 141 degrees of freedom
-##   (58 observations deleted due to missingness)
-## Multiple R-squared:  0.01303,    Adjusted R-squared:  0.006028 
-## F-statistic: 1.861 on 1 and 141 DF,  p-value: 0.1747
+## Residual standard error: 1.242 on 181 degrees of freedom
+##   (18 observations deleted due to missingness)
+## Multiple R-squared:  0.01429,    Adjusted R-squared:  0.008846 
+## F-statistic: 2.624 on 1 and 181 DF,  p-value: 0.107
 ## 
 ## 
 ## $robust
 ## 
 ## t test of coefficients:
 ## 
-##                    Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)         0.54873    0.25566  2.1463  0.03356 *
-## mys_ratio_hdr_1995 -0.49752    0.22654 -2.1962  0.02971 *
+##                             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)                  0.63309    0.36871  1.7170  0.08768 .
+## mys_age_ratio_ihme_avg_1995 -0.62414    0.37190 -1.6783  0.09502 .
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 <div id="column-5" class="section level5">
 <h5>Column 5</h5>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(deaths_civilians_osv_rate_cumulative1996_2015 <span class="sc">~</span> mys_ratio_hdr_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RunModel</span>(deaths_civilians_osv_rate_cumulative1996_2015 <span class="sc">~</span> mys_age_ratio_ihme_avg_1995 <span class="sc">+</span> deaths_civilians_osv_rate_1995)</span></code></pre></div>
 <pre><code>## $classical
 ## 
 ## Call:
 ## lm(formula = deaths_civilians_osv_rate_cumulative1996_2015 ~ 
-##     mys_ratio_hdr_1995 + deaths_civilians_osv_rate_1995, data = data)
+##     mys_age_ratio_ihme_avg_1995 + deaths_civilians_osv_rate_1995, 
+##     data = data)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -1.4803 -0.2503 -0.0644  0.0458  6.0644 
+## -4.3542 -0.3939 -0.0378  0.0785  6.1307 
 ## 
 ## Coefficients:
 ##                                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                     1.372358   0.270651   5.071 1.24e-06 ***
-## mys_ratio_hdr_1995             -1.421716   0.321995  -4.415 2.00e-05 ***
-## deaths_civilians_osv_rate_1995  0.068299   0.006422  10.634  &lt; 2e-16 ***
+## (Intercept)                     1.358358   0.247380   5.491 1.35e-07 ***
+## mys_age_ratio_ihme_avg_1995    -1.476560   0.312159  -4.730 4.52e-06 ***
+## deaths_civilians_osv_rate_1995  0.019212   0.003911   4.912 2.01e-06 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.8568 on 140 degrees of freedom
-##   (58 observations deleted due to missingness)
-## Multiple R-squared:  0.5401, Adjusted R-squared:  0.5336 
-## F-statistic: 82.22 on 2 and 140 DF,  p-value: &lt; 2.2e-16
+## Residual standard error: 1.004 on 180 degrees of freedom
+##   (18 observations deleted due to missingness)
+## Multiple R-squared:  0.2188, Adjusted R-squared:  0.2101 
+## F-statistic:  25.2 on 2 and 180 DF,  p-value: 2.24e-10
 ## 
 ## 
 ## $robust
 ## 
 ## t test of coefficients:
 ## 
-##                                  Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)                     1.3723582  0.5071527  2.7060  0.007657 ** 
-## mys_ratio_hdr_1995             -1.4217164  0.5431403 -2.6176  0.009829 ** 
-## deaths_civilians_osv_rate_1995  0.0682991  0.0076293  8.9522 1.914e-15 ***
+##                                 Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)                     1.358358   0.380550  3.5695 0.0004587 ***
+## mys_age_ratio_ihme_avg_1995    -1.476560   0.426069 -3.4655 0.0006616 ***
+## deaths_civilians_osv_rate_1995  0.019212   0.017189  1.1177 0.2651981    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
@@ -1429,81 +1419,81 @@ $(document).ready(function () {
 <h4 class="tabset tabset-fade tabset-pills">Non-regression evidence</h4>
 <div id="life-expectancy" class="section level5">
 <h5>Life expectancy</h5>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>life_exp_wpp_growth1995_2015) </span></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>life_exp_wpp_avg_growth1995_2015) </span></code></pre></div>
 <p><img src="regressions_files/figure-html/descriptives_life-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>life_exp_wpp_growth1995_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>life_exp_wpp_avg_growth1995_2015)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ## -10.430   3.678   4.985   5.835   7.495  44.000      21</code></pre>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.3278  1.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>life_exp_wpp_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.3</span>])</span></code></pre></div>
+##  0.0000  0.0000  0.0000  0.3389  1.0000  1.0000      21</code></pre>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>life_exp_wpp_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.3</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.2222  0.0000  1.0000      21</code></pre>
+##  0.0000  0.0000  0.0000  0.2778  0.7500  1.0000      21</code></pre>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  0.0000  0.0000  0.0000  0.2278  0.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>life_exp_wpp_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.3</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>life_exp_wpp_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.3</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##       0       0       0       0       0       0      21</code></pre>
+## 0.00000 0.00000 0.00000 0.05556 0.00000 1.00000      21</code></pre>
 </div>
 <div id="imr" class="section level5">
 <h5>IMR</h5>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>imr_wpp_growth1995_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>imr_wpp_avg_growth1995_2015)</span></code></pre></div>
 <p><img src="regressions_files/figure-html/descriptives_imr-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>imr_wpp_growth1995_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>imr_wpp_avg_growth1995_2015)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  -2.540   6.106  14.768  22.861  32.947 156.846      21</code></pre>
 <div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.3278  1.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>imr_wpp_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.71</span>])</span></code></pre></div>
+##  0.0000  0.0000  0.0000  0.3389  1.0000  1.0000      21</code></pre>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>imr_wpp_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.71</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ## 0.00000 0.00000 0.00000 0.05556 0.00000 1.00000      21</code></pre>
 <div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  0.0000  0.0000  0.0000  0.2278  0.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>imr_wpp_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.71</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>imr_wpp_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.71</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.4444  1.0000  1.0000      21</code></pre>
+##  0.0000  0.0000  0.0000  0.3889  1.0000  1.0000      21</code></pre>
 </div>
 <div id="mys" class="section level5">
 <h5>MYS</h5>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>mys_ratio_hdr_growth1995_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>mys_age_ratio_ihme_avg_growth1995_2015)</span></code></pre></div>
 <p><img src="regressions_files/figure-html/descriptives_mys-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>mys_ratio_hdr_growth1995_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>mys_age_ratio_ihme_avg_growth1995_2015)</span></code></pre></div>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA&#39;s 
-## -0.39343  0.02266  0.08174  0.09543  0.15823  0.42727       59</code></pre>
+## -0.02839  0.05327  0.06954  0.07109  0.08682  0.14829       18</code></pre>
 <div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.3278  1.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>mys_ratio_hdr_growth1995_2015 <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.00437</span>])</span></code></pre></div>
+##  0.0000  0.0000  0.0000  0.3389  1.0000  1.0000      21</code></pre>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.00437</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-## 0.00000 0.00000 0.00000 0.06667 0.00000 1.00000      59</code></pre>
+##       1       1       1       1       1       1      18</code></pre>
 <div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  0.0000  0.0000  0.0000  0.2278  0.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>mys_ratio_hdr_growth1995_2015 <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.00437</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>mys_age_ratio_ihme_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.00437</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.4667  1.0000  1.0000      59</code></pre>
+##       0       0       0       0       0       0      18</code></pre>
 </div>
 <div id="asfr" class="section level5">
 <h5>ASFR</h5>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>asfr_adol_wpp_growth1995_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(df<span class="sc">$</span>asfr_adol_wpp_avg_growth1995_2015)</span></code></pre></div>
 <p><img src="regressions_files/figure-html/descriptives_asfr-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>asfr_adol_wpp_growth1995_2015)</span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>asfr_adol_wpp_avg_growth1995_2015)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ## -12.038   9.311  19.250  22.539  31.081  91.781      21</code></pre>
 <div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.3278  1.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>asfr_adol_wpp_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.7085</span>])</span></code></pre></div>
+##  0.0000  0.0000  0.0000  0.3389  1.0000  1.0000      21</code></pre>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>asfr_adol_wpp_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.7085</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  0.0000  0.0000  0.0000  0.1667  0.0000  1.0000      21</code></pre>
 <div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  0.0000  0.0000  0.0000  0.2278  0.0000  1.0000      21</code></pre>
-<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>asfr_adol_wpp_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.7085</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>asfr_adol_wpp_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="fl">2.7085</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  0.0000  0.0000  0.0000  0.3889  1.0000  1.0000      21</code></pre>
 </div>
@@ -1513,19 +1503,19 @@ $(document).ready(function () {
 <p><img src="regressions_files/figure-html/descriptives_gdp-1.png" width="67%" height="67%" /></p>
 <div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>pc_rgdpe_avg_growth1995_2015) </span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  -20670    1494    5664    8543   12341  105491      32</code></pre>
+##  -29368    1863    6308    9327   12791  121007      31</code></pre>
 <div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##  0.0000  0.0000  0.0000  0.3278  1.0000  1.0000      21</code></pre>
+##  0.0000  0.0000  0.0000  0.3389  1.0000  1.0000      21</code></pre>
 <div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_low_1995[df<span class="sc">$</span>pc_rgdpe_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="dv">144</span>]) </span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##    0.00    0.75    1.00    0.75    1.00    1.00      32</code></pre>
+##     0.0     1.0     1.0     0.8     1.0     1.0      31</code></pre>
 <div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995)</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 ##  0.0000  0.0000  0.0000  0.2278  0.0000  1.0000      21</code></pre>
 <div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>class_upp_1995[df<span class="sc">$</span>pc_rgdpe_avg_growth1995_2015 <span class="sc">&lt;</span> <span class="dv">144</span>])</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
-##   0.000   0.000   0.000   0.125   0.000   1.000      32</code></pre>
+##       0       0       0       0       0       0      31</code></pre>
 </div>
 <div id="polyarchy" class="section level5">
 <h5>Polyarchy</h5>
@@ -1534,7 +1524,7 @@ $(document).ready(function () {
 <p><img src="regressions_files/figure-html/descriptives_polyarchy-1.png" width="67%" height="67%" /></p>
 <div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>authority)</span></code></pre></div>
 <pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA&#39;s 
-## -0.28685  0.00020  0.02600  0.06046  0.10390  0.44620       36</code></pre>
+## -0.27760  0.00100  0.03005  0.05464  0.09515  0.44665       32</code></pre>
 </div>
 </div>
 </div>
