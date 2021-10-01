@@ -1,8 +1,8 @@
 ---
 title: "Mapping trajectories"
 params: 
-  cache: false
-  optimize: true
+  cache: true
+  optimize: false
 ---
 
 ```{r setup, include = FALSE}
@@ -62,7 +62,20 @@ lapply(unique(df$country), function(ctry) {
 #   vars[str_detect(vars, x)]
 # })
 # vars[str_detect(vars, "class") ]
-df <- df[, c("country", "year", "period", "health_class", "gender_class", "class", "class_vv", "class1990", "class_vv1990", "class1995", "class_vv1995", "life_exp_wpp_avg", "imr_wpp_avg", "mys_age_ratio_ihme_avg", "asfr_adol_wpp_avg")]
+df <- df[df$year > 1965, ] %>% 
+  arrange(country, year) %>% 
+  group_by(country, period) %>% 
+  mutate(latentmean_fariss_avg = mean(latentmean_fariss, na.rm = TRUE),
+         v2caviol_avg = mean(v2caviol, na.rm = TRUE),
+         v2clkill_avg = mean(v2clkill, na.rm = TRUE),
+         v2cltort_avg = mean(v2cltort, na.rm = TRUE),
+         hom_odcwho_rate_avg = mean(hom_odcwho_rate, na.rm = TRUE),
+         deaths_all_int_rate_avg = mean(deaths_all_int_rate, na.rm = TRUE),
+         deaths_all_nsc_rate_avg = mean(deaths_all_nsc_rate, na.rm = TRUE),
+         deaths_civilians_osv_rate_avg = mean(deaths_civilians_osv_rate, na.rm = TRUE),
+         deaths_civilians_int_rate_avg = mean(deaths_civilians_int_rate, na.rm = TRUE),
+         deaths_civilians_nsc_rate_avg = mean(deaths_civilians_nsc_rate, na.rm = TRUE))
+df <- df[, c("country", "year", "period", "health_class", "gender_class", "class", "class_vv", "class1990", "class_vv1990", "class1995", "class_vv1995", "life_exp_wpp_avg", "imr_wpp_avg", "mys_age_ratio_ihme_avg", "asfr_adol_wpp_avg", "latentmean_fariss_avg", "v2caviol_avg", "v2clkill_avg", "v2cltort_avg", "hom_odcwho_rate_avg", "deaths_all_int_rate_avg", "deaths_all_nsc_rate_avg", "deaths_civilians_osv_rate_avg", "deaths_civilians_int_rate_avg", "deaths_civilians_nsc_rate_avg")]
 df$period <- as.integer(str_sub(df$period, 7, 10))
 df <- df[df$period == df$year & df$period %in% seq(1970, 2015, 5), names(df) != "year"]
 data.frame(class = table(df$period, is.na(df$class))[, 1],
@@ -104,24 +117,16 @@ mean_gender <- mean(df$gender, na.rm = TRUE)
 range_gender <- range(df$gender, na.rm = TRUE)
 range_both <- range(c(range_health, range_gender))
 df$color <- ifelse((df$period %% 2) == 0, "black", "gray")
-df$distance <- sqrt((df$lag_health - df$health)^2 + (df$lag_gender - df$gender)^2)
-# df$slope <- (df$lag_health - df$health)/(df$lag_gender - df$gender)
-df <- df %>% group_by(country) %>% mutate(total = sum(distance, na.rm = TRUE))
 df$health_chg <- df$health - df$lag_health
 df$gender_chg <- df$gender - df$lag_gender
-df$change[df$health_chg <= 0 & df$gender_chg <= 0] <- "worse"
-df$change[df$health_chg <= 0 & df$gender_chg > 0] <- "health worse"
-df$change[df$health_chg > 0 & df$gender_chg <= 0] <- "gender worse"
-df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg < df$gender_chg] <- "gender more"
-df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg > df$gender_chg] <- "health more"
-# tapply(df$change, df$country, I)
-temp <- df[, c("country", "period", "change")]
-temp <- temp %>% arrange(country, period) %>% group_by(country) %>% mutate(lag = lag(change))
-temp <- temp[is.na(temp$lag) | temp$change != temp$lag, c("country", "period", "change")]
-temp <- temp[!is.na(temp$change), ]
-# tapply(temp$change, temp$country, I)
-
-df <- df %>% group_by(country) %>% mutate(first = min(period), last = max(period), periods = length(unique(period)))
+# df$change[df$health_chg <= 0 & df$gender_chg <= 0] <- "worse"
+# df$change[df$health_chg <= 0 & df$gender_chg > 0] <- "health worse"
+# df$change[df$health_chg > 0 & df$gender_chg <= 0] <- "gender worse"
+# df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg < df$gender_chg] <- "gender more"
+# df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg > df$gender_chg] <- "health more"
+df$distance <- sqrt((df$health_chg)^2 + (df$gender_chg)^2)
+# df$slope <- (df$health - df$lag_health)/(df$gender - df$lag_gender)
+df <- df %>% group_by(country) %>% mutate(total = sum(distance, na.rm = TRUE), first = min(period), last = max(period), periods = length(unique(period)))
 first <- df[df$period == df$first, c("country", "first", "periods", "class_vv1975", "class_vv1995", "total", "health", "gender")]
 names(first)[7:8] <- paste("first", names(first)[7:8], sep = "_")
 last <- df[df$period == df$last, c("country", "health", "gender")]
@@ -129,10 +134,12 @@ names(last)[-1] <- paste("last", names(last)[-1], sep = "_")
 new <- merge(first, last, by = "country")
 new$distance <- sqrt((new$last_health - new$first_health)^2 + (new$last_gender - new$first_gender)^2)
 new$dist_total <- new$distance / new$total
-new$dist_periods <- new$distance / new$periods
-new[, c("total", "distance", "dist_total", "dist_periods")] <- lapply(new[, c("total", "distance", "dist_total", "dist_periods")], round, 3)
-new <- new[, c("country", "first", "class_vv1975", "class_vv1995", "total", "distance", "dist_total", "dist_periods")]
-new <- merge(new, seq[, c("country", "typology")], by = "country", all = TRUE)
+new$dist_period <- new$distance / new$periods
+new$health_period = (new$last_health - new$first_health) / new$periods
+new$gender_period = (new$last_gender - new$first_gender) / new$periods
+new[, -c(1:5)] <- lapply(new[, -c(1:5)], round, 3)
+new <- new[, !names(new) %in% c("last_health", "first_health", "last_gender", "first_gender")]
+new <- merge(seq[, c("country", "typology")], new, by = "country", all = TRUE)
 df <- merge(df, seq[, c("country", "typology")], by = "country", all = TRUE)
 ```
 
@@ -156,34 +163,6 @@ lapply(unique(df$country), function(ctry) {
     labs(x = "Gender", y = "Health") + 
     theme_classic() + theme(legend.position = "none") + 
     ggtitle(paste(ctry, "\n", seq$typology[seq$country == ctry]))
-})
-```
-
-#### Overall Changes
-```{r table, rows.print = 15, cols.print = 10, cols.min.print = 10}
-new
-# do.call(rbind, tapply(new$distance, new$class_vv1995, summary))
-# tapply(new$distance, new$class_vv1995, mean)
-# tapply(new$dist_period, new$class_vv1995, mean)
-# ggplot(data = new) + geom_density(aes(x = distance, group = class_vv1995, color = class_vv1995)) + theme_classic()
-# ggplot(data = new, aes(y = distance, group = class_vv1995)) + stat_summary(fun="mean", geom="bar", na.rm = TRUE, size = 1) 
-```
-
-#### By typology
-```{r typology, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
-lapply(sort(unique(df$typology)), function(sequ) {
-  ggplot(data = df[df$typology == sequ & df$period >= 1975 & !is.na(df$lag_health) & !is.na(df$lag_gender), ], 
-         mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health, group = country, color = country)) + 
-    coord_fixed(ratio = 1) + 
-    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(7, "points"))) + 
-    # facet_wrap( ~ class_vv1975, ncol = 5) + 
-    geom_vline(xintercept = mean_gender, color = "gray") + 
-    geom_hline(yintercept = mean_health, color = "gray") + 
-    labs(x = "Gender", y = "Health") + 
-    xlim(range_both[1], range_both[2]) +
-    ylim(range_both[1], range_both[2]) +
-    theme_classic() + theme(legend.position = "none") + 
-    ggtitle(paste(sequ, " (", table(seq$typology)[sequ], ")", sep = ""))
 })
 ```
 
@@ -281,3 +260,92 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
 })
 ```
 
+#### Typology
+```{r typology, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+lapply(sort(unique(df$typology)), function(sequ) {
+  ggplot(data = df[df$typology == sequ & df$period >= 1975 & !is.na(df$lag_health) & !is.na(df$lag_gender), ], 
+         mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health, group = country, color = country)) + 
+    coord_fixed(ratio = 1) + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(7, "points"))) + 
+    # facet_wrap( ~ class_vv1975, ncol = 5) + 
+    geom_vline(xintercept = mean_gender, color = "gray") + 
+    geom_hline(yintercept = mean_health, color = "gray") + 
+    labs(x = "Gender", y = "Health") + 
+    xlim(range_both[1], range_both[2]) +
+    ylim(range_both[1], range_both[2]) +
+    theme_classic() + theme(legend.position = "none") + 
+    ggtitle(paste(sequ, " (", table(seq$typology)[sequ], ")", sep = ""))
+})
+```
+
+#### Summary data
+```{r table, rows.print = 15, cols.print = 10, cols.min.print = 10}
+new[, !names(new) %in% c("periods", "distance", "total")]
+summary(new[, c("periods", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")])
+```
+
+#### Health & gender change
+```{r bivariate, rows.print = 15, cols.print = 12, cols.min.print = 12, fig.width = 10, fig.height = 10, out.width = "67%", out.height = "67%", message = FALSE}
+round(addmargins((table(new[, c("typology", "class_vv1975")]))), 3)
+round(do.call(rbind, tapply(new$dist_period, new$typology, summary))[, c("Min.", "Mean", "Max.")], 3)
+round(do.call(rbind, tapply(new$dist_total, new$typology, summary))[, c("Min.", "Mean", "Max.")], 3)
+round(do.call(rbind, tapply(new$gender_period, new$typology, summary))[, c("Min.", "Mean", "Max.")], 3)
+round(do.call(rbind, tapply(new$health_period, new$typology, summary))[, c("Min.", "Mean", "Max.")], 3)
+ggplot(data = new, mapping = aes(x = gender_period, y = health_period)) + 
+  facet_wrap(~typology) + 
+  coord_fixed(ratio = 1)+
+  theme_classic() + 
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  # geom_abline(intercept = 0, slope = 1) +
+  xlim(min(0, new$gender_period, new$health_period), max(new$gender_period, new$health_period)) + 
+  ylim(min(0, new$gender_period, new$health_period), max(new$gender_period, new$health_period)) + 
+  theme(legend.position = "bottom") + 
+  guides(color = guide_legend(ncol = 1))
+```
+
+```{r new, rows.print = 15, cols.print = 12, cols.min.print = 12, fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", message = FALSE, eval = FALSE, echo = FALSE}
+ggplot(data = new, mapping = aes(x = gender_period, y = health_period)) + 
+  coord_fixed(ratio = 1)+
+  theme_classic() + 
+  geom_point() + 
+  geom_abline(intercept = 0, slope = 1) +
+  geom_smooth(method = "lm") + 
+  xlim(min(0, new$gender_period, new$health_period), max(new$gender_period, new$health_period)) + 
+  ylim(min(0, new$gender_period, new$health_period), max(new$gender_period, new$health_period)) + 
+  theme(legend.position = "bottom") + 
+  guides(color = guide_legend(ncol = 1))
+```
+
+#### Violence {.tabset .tabset-fade .tabset-pills}
+
+##### Death rates
+```{r violence_rates, fig.width = 10, fig.height = 10, out.width = "67%", out.height = "67%", warning = FALSE}
+temp <- df %>% 
+  arrange(country, period) %>% 
+  group_by(period) %>% 
+  select(country, period, typology, deaths_all_int_rate_avg, deaths_all_nsc_rate_avg, hom_odcwho_rate_avg) %>% 
+  pivot_longer(-c(country, period, typology), names_to = "variable", values_to = "value")
+ggplot(data = temp) + 
+  stat_summary(mapping = aes(x = period, y = value, color = variable), fun = "mean", geom = "line") + 
+  facet_wrap(~typology) + theme_classic() + theme(legend.position = "bottom")
+```
+
+##### V-Dem variables
+```{r violence_vdem, fig.width = 10, fig.height = 10, out.width = "67%", out.height = "67%", warning = FALSE}
+temp <- df %>% 
+  arrange(country, period) %>% 
+  group_by(period) %>% 
+  select(country, period, typology, v2caviol_avg, v2clkill_avg, v2cltort_avg) %>% 
+  pivot_longer(-c(country, period, typology), names_to = "variable", values_to = "value")
+ggplot(data = temp) + 
+  stat_summary(mapping = aes(x = period, y = value, color = variable), fun = "mean", geom = "line") + 
+  facet_wrap(~typology) + theme_classic() + theme(legend.position = "bottom")
+```
+
+##### Latent physical integrity
+```{r violence_lpi, fig.width = 10, fig.height = 10, out.width = "67%", out.height = "67%", warning = FALSE}
+ggplot(data = df) + 
+  stat_summary(mapping = aes(x = period, y = latentmean_fariss_avg), fun = "mean", geom = "line") +
+  facet_wrap(~typology) + theme_classic()
+```
