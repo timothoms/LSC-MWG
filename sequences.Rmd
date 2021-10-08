@@ -1,8 +1,8 @@
 ---
 title: "Mapping trajectories"
 params: 
-  cache: false
-  optimize: false
+  cache: true
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
@@ -57,9 +57,8 @@ lapply(unique(df$country), function(ctry) {
 
 ```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
 missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan", "Serbia & Montenegro")
-# vars <- c("country", "year", "conf_intra", "wars_intra", "conflict_internal", "war_internal","latentmean_fariss", "v2clkill", "v2cltort", "v2caviol")
 # table(df[, c("conf_intra", "wars_intra")])
-ViolenceCats <- function(dataset = df[!(df$country %in% missing_countries), ], start_yr = 1961, end_yr = 1970, yrs_long = 3) {
+ViolenceCats <- function(dataset = df[!(df$country %in% missing_countries), ], start_yr = 1975, end_yr = 2015, yrs_long = 3) {
   df <- dataset %>% select(country, year, conf_intra, wars_intra, latentmean_fariss, v2caviol, v2clkill, v2cltort) %>%
     filter(year >= start_yr & year <= end_yr) %>%
     arrange(country, year) %>%
@@ -93,10 +92,8 @@ ViolenceCats <- function(dataset = df[!(df$country %in% missing_countries), ], s
 # 1961-1970 < seq starts 1975 (1971-1975) <= 1971-2015
 # 1981-1990 < seq starts 1995 (1991-1995) <= 1991-2015
 violence <- list(
-  ViolenceCats(start_yr = 1961, end_yr = 1970, yrs_long = 3), 
-  ViolenceCats(start_yr = 1971, end_yr = 2015, yrs_long = 3),
-  ViolenceCats(start_yr = 1981, end_yr = 1990, yrs_long = 3), 
-  ViolenceCats(start_yr = 1991, end_yr = 2015, yrs_long = 3) 
+  ViolenceCats(start_yr = 1971, end_yr = 2015, yrs_long = 5),
+  ViolenceCats(start_yr = 1991, end_yr = 2015, yrs_long = 5) 
 )
 violence <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = violence)
 # vars <- names(df)
@@ -105,7 +102,7 @@ violence <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x =
 #   vars[str_detect(vars, x)]
 # })
 # vars[str_detect(vars, "class") ]
-df <- df[df$year > 1965, ] %>% 
+df <- df[df$year > 1970, ] %>% 
   arrange(country, year) %>% 
   group_by(country, period) %>% 
   mutate(latentmean_fariss_avg = mean(latentmean_fariss, na.rm = TRUE),
@@ -120,12 +117,12 @@ df <- df[df$year > 1965, ] %>%
          deaths_civilians_nsc_rate_avg = mean(deaths_civilians_nsc_rate, na.rm = TRUE))
 df <- df[, c("country", "year", "period", "health_class", "gender_class", "class", "class_vv", "class1990", "class_vv1990", "class1995", "class_vv1995", "life_exp_wpp_avg", "imr_wpp_avg", "mys_age_ratio_ihme_avg", "asfr_adol_wpp_avg", "latentmean_fariss_avg", "v2caviol_avg", "v2clkill_avg", "v2cltort_avg", "hom_odcwho_rate_avg", "deaths_all_int_rate_avg", "deaths_all_nsc_rate_avg", "deaths_civilians_osv_rate_avg", "deaths_civilians_int_rate_avg", "deaths_civilians_nsc_rate_avg")]
 df$period <- as.integer(str_sub(df$period, 7, 10))
-df <- df[df$period == df$year & df$period %in% seq(1970, 2015, 5), names(df) != "year"]
-data.frame(class = table(df$period, is.na(df$class))[, 1],
-           life = table(df$period, is.na(df$life_exp_wpp_avg))[, 1],
-           imr = table(df$period, is.na(df$imr_wpp_avg))[, 1],
-           asfr = table(df$period, is.na(df$asfr_adol_wpp_avg))[, 1],
-           mys = table(df$period, is.na(df$mys_age_ratio_ihme_avg))[, 1])
+df <- df[df$period == df$year & df$period %in% seq(1975, 2015, 5), names(df) != "year"]
+# data.frame(class = table(df$period, is.na(df$class))[, 1],
+#            life = table(df$period, is.na(df$life_exp_wpp_avg))[, 1],
+#            imr = table(df$period, is.na(df$imr_wpp_avg))[, 1],
+#            asfr = table(df$period, is.na(df$asfr_adol_wpp_avg))[, 1],
+#            mys = table(df$period, is.na(df$mys_age_ratio_ihme_avg))[, 1])
 class1975 <- df[IsTrue(df$period == 1975), c("country", "class", "health_class", "gender_class")]
 class1975$class_vv <- NA
 class1975$class_vv[class1975$health_class < 3 & class1975$gender_class < 3] <- "low"
@@ -157,14 +154,8 @@ range_health <- range(df$health, na.rm = TRUE)
 mean_gender <- mean(df$gender, na.rm = TRUE)
 range_gender <- range(df$gender, na.rm = TRUE)
 range_both <- range(c(range_health, range_gender))
-# df$color <- ifelse((df$period %% 2) == 0, "black", "gray")
 df$health_chg <- df$health - df$lag_health
 df$gender_chg <- df$gender - df$lag_gender
-# df$change[df$health_chg <= 0 & df$gender_chg <= 0] <- "worse"
-# df$change[df$health_chg <= 0 & df$gender_chg > 0] <- "health worse"
-# df$change[df$health_chg > 0 & df$gender_chg <= 0] <- "gender worse"
-# df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg < df$gender_chg] <- "gender more"
-# df$change[df$health_chg > 0 & df$gender_chg > 0 & df$health_chg > df$gender_chg] <- "health more"
 df$distance <- sqrt((df$health_chg)^2 + (df$gender_chg)^2)
 # df$slope <- (df$health - df$lag_health)/(df$gender - df$lag_gender)
 df <- df %>% group_by(country) %>% mutate(total = sum(distance, na.rm = TRUE), first = min(period), last = max(period), periods = length(unique(period)))
@@ -176,9 +167,18 @@ new <- merge(first, last, by = "country")
 new$distance <- sqrt((new$last_health - new$first_health)^2 + (new$last_gender - new$first_gender)^2)
 new$dist_total <- new$distance / new$total
 new$dist_period <- new$distance / new$periods
-new$health_period = (new$last_health - new$first_health) / new$periods
-new$gender_period = (new$last_gender - new$first_gender) / new$periods
+new$health_period <- (new$last_health - new$first_health) / new$periods
+new$gender_period <- (new$last_gender - new$first_gender) / new$periods
 new[, -c(1:5)] <- lapply(new[, -c(1:5)], round, 3)
+vars <- c("dist_total", "dist_period", "health_period", "gender_period")
+new[, paste(vars, "quart", sep = "_")] <- lapply(new[, vars], function(col) {
+  new <- rep(NA, length(col))
+  new[col >= quantile(col, na.rm = TRUE)[1]] <- "1st quartile"
+  new[col >= quantile(col, na.rm = TRUE)[2]] <- "2nd quartile"
+  new[col >= quantile(col, na.rm = TRUE)[3]] <- "3rd quartile"
+  new[col >= quantile(col, na.rm = TRUE)[4]] <- "4th quartile"
+  return(as.factor(new))
+})
 new <- new[, !names(new) %in% c("last_health", "first_health", "last_gender", "first_gender")]
 new <- merge(seq[, names(seq)[!str_detect(names(seq), "sequence")]], new, by = "country", all = TRUE)
 new <- merge(new, violence, by = "country", all = TRUE)
@@ -189,16 +189,15 @@ df <- merge(df, violence, by = "country", all = TRUE)
 #### Countries
 ```{r countries, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 lapply(unique(df$country), function(ctry) {
-  ggplot(data = df[df$country == ctry & !is.na(df$lag_health) & !is.na(df$lag_gender), ], 
+  ggplot(data = df[df$country == ctry  & df$period > 1975, ], # & !is.na(df$lag_health) & !is.na(df$lag_gender)
          mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health) ) + 
     coord_fixed(ratio = 1) + 
     geom_vline(xintercept = mean_gender, color = "gray") + 
     geom_hline(yintercept = mean_health, color = "gray") + 
     geom_abline(intercept = 0, slope = 1, color = "gray") + 
     geom_segment(lineend = "round", mapping = aes(color = as.factor(period))) + 
-    scale_color_manual(values = c(black = "black", gray = "gray", 
-                                  "1970" = "gray", "1975" = "gray", "1980" = "red", "1985" = "orange", "1990" = "red", 
-                                  "1995" = "orange", "2000" = "purple", "2005" = "blue", "2010" = "purple", "2015" = "blue")) +
+    scale_color_manual(values = c("1975" = "gray", "1980" = "red", "1985" = "orange", "1990" = "red", "1995" = "orange", 
+                                  "2000" = "purple", "2005" = "blue", "2010" = "purple", "2015" = "blue")) +
     geom_point(aes(x = lag_gender[period == min(period)], y = lag_health[period == min(period)]), 
                shape = 20, size = 0.75, color = "green", fill = "green") + 
     geom_point(aes(x = gender[period == max(period)], y = health[period == max(period)]), 
@@ -207,13 +206,14 @@ lapply(unique(df$country), function(ctry) {
     ylim(range_both[1], range_both[2]) +
     labs(x = "Gender", y = "Health") + 
     theme_classic() + theme(legend.position = "none") + 
-    ggtitle(label = ctry, subtitle = paste("\nfrom 1970: ", seq$typology1970[seq$country == ctry],
-                                           "\nfrom 1975: ", seq$typology1975[seq$country == ctry],
+    ggtitle(label = ctry, subtitle = paste("\nfrom 1975: ", seq$typology1975[seq$country == ctry],
                                            "\nfrom 1995: ", seq$typology1995[seq$country == ctry]))
 })
 ```
 
-#### By 1975 classification
+#### Classification {.tabset .tabset-fade .tabset-pills}
+
+##### 1975
 ```{r c1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 lookup <- table(df$class_vv1975[df$period == 2015])
 lookup["no 1975 classification"] <- sum(is.na(df$class_vv1975[df$period == 2015]))
@@ -240,7 +240,7 @@ plotClass(class = "no 1975 classification",
           range = range_both)
 ```
 
-#### By 1975 classification (from origin)
+##### 1975 (from origin)
 ```{r new1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 new1975 <- df[df$period > 1975, ] %>%
   arrange(country, period) %>% 
@@ -261,7 +261,7 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
 })
 ```
 
-#### By 1995 classification
+##### 1995 
 ```{r c1995, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 lookup <- table(df$class_vv1995[df$period == 2015])
 lookup["no 1995 classification"] <- sum(is.na(df$class_vv1995[df$period == 2015]))
@@ -275,7 +275,7 @@ plotClass(class = "no 1995 classification",
           range = range_both)
 ```
 
-#### By 1995 classification (from origin)
+##### 1995 (from origin)
 ```{r new1995, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 new1995 <- df[df$period > 1995, ] %>%
   arrange(country, period) %>% 
@@ -300,8 +300,10 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
 })
 ```
 
-#### Typology from 1970
-```{r typology1970, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+#### Typology {.tabset .tabset-fade .tabset-pills}
+
+##### from 1975
+```{r typology1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 plotCategory <- function(cat, dat, range) {
   ggplot(data = dat, 
          mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health, group = country, color = country)) + 
@@ -315,16 +317,6 @@ plotCategory <- function(cat, dat, range) {
     theme_classic() + theme(legend.position = "none") + 
     ggtitle(paste(cat, " (", lookup[cat], ")", sep = ""))
 }
-lookup <- table(seq$typology1970)
-lapply(sort(unique(df$typology1970)), function(sequ) {
-  plotCategory(cat = sequ, 
-           dat = df[df$typology1970 == sequ & df$period > 1970, ], 
-           range = range_both)
-})
-```
-
-#### Typology from 1975
-```{r typology1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 lookup <- table(seq$typology1975)
 lapply(sort(unique(df$typology1975)), function(sequ) {
   plotCategory(cat = sequ, 
@@ -333,7 +325,7 @@ lapply(sort(unique(df$typology1975)), function(sequ) {
 })
 ```
 
-#### Typology from 1995
+##### from 1995
 ```{r typology1995, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
 lookup <- table(seq$typology1995)
 lapply(sort(unique(df$typology1995)), function(sequ) {
@@ -343,117 +335,96 @@ lapply(sort(unique(df$typology1995)), function(sequ) {
 })
 ```
 
-#### Summary data
-```{r table, rows.print = 12, cols.print = 10, cols.min.print = 10}
-new[, c("country", "typology1970", "typology1975", "typology1995", "class_vv1975", "class_vv1995")]
+##### Data
+```{r typology_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
+new[, c("country", "typology1975", "typology1995", "class_vv1975", "class_vv1995")]
+```
+
+#### Health & gender 
+
+```{r summary_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
 new[, c("country", "first", "periods", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")]
 summary(new[, c("first", "periods", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")])
 ```
 
-#### Health & gender change
-```{r bivariate, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", message = FALSE}
-data_summary <- function(x) {
-  m <- mean(x)
-  ymin <- m - sd(x)
-  ymax <- m + sd(x)
-  return(c(y = m, ymin = ymin, ymax = ymax))
-}
-ggplot(data = new, mapping = aes(x = health_period, y = typology1975)) + 
-  geom_violin(trim = FALSE) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  theme_minimal()
-ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) + 
-  geom_violin(trim = FALSE) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  theme_minimal()
-ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) + 
-  geom_violin(trim = FALSE) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  theme_minimal()
-ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) + 
-  geom_violin(trim = FALSE) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  theme_minimal()
-```
-
-#### Internal conflict before
-```{r conflict_before, results = 'hide', fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", warning = FALSE}
-lookup <- table(new$conflict_1961_1970)
-lapply(c("none", "conflict", "conflict (3+ yrs)", "war", "war (3+ yrs)"), function(cat) {
-  plotCategory(cat = cat, 
-           dat = df[df$conflict_1961_1970 == cat & df$period > 1975, ], 
-           range = range_both)
-})
-```
-
-#### Internal conflict during
+#### Internal conflict
 ```{r conflict, results = 'hide', fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", warning = FALSE}
 lookup <- table(new$conflict_1971_2015)
-lapply(c("none", "conflict", "conflict (3+ yrs)", "war", "war (3+ yrs)"), function(cat) {
+lapply(c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), function(cat) {
   plotCategory(cat = cat, 
            dat = df[df$conflict_1971_2015 == cat & df$period > 1975, ], 
            range = range_both)
 })
 ```
+
+#### Bivariate {.tabset .tabset-fade .tabset-pills}
+
+##### Health change per period
+```{r bivariate_health}
+round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")]), margin = 1) * 100, margin = 2), 1)
+# data_summary <- function(x) {
+#   m <- mean(x)
+#   ymin <- m - sd(x)
+#   ymax <- m + sd(x)
+#   return(c(y = m, ymin = ymin, ymax = ymax))
+# }
+# ggplot(data = new, mapping = aes(x = health_period, y = typology1975)) + 
+#   geom_violin(trim = FALSE) +
+#   stat_summary(fun.data = data_summary, geom = "pointrange") + 
+#   theme_minimal()
+```
+
+##### Gender change per period
+```{r bivariate_gender}
+round(addmargins(prop.table(table(new[, c("typology1975", "gender_period_quart")]), margin = 1) * 100, margin = 2), 1)
+# ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) + 
+#   geom_violin(trim = FALSE) +
+#   stat_summary(fun.data = data_summary, geom = "pointrange") + 
+#   theme_minimal()
+```
+
+##### Overall change per period
+```{r bivariate_both}
+round(addmargins(prop.table(table(new[, c("typology1975", "dist_period_quart")]), margin = 1) * 100, margin = 2), 1)
+# ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) + 
+#   geom_violin(trim = FALSE) +
+#   stat_summary(fun.data = data_summary, geom = "pointrange") + 
+#   theme_minimal()
+```
+
+##### Path efficiency
+```{r bivariate_path_efficiency}
+round(addmargins(prop.table(table(new[, c("typology1975", "dist_total_quart")]), margin = 1) * 100, margin = 2), 1)
+# ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) + 
+#   geom_violin(trim = FALSE) +
+#   stat_summary(fun.data = data_summary, geom = "pointrange") + 
+#   theme_minimal()
+```
+
+##### Internal conflict
 ```{r conflict_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
-round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)], margin = 2) * 100, margin = 1), 1)
-new[, c("country", "conflict_1961_1970", "conflict_1971_2015", "conflict_1981_1990", "conflict_1991_2015")]
+round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)], margin = 1) * 100, margin = 2), 1)
+addmargins(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)])
+round(addmargins(prop.table(table(new[, c("typology1995", "conflict_1991_2015")])[, c(3, 1:2, 4:5)], margin = 1) * 100, margin = 2), 1)
+addmargins(table(new[, c("typology1995", "conflict_1991_2015")])[, c(3, 1:2, 4:5)])
 ```
 
-#### LPI
-```{r lpi, results = 'hide', fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", warning = FALSE}
-lookup <- table(new$latentmean_fariss_1971_2015)
-lapply(c("1st quartile", "2nd quartile", "3rd quartile", "4th quartile"), function(cat) {
-  plotCategory(cat = cat, 
-           dat = df[df$latentmean_fariss_1971_2015 == cat & df$period > 1975, ], 
-           range = range_both)
-})
-```
+##### LPI
 ```{r lpi_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
-round(addmargins(prop.table(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]), margin = 2) * 100, margin = 1), 1)
-new[, c("country", "latentmean_fariss_1961_1970", "latentmean_fariss_1971_2015", "latentmean_fariss_1981_1990", "latentmean_fariss_1991_2015")]
+round(addmargins(prop.table(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]), margin = 1) * 100, margin = 2), 1)
+addmargins(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]))
 ```
 
-#### Extra-judicial killings
-```{r killings, results = 'hide', fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", warning = FALSE}
-lookup <- table(new$v2clkill_1971_2015)
-lapply(c("1st quartile", "2nd quartile", "3rd quartile", "4th quartile"), function(cat) {
-  plotCategory(cat = cat, 
-           dat = df[df$v2clkill_1971_2015 == cat & df$period > 1975, ], 
-           range = range_both)
-})
-```
-```{r killings_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
-round(addmargins(prop.table(table(new[, c("typology1975", "v2clkill_1971_2015")]), margin = 2) * 100, margin = 1), 1)
-new[, c("country", "v2clkill_1961_1970", "v2clkill_1971_2015", "v2clkill_1981_1990", "v2clkill_1991_2015")]
-```
-
-#### State torture
-```{r torture, results = 'hide', fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", warning = FALSE}
-lookup <- table(new$v2cltort_1971_2015)
-lapply(c("1st quartile", "2nd quartile", "3rd quartile", "4th quartile"), function(cat) {
-  plotCategory(cat = cat, 
-           dat = df[df$v2cltort_1971_2015 == cat & df$period > 1975, ], 
-           range = range_both)
-})
-```
+##### State torture (V-Dem)
 ```{r torture_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
-round(addmargins(prop.table(table(new[, c("typology1975", "v2cltort_1971_2015")]), margin = 2) * 100, margin = 1), 1)
-new[, c("country", "v2cltort_1961_1970", "v2cltort_1971_2015", "v2cltort_1981_1990", "v2cltort_1991_2015")]
+round(addmargins(prop.table(table(new[, c("typology1975", "v2cltort_1971_2015")]), margin = 1) * 100, margin = 2), 1)
+addmargins(table(new[, c("typology1975", "v2cltort_1971_2015")]))
 ```
 
-#### Societal violence
-```{r societal, results = 'hide', fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", warning = FALSE}
-lookup <- table(new$v2caviol_1971_2015)
-lapply(c("1st quartile", "2nd quartile", "3rd quartile", "4th quartile"), function(cat) {
-  plotCategory(cat = cat, 
-           dat = df[df$v2caviol_1971_2015 == cat & df$period > 1975, ], 
-           range = range_both)
-})
-```
+##### Societal violence (V-Dem)
 ```{r societal_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
-round(addmargins(prop.table(table(new[, c("typology1975", "v2caviol_1971_2015")]), margin = 2) * 100, margin = 1), 1)
-new[, c("country", "v2caviol_1961_1970", "v2caviol_1971_2015", "v2caviol_1981_1990", "v2caviol_1991_2015")]
+round(addmargins(prop.table(table(new[, c("typology1975", "v2caviol_1971_2015")]), margin = 1) * 100, margin = 2), 1)
+addmargins(table(new[, c("typology1975", "v2caviol_1971_2015")]))
 ```
 
 ```{r violence_rates, fig.width = 10, fig.height = 10, out.width = "67%", out.height = "67%", warning = FALSE, echo = FALSE, eval = FALSE}
