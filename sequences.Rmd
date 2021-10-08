@@ -344,7 +344,7 @@ new[, c("country", "typology1975", "typology1995", "class_vv1975", "class_vv1995
 
 ```{r summary_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
 new[, c("country", "first", "periods", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")]
-summary(new[, c("first", "periods", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")])
+summary(new[, c("first", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")])
 ```
 
 #### Internal conflict
@@ -359,7 +359,7 @@ lapply(c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), functi
 
 #### Bivariate {.tabset .tabset-fade .tabset-pills}
 
-##### Health change per period
+##### Health change
 ```{r bivariate_health}
 round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")]), margin = 1) * 100, margin = 2), 1)
 # data_summary <- function(x) {
@@ -374,7 +374,7 @@ round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")
 #   theme_minimal()
 ```
 
-##### Gender change per period
+##### Gender change
 ```{r bivariate_gender}
 round(addmargins(prop.table(table(new[, c("typology1975", "gender_period_quart")]), margin = 1) * 100, margin = 2), 1)
 # ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) + 
@@ -383,7 +383,7 @@ round(addmargins(prop.table(table(new[, c("typology1975", "gender_period_quart")
 #   theme_minimal()
 ```
 
-##### Overall change per period
+##### Overall change
 ```{r bivariate_both}
 round(addmargins(prop.table(table(new[, c("typology1975", "dist_period_quart")]), margin = 1) * 100, margin = 2), 1)
 # ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) + 
