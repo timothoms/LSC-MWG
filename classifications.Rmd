@@ -239,7 +239,7 @@ df <- merge(df, class1990, by = "country", all.x = TRUE)
 df <- merge(df, class1995, by = "country", all.x = TRUE)
 df <- df[order(df$country, df$year), 
          c("country", "year", "period", names(df)[!names(df) %in% c("country", "year", "period")])]
-df <- df[df$year != 1961, ]
+# df <- df[df$year >= 1961, ]
 filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class", ".csv", sep = "" )
 write_csv(df, file = filepath)
 ```

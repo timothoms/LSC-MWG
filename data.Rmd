@@ -18,6 +18,7 @@ All the analyses are based on a large global dataset (and accompanying codebook)
 
 ```{r startup, results = "hide", message = FALSE}
 load("_data/dataset_LSCMWG.RData")
+data <- data %>% filter(year >=1960)
 link <- "https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing"
 googlesheets4::gs4_deauth()
 codebook <- googlesheets4::read_sheet(link, sheet = "codebook")
