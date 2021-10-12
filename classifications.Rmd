@@ -555,7 +555,7 @@ performance_measures <- unlist(lapply(c(1990, 1995), function(year) {
 }), recursive = FALSE)
 performance_measures <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = performance_measures)
 new <- merge(new, performance_measures, by = "country", all = TRUE)
-filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional", ".csv", sep = "" )
+filepath <- "~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional.csv"
 write.csv(new, file = filepath)
 ```
 

@@ -415,13 +415,13 @@ round(addmargins(prop.table(table(new[, c("typology1975", "latentmean_fariss_197
 addmargins(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]))
 ```
 
-##### State torture (V-Dem)
+##### State torture
 ```{r torture_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
 round(addmargins(prop.table(table(new[, c("typology1975", "v2cltort_1971_2015")]), margin = 1) * 100, margin = 2), 1)
 addmargins(table(new[, c("typology1975", "v2cltort_1971_2015")]))
 ```
 
-##### Societal violence (V-Dem)
+##### Societal violence
 ```{r societal_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
 round(addmargins(prop.table(table(new[, c("typology1975", "v2caviol_1971_2015")]), margin = 1) * 100, margin = 2), 1)
 addmargins(table(new[, c("typology1975", "v2caviol_1971_2015")]))
