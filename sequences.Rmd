@@ -2,7 +2,7 @@
 title: "Mapping trajectories"
 params: 
   cache: true
-  optimize: false
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
@@ -403,17 +403,13 @@ ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) +
 
 ##### Internal conflict
 ```{r conflict_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
-
-# dfp1 %>% 
-#   pivot_longer(-value, names_to = "variable", values_to = "percent") %>% 
-#   ggplot(aes(x = value, y = percent, fill = variable), xlab="Age Group") + 
-#   geom_bar(stat = "identity", position = "dodge", width = 0.5)
-
-
-ggplot(data = new, mapping = aes(y = conflict_1971_2015, fill = typology1975)) +
-  geom_bar() + theme_minimal()
-round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)], margin = 1) * 100, margin = 2), 1)
-addmargins(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)])
+new$conflict_1971_2015 <- factor(new$conflict_1971_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+ggplot(data = new, 
+       mapping = aes(y = typology1975, fill = conflict_1971_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + theme(legend.position = "top")
+# round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)], margin = 1) * 100, margin = 2), 1)
 ```
 
 ##### LPI
