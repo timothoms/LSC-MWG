@@ -359,10 +359,10 @@ lapply(c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), functi
 })
 ```
 
-#### Bivariate {.tabset .tabset-fade .tabset-pills}
+#### Bivariate distributions {.tabset .tabset-fade .tabset-pills}
 
 ##### Health change
-```{r bivariate_health, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r bivariate_health, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
 data_summary <- function(x) {
   m <- mean(x)
 #   ymin <- m - sd(x)
@@ -372,43 +372,55 @@ data_summary <- function(x) {
   return(c(y = m, ymin = ymin, ymax = ymax))
 }
 ggplot(data = new, mapping = aes(x = health_period, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + theme_minimal()
+  stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  xlim(0, NA) + theme_minimal()
 # round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")]), margin = 1) * 100, margin = 2), 1)
 ```
 
 ##### Gender change
-```{r bivariate_gender, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r bivariate_gender, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
 ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + theme_minimal()
+  stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  xlim(0, NA) + theme_minimal()
 # round(addmargins(prop.table(table(new[, c("typology1975", "gender_period_quart")]), margin = 1) * 100, margin = 2), 1)
 ```
 
 ##### Overall change
-```{r bivariate_both, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r bivariate_both, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
 ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + theme_minimal()
+  stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  xlim(0, NA) + theme_minimal()
 # round(addmargins(prop.table(table(new[, c("typology1975", "dist_period_quart")]), margin = 1) * 100, margin = 2), 1)
 ```
 
 ##### Path efficiency
-```{r bivariate_path_efficiency, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r bivariate_path_efficiency, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
 ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + theme_minimal()
+  stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  xlim(0, NA) + theme_minimal()
 # round(addmargins(prop.table(table(new[, c("typology1975", "dist_total_quart")]), margin = 1) * 100, margin = 2), 1)
 ```
 
 ##### Internal conflict
 ```{r conflict_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
+
+# dfp1 %>% 
+#   pivot_longer(-value, names_to = "variable", values_to = "percent") %>% 
+#   ggplot(aes(x = value, y = percent, fill = variable), xlab="Age Group") + 
+#   geom_bar(stat = "identity", position = "dodge", width = 0.5)
+
+
+ggplot(data = new, mapping = aes(y = conflict_1971_2015, fill = typology1975)) +
+  geom_bar() + theme_minimal()
 round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)], margin = 1) * 100, margin = 2), 1)
 addmargins(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)])
-round(addmargins(prop.table(table(new[, c("typology1995", "conflict_1991_2015")])[, c(3, 1:2, 4:5)], margin = 1) * 100, margin = 2), 1)
-addmargins(table(new[, c("typology1995", "conflict_1991_2015")])[, c(3, 1:2, 4:5)])
 ```
 
 ##### LPI
 ```{r lpi_data, rows.print = 12, cols.print = 10, cols.min.print = 10, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
 ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + theme_minimal()
+  stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  xlim(0, NA) + theme_minimal()
 # round(addmargins(prop.table(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]), margin = 1) * 100, margin = 2), 1)
 # addmargins(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]))
 ```
@@ -416,7 +428,8 @@ ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology19
 ##### State torture
 ```{r torture_data, rows.print = 12, cols.print = 10, cols.min.print = 10, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
 ggplot(data = new, mapping = aes(x = v2cltort_1971_2015, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + theme_minimal()
+  stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  xlim(0, NA) + theme_minimal()
 # round(addmargins(prop.table(table(new[, c("typology1975", "v2cltort_1971_2015")]), margin = 1) * 100, margin = 2), 1)
 # addmargins(table(new[, c("typology1975", "v2cltort_1971_2015")]))
 ```
@@ -424,7 +437,8 @@ ggplot(data = new, mapping = aes(x = v2cltort_1971_2015, y = typology1975)) +
 ##### Societal violence
 ```{r societal_data, rows.print = 12, cols.print = 10, cols.min.print = 10, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
 ggplot(data = new, mapping = aes(x = v2caviol_1971_2015, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + theme_minimal()
+  stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  xlim(0, NA) + theme_minimal()
 # round(addmargins(prop.table(table(new[, c("typology1975", "v2caviol_1971_2015")]), margin = 1) * 100, margin = 2), 1)
 # addmargins(table(new[, c("typology1975", "v2caviol_1971_2015")]))
 ```
