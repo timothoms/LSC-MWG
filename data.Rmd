@@ -50,7 +50,7 @@ variables <- list(
   health = c("imr_wpp", "life_exp_wpp"),
   gender_full = c("labor_mod_ratio15_ilo", "wmn_parl_wdi", "tfr_wpp", 
                   "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr", "mys_ratio_bl", "mys_age_ratio_ihme", "mys_pop_ratio_ihme" ),
-  health = c("asfr_adol_wpp", "mys_age_ratio_ihme"),
+  gender = c("asfr_adol_wpp", "mys_age_ratio_ihme"),
   political = c("polity2_p4", "dem_bmr", "v2x_polyarchy", "v2x_libdem", 
                 "v2x_liberal", "v2x_partipdem", "v2x_partip")
 )
@@ -65,9 +65,9 @@ variables <- lapply(variables, function(set) {
 Due to data availability, the time period for our analyses will be primarily from 1990 until 2015 or 2018.
 
 ```{r coverage}
-lapply(categories, function(cat) {
+lapply(categories, function(cat) { 
   tbl <- lapply(cat, function(col_name) { 
-    table(data$year, !is.na(data[, col_name]))[, 2] 
+    table(data$year, !is.na(data[, col_name]))[, "TRUE"] 
   })
   tbl <- do.call(cbind, tbl)
   colnames(tbl) <- cat
@@ -135,12 +135,11 @@ summary(data[, c(variables$negative[1:9])])
 ```
 
 #### Variable transformations and coding performance measures
-
 ```{r coding_perf}
 data <- data %>% 
   dplyr::arrange(country, year) %>% 
   mutate(period = cut(year, seq(1960, 2020, 5), right = TRUE))
-vars <- c(variables$health, variables$gender, "mys_ratio_hdr", "pc_rgdpe_pwt")
+names(vars) <- vars <- c(variables$health, variables$gender, "mys_ratio_hdr", "pc_rgdpe_pwt")
 data <- data %>% 
   group_by(country, period) %>% 
   mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}_avg"), .keep = "all")
@@ -172,7 +171,7 @@ performance_measures <- lapply(vars, function(var) {
     dat <- data[data$year == year, c("country", "year", "lg_pc_rgdpe_pwt_avg", var)]
       if(nrow(na.omit(dat)) > 0) {
         CodePerformance(y_var = var, x_vars = "lg_pc_rgdpe_pwt_avg", df = dat)
-      } 
+      }
   })
   results <- results[!unlist(lapply(results, is.null))]
   do.call(rbind, results)
