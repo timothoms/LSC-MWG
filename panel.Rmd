@@ -1,7 +1,7 @@
 ---
 params: 
   set_title: "Panel Regressions"
-  cache: false
+  cache: true
   optimize: true
   lags: 1
   begin: 1975
@@ -28,7 +28,7 @@ vars <- c("pc_rgdpe_pwt", "pop_wpp", unlist(variables[c("health_full", "gender_f
           "gdi_hdr", "gii_hdr", "mmr_unicef"          
           )
 dfp <- df[, c("country", "year", "period", "health_class", "gender_class", 
-              "class", "class_alt", "class_vv", "class_vv_alt", "class_low", "class_HG", "class_GH", "class_mid", "class_upp", vars)]
+              "class", "class_vv", "class_low", "class_HG", "class_GH", "class_mid", "class_upp", vars)]
 dfp <- dfp %>% dplyr::arrange(country, period, year)
 dfp <- dfp %>% group_by(country, period) %>% 
   mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}"), .keep = "all")
@@ -245,7 +245,7 @@ results$tests
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r life_exp_conflict_incidence}
 results <- RunModels(equations = c(
@@ -264,7 +264,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r life_exp_conflict_deaths}
 results <- RunModels(equations = c(
@@ -283,7 +283,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r life_exp_conflict_deaths_civ}
 results <- RunModels(equations = c(
@@ -471,7 +471,7 @@ results$tests
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r imr_conflict_incidence}
 results <- RunModels(equations = c(
@@ -490,7 +490,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r imr_conflict_deaths}
 results <- RunModels(equations = c(
@@ -509,7 +509,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r imr_conflict_deaths_civ}
 results <- RunModels(equations = c(
@@ -697,7 +697,7 @@ results$tests
 
 
 ```{r echo = FALSE, eval = params$incl_new, include = params$incl_new}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r ufmr_conflict_incidence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -716,7 +716,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r ufmr_conflict_deaths, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -735,7 +735,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r ufmr_conflict_deaths_civ, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -923,7 +923,7 @@ results$tests
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r daly_conflict_incidence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -942,7 +942,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r daly_conflict_deaths, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -961,7 +961,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r daly_conflict_deaths_civ, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -1151,7 +1151,7 @@ results$tests
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r mys_conflict_incidence}
 results <- RunModels(equations = c(
@@ -1170,7 +1170,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r mys_conflict_deaths}
 results <- RunModels(equations = c(
@@ -1189,7 +1189,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r mys_conflict_deaths_civ}
 results <- RunModels(equations = c(
@@ -1377,7 +1377,7 @@ results$tests
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r asfr_conflict_incidence}
 results <- RunModels(equations = c(
@@ -1396,7 +1396,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r asfr_conflict_deaths}
 results <- RunModels(equations = c(
@@ -1415,7 +1415,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r asfr_conflict_deaths_civ}
 results <- RunModels(equations = c(
@@ -1603,7 +1603,7 @@ results$tests
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r labor_conflict_incidence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -1622,7 +1622,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r labor_conflict_deaths, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -1641,7 +1641,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r labor_conflict_deaths_civ, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -1829,7 +1829,7 @@ results$tests
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict incidence")
+knitr::asis_output("###### Conflict incidence")
 ```
 ```{r gii_conflict_incidence, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -1848,7 +1848,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict deaths")
+knitr::asis_output("###### Conflict deaths")
 ```
 ```{r gii_conflict_deaths, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -1867,7 +1867,7 @@ lapply(c("m2", "m3"), function(mod) {
 
 
 ```{r echo = FALSE, eval = params$incl_new}
-knitr::asis_output("###### Internal conflict civilian deaths")
+knitr::asis_output("###### Conflict civilian deaths")
 ```
 ```{r gii_conflict_deaths_civ, eval = params$incl_new, include = params$incl_new}
 results <- RunModels(equations = c(
@@ -2300,5 +2300,27 @@ results$tests
 lapply(c("m6", "m7"), function(mod) {
   IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Societal Violence")
+```
+```{r societal}
+results <- RunModels(labelspace = 20, equations = c(
+  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp,
+  v2caviol ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2caviol*lag_class_HG + lag_v2caviol*lag_class_GH + lag_v2caviol*lag_class_mid + lag_v2caviol*lag_class_upp,
+  v2caviol ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2caviol*lag_class_HG + lag_v2caviol*lag_class_GH + lag_v2caviol*lag_class_mid + lag_v2caviol*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+) 
+results$tests
+```
+```{r int_societal, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", fig.show = 'hold'}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2caviol", title = "Effect of Societal Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2caviol", title = "Effect of Societal Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```

@@ -103,8 +103,7 @@ Based on theoretical relevance and representativeness (see within-category corre
 variables_to_include <- c("labor_mod_ratio15_ilo", "mys_ratio_hdr", "mys_age_ratio_ihme", "tfr_wpp", 
                           "asfr_adol_wpp", "imr_wpp", "ufmr_wpp", "daly_ihme", "physicians_pc_wdi", 
                           "life_exp_wpp", "pc_rgdpe_pwt", "deaths_all_int_rate", "deaths_all_osv_rate", 
-                          "latentmean_fariss", "deaths_all_nsc_rate", "hom_odcwho_rate", 
-                          "conflict_internal", "conflict_non_state", "conflict_one_sided")
+                          "latentmean_fariss", "deaths_all_nsc_rate", "hom_odcwho_rate")
 GGally::ggpairs(data[, variables_to_include], mapping = aes(stroke = 0, alpha = 0.25)) + 
   theme_bw() + theme(strip.text.y.right = element_text(angle = 0))
 ```

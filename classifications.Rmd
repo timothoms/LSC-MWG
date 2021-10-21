@@ -18,7 +18,7 @@ load("_data/LSCMWG_working_data.RData")
 
 #### Classification with two variables on each dimensions for 1990
 
-```{r classification}
+```{r classification, warning = FALSE}
 Classification <- function(health, gender, 
   df = data, 
   year_to_show = 1990, 
@@ -119,7 +119,7 @@ Classification <- function(health, gender,
   df$class <- paste("H", df$health_class, "G", df$gender_class, sep = "")
   df$class_alt <- paste("H", df$health_class_alt, "G", df$gender_class_alt, sep = "")
   test <- table(df[df$year == year_to_show & df$valid >= min_to_include, c("health_class", "gender_class")])
-  print(test)
+  # print(test)
   number_of_countries <- sum(test)
   df$support <- paste(df$country, " (", df$combi, "/", df$valid, ")", sep = "")
   dat <- df[df$year == year_to_show, ]
@@ -173,7 +173,7 @@ Classification <- function(health, gender,
   classifications <- lapply(classifications, paste, collapse = "; ")
   # print(matrix(names(classifications), 5, 5, dimnames = list(health = qs, gender = qs)))
   fuzzy_table <- matrix(classifications, 5, 5, dimnames = list(health = qs, gender = qs))
-  cat("Number of countries classified: ", number_of_countries, "\n")
+  # cat("Number of countries classified: ", number_of_countries, "\n")
   # if(number_of_countries != length(countries)) {
   #   cat("\nNot classifying the same number of countries as the fuzzy way!")
   # }
@@ -187,7 +187,7 @@ kableExtra::kable(result$table, format = "html") %>%
   kableExtra::group_rows("Health", 1, 5)
 ```
 
-#### Fuzzy version of classification (for illustration only)
+#### Fuzzy version of classification 
 ```{r fuzzy}
 kableExtra::kable(result$fuzzy, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
@@ -195,7 +195,7 @@ kableExtra::kable(result$fuzzy, format = "html") %>%
   kableExtra::group_rows("Health", 1, 5)
 ```
 
-#### New version of lassification based on standardized data -->
+#### New version of classification based on standardized data
 ```{r classification_new}
 kableExtra::kable(result$table_std, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
@@ -213,8 +213,7 @@ kableExtra::kable(result_perf$table, format = "html") %>%
   kableExtra::group_rows("Health", 1, 5)
 ```
 
-#### Merging classifications into dataset
-
+<!-- #### Merging classifications into dataset -->
 ```{r merging}
 variables$class <- c("class", "health_class", "gender_class", "health_class_alt", "gender_class_alt", "health_flag", "gender_flag")
 df <- as.data.frame(result$standardized[, names(result$standardized) %in% c("country", "year", variables$class)])
@@ -287,7 +286,7 @@ table_to_show <- lapply(variables$controls, function(var) {
 noquote(table_to_show)
 ```
 
-<!-- #### Which countries move more than 2 cells? -->
+#### Which countries move more than 2 cells?
 ```{r movers}
 df$class_num <- df$health_class * df$gender_class
 names(years) <- years <- c(1990, 1995, 2015)
@@ -499,7 +498,7 @@ variables$outcomes <- c(variables$health_full, variables$gender_full, variables$
 parallel::mclapply(variables$outcomes, GrowthRatesTtest)
 ```
 
-#### Preparing cross-sectional dataset
+<!-- #### Preparing cross-sectional dataset -->
 ```{r reg_prep}
 covariates <- c("pc_rgdpe_pwt", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "mys_age_ratio_ihme", "asfr_adol_wpp")
 covariates <- paste(covariates, "avg", sep = "_")
@@ -536,7 +535,7 @@ new$asfr_adol_wpp_avg_growth1990_2015      <- new$asfr_adol_wpp_avg_2015      - 
 new$asfr_adol_wpp_avg_growth1995_2015      <- new$asfr_adol_wpp_avg_2015      - new$asfr_adol_wpp_avg_1995
 new$mys_ratio_hdr_avg_growth1995_2015      <- new$mys_ratio_hdr_avg_2015      - new$mys_ratio_hdr_avg_1995
 new$mys_age_ratio_ihme_avg_growth1995_2015 <- new$mys_age_ratio_ihme_avg_2015 - new$mys_age_ratio_ihme_avg_1995
-summary(new[, c("mys_ratio_hdr_avg_growth1990_2015", "mys_ratio_hdr_avg_growth1995_2015", "mys_age_ratio_ihme_avg_growth1990_2015")])
+# summary(new[, c("mys_ratio_hdr_avg_growth1990_2015", "mys_ratio_hdr_avg_growth1995_2015", "mys_age_ratio_ihme_avg_growth1990_2015")])
 ## logged version of pcGDP growth vars; need to account for negative values
 new$lg_pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 < 0)] <- log(-new$pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 < 0)])
 new$lg_pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 >= 0)] <- log(new$pc_rgdpe_avg_growth1990_2015[IsTrue(new$pc_rgdpe_avg_growth1990_2015 >= 0)])
@@ -573,7 +572,6 @@ write.csv(new, file = filepath)
 ```
 
 #### Performance Rankings within classification groups {.tabset .tabset-fade .tabset-pills}
-
 ```{r performance_function, message = FALSE, warning = FALSE}
 Performance <- function(category, year, vars) {
   countries <- unique(df$country[df$year == year & df$class_vv %in% category])
