@@ -2,6 +2,7 @@
 _ignore/
 _summary/
 _pdfs/
+_figures/
 
 # specific data files
 _data/LSCMWG_working_class.RData

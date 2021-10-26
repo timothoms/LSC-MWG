@@ -1,16 +1,22 @@
 ---
 title: "Mapping trajectories"
 params: 
-  cache: true
+  cache: false
   optimize: true
 ---
 
 ```{r setup, include = FALSE}
 source("setup.R")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      fig.show = "hold",
+                      fig.width = 5, fig.height = 5, 
+                      out.width = "50%", out.height = "50%",
+                      rownames.print = FALSE, rows.print = 12, 
+                      cols.print = 10, cols.min.print = 10)
 ```
 ### {.tabset .tabset-fade .tabset-pills}
 
-```{r data, results = "hide", rows.print = 12, cols.print = 12, cols.min.print = 12, message = FALSE}
+```{r data, results = "hide"}
 IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_class.RData")
 link <- "https://docs.google.com/spreadsheets/d/1KPUMNCixfyFU4KryzV0_5BYUHCUIyOq2heei9KdpSF8/edit?usp=sharing"
@@ -19,11 +25,10 @@ seq <- googlesheets4::read_sheet(link, sheet = "coding", na = "..")
 save(seq, file = "_data/sequences.RData")
 ```
 
-```{r class, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", eval = FALSE, echo = FALSE}
+```{r class, results = 'hide', out.width = "25%", out.height = "25%", eval = FALSE, echo = FALSE}
 df <- unique(df[, c("country", "period", "health_class", "gender_class", "class", "class_vv")])
 df$period <- str_sub(df$period, 7, 10)
 df <- df[!is.na(df$class) & df$period != 2020, ]
-# noquote(tapply(X = df$class_vv, INDEX = list(health = df$health_class, gender = df$gender_class), function(set) { paste(unique(set), collapse = "; ") }))
 df_new <- pivot_wider(df[, c("country", "period", "class_vv")], names_from = period, values_from = class_vv)
 df_new[, -1] <- lapply(df_new[, -1], function(col) {
   col[is.na(col)] <- ""
@@ -51,11 +56,12 @@ lapply(unique(df$country), function(ctry) {
     geom_point(aes(x = gender_class[period == max(period)], 
                    y = health_class[period == max(period)]), 
                shape = 23, size = 3, fill = "green") + 
-    xlim(0.5, 5.5) + ylim(0.5, 5.5) + labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
+    coord_cartesian(xlim = c(0.5, 5.5), ylim = c(0.5, 5.5)) + 
+    labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
 })
 ```
 
-```{r sequencing, results = 'hide', fig.width = 5, fig.height = 5, out.width = "25%", out.height = "25%", fig.show = "hold", warning = FALSE}
+```{r sequencing, results = 'hide', out.width = "25%", out.height = "25%"}
 missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan", "Serbia & Montenegro")
 # table(df[, c("conf_intra", "wars_intra")])
 ViolenceCats <- function(dataset = df[!(df$country %in% missing_countries), ], start_yr = 1975, end_yr = 2015, yrs_long = 3) {
@@ -189,7 +195,7 @@ df <- merge(df, violence, by = "country", all = TRUE)
 ```
 
 #### Countries
-```{r countries, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+```{r countries, results = 'hide', out.width = "33%", out.height = "33%"}
 lapply(unique(df$country), function(ctry) {
   ggplot(data = df[df$country == ctry  & df$period > 1975, ], # & !is.na(df$lag_health) & !is.na(df$lag_gender)
          mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health) ) + 
@@ -204,8 +210,7 @@ lapply(unique(df$country), function(ctry) {
                shape = 20, size = 0.75, color = "green", fill = "green") + 
     geom_point(aes(x = gender[period == max(period)], y = health[period == max(period)]), 
                shape = 20, size = 0.75, color = "red", fill = "red") + 
-    xlim(range_both[1], range_both[2]) +
-    ylim(range_both[1], range_both[2]) +
+    coord_cartesian(xlim = range_both, ylim = range_both) + 
     labs(x = "Gender", y = "Health") + 
     theme_classic() + theme(legend.position = "none") + 
     ggtitle(label = ctry, subtitle = paste("\nfrom 1975: ", seq$typology1975[seq$country == ctry],
@@ -216,19 +221,18 @@ lapply(unique(df$country), function(ctry) {
 #### Classification {.tabset .tabset-fade .tabset-pills}
 
 ##### 1975
-```{r c1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+```{r class_1975, results = 'hide', out.width = "33%", out.height = "33%"}
 lookup <- table(df$class_vv1975[df$period == 2015])
 lookup["no 1975 classification"] <- sum(is.na(df$class_vv1975[df$period == 2015]))
 plotClass <- function(class, dat, range) {
   ggplot(data = dat, 
          mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health, group = country, color = country)) + 
     coord_fixed(ratio = 1) + 
-    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(7, "points"))) + 
     geom_vline(xintercept = mean_gender, color = "gray") + 
     geom_hline(yintercept = mean_health, color = "gray") + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(4, "points"))) + 
     labs(x = "Gender", y = "Health") + 
-    xlim(range[1], range[2]) +
-    ylim(range[1], range[2]) +
+    coord_cartesian(xlim = range, ylim = range) + 
     theme_classic() + theme(legend.position = "none") + 
     ggtitle(paste(class, " (", lookup[class], ")", sep = ""))
 }
@@ -236,6 +240,8 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = df[df$class_vv1975 == class & df$period > 1975, ],
             range = range_both)
+  ggsave(device = "pdf", height = 5, width = 5, 
+         filename = paste("_figures/sequences_class1975_", class, ".pdf", sep = ""))
 })
 plotClass(class = "no 1975 classification", 
           dat = df[is.na(df$class_vv1975) & df$period > 1975, ],
@@ -243,7 +249,7 @@ plotClass(class = "no 1975 classification",
 ```
 
 ##### 1975 (from origin)
-```{r new1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+```{r class_1975_origin, results = 'hide', out.width = "33%", out.height = "33%"}
 new1975 <- df[df$period > 1975, ] %>%
   arrange(country, period) %>% 
   group_by(country) %>% 
@@ -260,17 +266,21 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = new1975[new1975$class_vv1975 == class, ], 
             range = range_both_new)
+  ggsave(device = "pdf", height = 5, width = 5, 
+       filename = paste("_figures/sequences_class1975_origin_", class, ".pdf", sep = ""))
 })
 ```
 
 ##### 1995 
-```{r c1995, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+```{r class_1995, results = 'hide', out.width = "33%", out.height = "33%"}
 lookup <- table(df$class_vv1995[df$period == 2015])
 lookup["no 1995 classification"] <- sum(is.na(df$class_vv1995[df$period == 2015]))
 lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = df[df$class_vv1995 == class & df$period > 1995, ],
             range = range_both)
+  ggsave(device = "pdf", height = 5, width = 5, 
+       filename = paste("_figures/sequences_class1995_", class, ".pdf", sep = ""))
 })
 plotClass(class = "no 1995 classification", 
           dat = df[is.na(df$class_vv1995) & df$period > 1995, ],
@@ -278,7 +288,7 @@ plotClass(class = "no 1995 classification",
 ```
 
 ##### 1995 (from origin)
-```{r new1995, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+```{r class_1995_origin, results = 'hide', out.width = "33%", out.height = "33%"}
 new1995 <- df[df$period > 1995, ] %>%
   arrange(country, period) %>% 
   group_by(country) %>% 
@@ -299,58 +309,63 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = new1995[new1995$class_vv1995 == class, ], 
             range = range_both_new)
+  ggsave(device = "pdf", height = 5, width = 5, 
+       filename = paste("_figures/sequences_class1995_origin_", class, ".pdf", sep = ""))
 })
 ```
 
 #### Typology {.tabset .tabset-fade .tabset-pills}
 
 ##### from 1975
-```{r typology1975, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+```{r typology_1975, results = 'hide', out.width = "33%", out.height = "33%"}
 plotCategory <- function(cat, dat, range) {
   ggplot(data = dat, 
          mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health, group = country, color = country)) + 
     coord_fixed(ratio = 1) + 
-    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(7, "points"))) + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(5, "points"))) + 
     geom_vline(xintercept = mean_gender, color = "gray") + 
     geom_hline(yintercept = mean_health, color = "gray") + 
     labs(x = "Gender", y = "Health") + 
-    xlim(range[1], range[2]) +
-    ylim(range[1], range[2]) +
+    coord_cartesian(xlim = range, ylim = range) + 
     theme_classic() + theme(legend.position = "none") + 
     ggtitle(paste(cat, " (", lookup[cat], ")", sep = ""))
 }
 lookup <- table(seq$typology1975)
 lapply(sort(unique(df$typology1975)), function(sequ) {
-  plotCategory(cat = sequ, 
-           dat = df[df$typology1975 == sequ & df$period > 1975, ], 
+  plotCategory(cat = sequ,
+           dat = df[df$typology1975 == sequ & df$period > 1975, ],
            range = range_both)
+  ggsave(device = "pdf", height = 5, width = 5, 
+    filename = paste("_figures/sequences_typology1975_", which(names(lookup) == sequ), ".pdf", sep = ""))
 })
 ```
 
 ##### from 1995
-```{r typology1995, results = 'hide', fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", fig.show = "hold", warning = FALSE}
+```{r typology_1995, results = 'hide', out.width = "33%", out.height = "33%"}
 lookup <- table(seq$typology1995)
 lapply(sort(unique(df$typology1995)), function(sequ) {
   plotCategory(cat = sequ, 
            dat = df[df$typology1995 == sequ & df$period > 1995, ], 
            range = range_both)
+  ggsave(device = "pdf", height = 5, width = 5, 
+    filename = paste("_figures/sequences_typology1995_", which(names(lookup) == sequ), ".pdf", sep = ""))
 })
 ```
 
 ##### Data
-```{r typology_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
+```{r typology_table}
 new[, c("country", "typology1975", "typology1995", "class_vv1975", "class_vv1995")]
 ```
 
 #### Health & gender 
 
-```{r summary_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
+```{r summary}
 new[, c("country", "first", "periods", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")]
 summary(new[, c("first", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")])
 ```
 
 #### Internal conflict
-```{r conflict, results = 'hide', fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "33%", out.height = "33%", warning = FALSE}
+```{r sequences_conflict, results = 'hide', out.width = "33%", out.height = "33%"}
 lookup <- table(new$conflict_1971_2015)
 lapply(c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), function(cat) {
   plotCategory(cat = cat, 
@@ -362,80 +377,111 @@ lapply(c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), functi
 #### Bivariate distributions {.tabset .tabset-fade .tabset-pills}
 
 ##### Health change
-```{r bivariate_health, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
+```{r bivariate_health}
+# round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")]), margin = 1) * 100, margin = 2), 1)
 data_summary <- function(x) {
   m <- mean(x)
-#   ymin <- m - sd(x)
-#   ymax <- m + sd(x)
   ymin <- quantile(x)[["25%"]]
   ymax <- quantile(x)[["75%"]]
   return(c(y = m, ymin = ymin, ymax = ymax))
 }
 ggplot(data = new, mapping = aes(x = health_period, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  xlim(0, NA) + theme_minimal()
-# round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")]), margin = 1) * 100, margin = 2), 1)
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  geom_vline(xintercept = 0, color = "gray") + 
+  # coord_cartesian(xlim = c(0, NA)) + 
+  labs(x = "Health change per period", y = "Sequence (1971-2015)") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_health.pdf")
 ```
 
 ##### Gender change
-```{r bivariate_gender, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
+```{r bivariate_gender}
 ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  xlim(0, NA) + theme_minimal()
-# round(addmargins(prop.table(table(new[, c("typology1975", "gender_period_quart")]), margin = 1) * 100, margin = 2), 1)
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  geom_vline(xintercept = 0, color = "gray") + 
+  labs(x = "Gender change per period", y = "Sequence (1971-2015)") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_gender.pdf")
 ```
 
 ##### Overall change
-```{r bivariate_both, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
+```{r bivariate_both}
 ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  xlim(0, NA) + theme_minimal()
-# round(addmargins(prop.table(table(new[, c("typology1975", "dist_period_quart")]), margin = 1) * 100, margin = 2), 1)
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  labs(x = "Health & gender change per period", y = "Sequence (1971-2015)") + 
+  geom_vline(xintercept = 0, color = "gray") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_health_gender.pdf")
 ```
 
 ##### Path efficiency
-```{r bivariate_path_efficiency, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
+```{r bivariate_efficiency}
 ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  xlim(0, NA) + theme_minimal()
-# round(addmargins(prop.table(table(new[, c("typology1975", "dist_total_quart")]), margin = 1) * 100, margin = 2), 1)
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  geom_vline(xintercept = 0, color = "gray") + 
+  labs(x = "Path efficiency", y = "Sequence (1971-2015)") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_efficiency.pdf")
 ```
 
 ##### Internal conflict
-```{r conflict_data, rows.print = 12, cols.print = 10, cols.min.print = 10}
+```{r conflict}
 new$conflict_1971_2015 <- factor(new$conflict_1971_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
 ggplot(data = new, 
        mapping = aes(y = typology1975, fill = conflict_1971_2015)) +
   geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
   scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
-  theme_minimal() + theme(legend.position = "top")
-# round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")])[, c(3, 1:2, 4:5)], margin = 1) * 100, margin = 2), 1)
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1971-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_conflict.pdf")
 ```
 
 ##### LPI
-```{r lpi_data, rows.print = 12, cols.print = 10, cols.min.print = 10, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
-ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  xlim(0, NA) + theme_minimal()
+```{r lpi}
 # round(addmargins(prop.table(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]), margin = 1) * 100, margin = 2), 1)
 # addmargins(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]))
+ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  theme_minimal() + 
+  labs(x = "Average LPI", y = "Sequence (1971-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_lpi.pdf")
 ```
 
 ##### Extra-judicial killings
-```{r killings_data, rows.print = 12, cols.print = 10, cols.min.print = 10, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
+```{r killings}
 ggplot(data = new, mapping = aes(x = v2clkill_1971_2015, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  xlim(0, NA) + theme_minimal()
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  theme_minimal() + 
+  labs(x = "Average extrajudicial killings score", y = "Sequence (1971-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_killings.pdf")
 ```
 
 ##### Societal violence
-```{r societal_data, rows.print = 12, cols.print = 10, cols.min.print = 10, fig.show = "hold", fig.width = 5, fig.height = 5, out.width = "50%", out.height = "50%", warning = FALSE}
+```{r societal}
 ggplot(data = new, mapping = aes(x = v2caviol_1971_2015, y = typology1975)) +
-  stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  xlim(0, NA) + theme_minimal()
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
+  theme_minimal() + 
+  labs(x = "Average societal violence score", y = "Sequence (1971-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_societal.pdf")
 ```
 
-```{r violence_rates, fig.width = 10, fig.height = 10, out.width = "67%", out.height = "67%", warning = FALSE, echo = FALSE, eval = FALSE}
+```{r violence_rates, fig.width = 10, fig.height = 10, echo = FALSE, eval = FALSE}
 temp <- df %>% 
   arrange(country, period) %>% 
   group_by(period) %>% 

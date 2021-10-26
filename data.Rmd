@@ -7,7 +7,10 @@ params:
 
 ```{r setup, include = FALSE}
 source("setup.R")
-knitr::opts_chunk$set(fig.width = 12, fig.height = 10, out.width = "100%", out.height = "100%")
+knitr::opts_chunk$set(message = FALSE, warning = FALSE,
+                      fig.width = 12, fig.height = 10, 
+                      out.width = "100%", out.height = "100%",
+                      rows.print = 12)
 ```
 
 ### {.tabset .tabset-fade .tabset-pills}
@@ -16,7 +19,7 @@ knitr::opts_chunk$set(fig.width = 12, fig.height = 10, out.width = "100%", out.h
 
 All the analyses are based on a large global dataset (and accompanying codebook) which we assembled from commonly used quantitative indicators on health, gender equality and several types of violence. The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Lancet Commission Metrics Working Group, or at this [link](https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing) (access via logging into the shared folder provides more functionality). The dataset is also available in the shared Dropbox folder of the Working Group.) We begin by considering the following measures within the categories of health outcomes, gender inequalities, state-based violent conflict, one-sided violence, and societal violence. The code also sets up vectors of variable names for later use.)  
 
-```{r startup, results = "hide", message = FALSE}
+```{r startup, results = "hide"}
 load("_data/dataset_LSCMWG.RData")
 data <- data %>% filter(year >=1960)
 link <- "https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing"
@@ -86,7 +89,7 @@ GGally::ggcorr(data[, categories$gender], nbreaks = 10, palette = "RdGy",
                label = TRUE, label_size = 5, label_color = "white")
 GGally::ggpairs(data[, categories$gender])
 ```
-```{r within, message = FALSE, warning = FALSE, results = 'hide'}
+```{r within, results = 'hide'}
 lapply(names(categories), function(category) {
   GGally::ggpairs(data[, categories[[category]]], mapping = aes(stroke = 0, alpha = 0.25)) + 
     theme_bw() + 
@@ -99,7 +102,7 @@ lapply(names(categories), function(category) {
 
 Based on theoretical relevance and representativeness (see within-category correlations), we show correlations of certain of these variables across the categories: 
 
-```{r across, message = FALSE, warning = FALSE}
+```{r across}
 variables_to_include <- c("labor_mod_ratio15_ilo", "mys_ratio_hdr", "mys_age_ratio_ihme", "tfr_wpp", 
                           "asfr_adol_wpp", "imr_wpp", "ufmr_wpp", "daly_ihme", "physicians_pc_wdi", 
                           "life_exp_wpp", "pc_rgdpe_pwt", "deaths_all_int_rate", "deaths_all_osv_rate", 
@@ -112,7 +115,7 @@ GGally::ggpairs(data[, variables_to_include], mapping = aes(stroke = 0, alpha = 
 
 We noticed that some of the education ratios (female to male) are surprisingly high, and want to know which country-years account for this. 
 
-```{r unexpected, rows.print = 12}
+```{r unexpected}
 variables$ed <- c("mys_ratio_hdr", "mys_ratio_uis", "mys_age_ratio_ihme", "eys_ratio_hdr", "eys_ratio_uis")
 summary(data[, variables$ed])
 paste(unique(data$country[IsTrue(data$mys_ratio_hdr > 1)]), collapse = "; ")

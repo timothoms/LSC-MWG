@@ -7,6 +7,7 @@ params:
 
 ```{r setup, include = FALSE}
 source("setup.R")
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
 ```{r startup}
@@ -18,7 +19,7 @@ load("_data/LSCMWG_working_data.RData")
 
 #### Classification with two variables on each dimensions for 1990
 
-```{r classification, warning = FALSE}
+```{r classification}
 Classification <- function(health, gender, 
   df = data, 
   year_to_show = 1990, 
@@ -260,7 +261,7 @@ flagged
 ```
 
 <!-- ### Classification trajectories (in 5-year increments based on global distributions in same time period) -->
-```{r class_time, echo = FALSE, eval = FALSE, message = FALSE, fig.width = 14, fig.height = 10, out.width = "100%", out.height = "100%"}
+```{r class_time, echo = FALSE, eval = FALSE, fig.width = 14, fig.height = 10, out.width = "100%", out.height = "100%"}
 df$class_num <- df$health_class * df$gender_class
 ggplot(data = df[df$year %in% c(seq(1965, 2015, 5), 2018), ]) + 
   geom_line(aes(x = year, y = class_num)) + 
@@ -416,7 +417,7 @@ legend("topright", legend = c("global average", "low classification", "H>G class
 #### Trends by 1995 classification groups {.tabset .tabset-fade .tabset-pills}
 
 ##### Health & gender
-```{r categories, message = FALSE, results = 'hide'}
+```{r categories, results = 'hide'}
 summary(as.factor(df$class_vv1990))
 summary(as.factor(df$class_vv1995))
 lapply(c(variables$health_full, variables$gender_full), function(var) {
@@ -430,7 +431,7 @@ lapply(c(variables$health_full, variables$gender_full), function(var) {
 ```
 
 ##### Cumulative death rates
-```{r deaths, message = FALSE, results = 'hide'}
+```{r deaths, results = 'hide'}
 lapply(variables$death_rates, function(var) {
   dat <- df[!is.na(df$class_vv1995) & df$class_vv1995 != "mid", ]
   ggplot(dat, aes(x = year, y = log(!!sym(paste(var, "cumulative1991", sep = "_")) + 1), 
@@ -443,7 +444,7 @@ lapply(variables$death_rates, function(var) {
 ```
 
 ##### Cumulative repression
-```{r violence, message = FALSE, results = 'hide'}
+```{r violence, results = 'hide'}
 lapply(variables$measurement_models, function(var) {
   dat <- df[!is.na(df$class_vv1995) & df$class_vv1995 != "mid", ]
   ggplot(dat, aes(x = year, y = !!sym(paste(var, "cumulative1991", sep = "_")), 
@@ -456,7 +457,7 @@ lapply(variables$measurement_models, function(var) {
 ```
 
 ##### Conflict incidence
-```{r incidence, message = FALSE, warning = FALSE, results = 'hide'}
+```{r incidence, results = 'hide'}
 lapply(variables$conflict_incidence, function(var) {
   dat <- df[df$year > 1988, ]
   tbl <- tapply(dat[, var], list(health = dat$health1995, gender = dat$gender1995), mean, na.rm = TRUE)
@@ -572,7 +573,7 @@ write.csv(new, file = filepath)
 ```
 
 #### Performance Rankings within classification groups {.tabset .tabset-fade .tabset-pills}
-```{r performance_function, message = FALSE, warning = FALSE}
+```{r performance_function}
 Performance <- function(category, year, vars) {
   countries <- unique(df$country[df$year == year & df$class_vv %in% category])
   countries <- countries[!is.na(countries)]
