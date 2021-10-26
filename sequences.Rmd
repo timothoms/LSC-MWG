@@ -240,8 +240,6 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = df[df$class_vv1975 == class & df$period > 1975, ],
             range = range_both)
-  ggsave(device = "pdf", height = 5, width = 5, 
-         filename = paste("_figures/sequences_class1975_", class, ".pdf", sep = ""))
 })
 plotClass(class = "no 1975 classification", 
           dat = df[is.na(df$class_vv1975) & df$period > 1975, ],
@@ -266,8 +264,6 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = new1975[new1975$class_vv1975 == class, ], 
             range = range_both_new)
-  ggsave(device = "pdf", height = 5, width = 5, 
-       filename = paste("_figures/sequences_class1975_origin_", class, ".pdf", sep = ""))
 })
 ```
 
@@ -279,8 +275,6 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = df[df$class_vv1995 == class & df$period > 1995, ],
             range = range_both)
-  ggsave(device = "pdf", height = 5, width = 5, 
-       filename = paste("_figures/sequences_class1995_", class, ".pdf", sep = ""))
 })
 plotClass(class = "no 1995 classification", 
           dat = df[is.na(df$class_vv1995) & df$period > 1995, ],
@@ -309,8 +303,6 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
   plotClass(class = class, 
             dat = new1995[new1995$class_vv1995 == class, ], 
             range = range_both_new)
-  ggsave(device = "pdf", height = 5, width = 5, 
-       filename = paste("_figures/sequences_class1995_origin_", class, ".pdf", sep = ""))
 })
 ```
 
@@ -335,8 +327,6 @@ lapply(sort(unique(df$typology1975)), function(sequ) {
   plotCategory(cat = sequ,
            dat = df[df$typology1975 == sequ & df$period > 1975, ],
            range = range_both)
-  ggsave(device = "pdf", height = 5, width = 5, 
-    filename = paste("_figures/sequences_typology1975_", which(names(lookup) == sequ), ".pdf", sep = ""))
 })
 ```
 
@@ -347,8 +337,6 @@ lapply(sort(unique(df$typology1995)), function(sequ) {
   plotCategory(cat = sequ, 
            dat = df[df$typology1995 == sequ & df$period > 1995, ], 
            range = range_both)
-  ggsave(device = "pdf", height = 5, width = 5, 
-    filename = paste("_figures/sequences_typology1995_", which(names(lookup) == sequ), ".pdf", sep = ""))
 })
 ```
 
