@@ -3,6 +3,7 @@ params:
   set_title: "Panel Regressions"
   cache: false
   optimize: true
+  pdfs: false
   lags: 1
   begin: 1975
   end: 2015
@@ -77,7 +78,7 @@ RunModels <- function(equations,
   estimators_to_show = c("fe", "fegls"),
   labelspace = 18,
   pdfname = NULL,
-  pdfswitch = FALSE
+  pdfswitch = params$pdfs
 ){
   if(is.null(names(equations))) names(equations) <- paste("m", 1:length(equations), sep = "")
   PanelModel <- function(equation, estimator, estimation_function, effect = "individual", ses = "se") {
@@ -187,7 +188,7 @@ IntPlot <- function(fit, eff_var,
   ref_cat = NULL,
   title = "",
   pdfname = NULL,
-  pdfswitch = FALSE
+  pdfswitch = params$pdfs
 ){
   confidence = 0.95
   zscore <- qnorm(1 - ((1 - confidence)/2))
