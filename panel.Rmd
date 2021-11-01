@@ -2057,6 +2057,8 @@ GGally::ggpairs(dfp[, vars_viol], mapping = aes(stroke = 0, alpha = 0.25)) +
 knitr::asis_output("##### DV: Internal Conflict")
 ```
 ```{r conflict}
+
+table(dfp$conflict_internal)
 results <- RunModels(labelspace = 20, equations = c(
   conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
   conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
