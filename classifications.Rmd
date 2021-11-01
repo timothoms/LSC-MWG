@@ -315,103 +315,69 @@ df <- df[df$country != "North Korea", ]
 
 #### Trends by classification groups over time {.tabset .tabset-fade .tabset-pills}
 
-```{r trends}
-### making trend figures for the Dec 9 presentation
-df_new <- df[df$year %in% 1965:2018, 
-             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_age_ratio_ihme", "asfr_adol_wpp")]
-df_new <- df_new %>% group_by(year) %>% mutate(avg_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
-df_new <- df_new %>% group_by(year) %>% mutate(avg_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
-df_new <- df_new %>% group_by(year) %>% mutate(avg_mys_age_ratio_ihme = mean(mys_age_ratio_ihme, na.rm = TRUE))
-df_new <- df_new %>% group_by(year) %>% mutate(avg_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
-df_new <- unique(df_new[, c("year", "avg_life_exp_wpp", "avg_imr_wpp", "avg_mys_age_ratio_ihme", "avg_asfr_adol_wpp")])
-df_low <- df[df$year %in% 1965:2018 & df$class_vv == "low", 
-             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_age_ratio_ihme", "asfr_adol_wpp")]
-df_low <- df_low %>% group_by(year) %>% mutate(low_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
-df_low <- df_low %>% group_by(year) %>% mutate(low_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
-df_low <- df_low %>% group_by(year) %>% mutate(low_mys_age_ratio_ihme = mean(mys_age_ratio_ihme, na.rm = TRUE))
-df_low <- df_low %>% group_by(year) %>% mutate(low_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
-df_low <- unique(df_low[, c("year", "low_life_exp_wpp", "low_imr_wpp", "low_mys_age_ratio_ihme", "low_asfr_adol_wpp")])
-df_upp <- df[df$year %in% 1965:2018 & df$class_vv == "upp", 
-             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_age_ratio_ihme", "asfr_adol_wpp")]
-df_upp <- df_upp %>% group_by(year) %>% mutate(upp_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
-df_upp <- df_upp %>% group_by(year) %>% mutate(upp_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
-df_upp <- df_upp %>% group_by(year) %>% mutate(upp_mys_age_ratio_ihme = mean(mys_age_ratio_ihme, na.rm = TRUE))
-df_upp <- df_upp %>% group_by(year) %>% mutate(upp_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
-df_upp <- unique(df_upp[, c("year", "upp_life_exp_wpp", "upp_imr_wpp", "upp_mys_age_ratio_ihme", "upp_asfr_adol_wpp")])
-df_mid <- df[df$year %in% 1965:2018 & df$class_vv == "mid", 
-             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_age_ratio_ihme", "asfr_adol_wpp")]
-df_mid <- df_mid %>% group_by(year) %>% mutate(mid_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
-df_mid <- df_mid %>% group_by(year) %>% mutate(mid_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
-df_mid <- df_mid %>% group_by(year) %>% mutate(mid_mys_age_ratio_ihme = mean(mys_age_ratio_ihme, na.rm = TRUE))
-df_mid <- df_mid %>% group_by(year) %>% mutate(mid_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
-df_mid <- unique(df_mid[, c("year", "mid_life_exp_wpp", "mid_imr_wpp", "mid_mys_age_ratio_ihme", "mid_asfr_adol_wpp")])
-df_Hlop <- df[df$year %in% 1965:2018 & df$class_vv == "H>G", 
-             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_age_ratio_ihme", "asfr_adol_wpp")]
-df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
-df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
-df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_mys_age_ratio_ihme = mean(mys_age_ratio_ihme, na.rm = TRUE))
-df_Hlop <- df_Hlop %>% group_by(year) %>% mutate(HG_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
-df_Hlop <- unique(df_Hlop[, c("year", "HG_life_exp_wpp", "HG_imr_wpp", "HG_mys_age_ratio_ihme", "HG_asfr_adol_wpp")])
-df_Glop <- df[df$year %in% 1965:2018 & df$class_vv == "G>H", 
-             c("country", "year", "class_vv", "life_exp_wpp", "imr_wpp", "mys_age_ratio_ihme", "asfr_adol_wpp")]
-df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_life_exp_wpp = mean(life_exp_wpp, na.rm = TRUE))
-df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_imr_wpp = -mean(imr_wpp, na.rm = TRUE))
-df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_mys_age_ratio_ihme = mean(mys_age_ratio_ihme, na.rm = TRUE))
-df_Glop <- df_Glop %>% group_by(year) %>% mutate(GH_asfr_adol_wpp = -mean(asfr_adol_wpp, na.rm = TRUE))
-df_Glop <- unique(df_Glop[, c("year", "GH_life_exp_wpp", "GH_imr_wpp", "GH_mys_age_ratio_ihme", "GH_asfr_adol_wpp")])
-df_new <- merge(df_new, df_low, by = "year", all = TRUE)
-df_new <- merge(df_new, df_mid, by = "year", all = TRUE)
-df_new <- merge(df_new, df_Hlop, by = "year", all = TRUE)
-df_new <- merge(df_new, df_Glop, by = "year", all = TRUE)
-df_new <- merge(df_new, df_upp, by = "year", all = TRUE)
-```
-
 ##### Life expectancy
-```{r pdf_life, fig.width = 12, fig.height = 8}
-# pdf(file = paste("_SIGHT_draft_report/trend_life_exp_wpp.pdf", sep = ""), width = 10, height = 5)
-par(mar = c(3, 2, 0, 1) + 0.1)
-dat <- na.omit(df_new[, c("year", "avg_life_exp_wpp", "low_life_exp_wpp", "HG_life_exp_wpp", "GH_life_exp_wpp", "mid_life_exp_wpp", "upp_life_exp_wpp")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
-legend("bottomright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
-# dev.off()
+```{r trend_life, fig.width = 12, fig.height = 8}
+df$class_vv <- factor(df$class_vv, levels = c("low", "G>H", "H>G", "mid", "upp"))
+df %>%
+  filter(year >= 1970 & !is.na(class_vv)) %>%
+  group_by(year) %>%
+  ggplot() + 
+    stat_summary(mapping = aes(x = year, y = life_exp_wpp, group = class_vv, color = class_vv), 
+                 fun = mean, geom = "line") + 
+    stat_summary(mapping = aes(x = year, y = life_exp_wpp), 
+                 fun = mean, geom = "line", color = "gray") + 
+    labs(x = "", y = "", color = "Classifications") + 
+    theme_minimal() + 
+    theme(legend.position = "top")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/trend_life_exp_wpp.pdf")
 ```
 
 ##### IMR
-```{r pdf_imr, fig.width = 12, fig.height = 8}
-# pdf(file = paste("_SIGHT_draft_report/trend_imr_wpp.pdf", sep = ""), width = 10, height = 5)
-par(mar = c(3, 2, 0, 1) + 0.1)
-dat <- na.omit(df_new[, c("year", "avg_imr_wpp", "low_imr_wpp", "HG_imr_wpp", "GH_imr_wpp", "mid_imr_wpp", "upp_imr_wpp")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
-legend("topright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
-# dev.off()
+```{r trend_imr, fig.width = 12, fig.height = 8}
+df %>%
+  filter(year >= 1970 & !is.na(class_vv)) %>%
+  group_by(year) %>%
+  ggplot() + 
+    stat_summary(mapping = aes(x = year, y = -imr_wpp, group = class_vv, color = class_vv), 
+                 fun = mean, geom = "line") + 
+    stat_summary(mapping = aes(x = year, y = -imr_wpp), 
+                 fun = mean, geom = "line", color = "gray") + 
+    labs(x = "", y = "", color = "Classifications") + 
+    theme_minimal() + 
+    theme(legend.position = "top")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/trend_imr_wpp.pdf")
 ```
 
 ##### MYS
-```{r pdf_mys, fig.width = 12, fig.height = 8}
-# pdf(file = paste("_SIGHT_draft_report/trend_mys_age_ratio_ihme.pdf", sep = ""), width = 10, height = 5)
-par(mar = c(3, 2, 0, 1) + 0.1)
-dat <- na.omit(df_new[, c("year", "avg_mys_age_ratio_ihme", "low_mys_age_ratio_ihme", "HG_mys_age_ratio_ihme", "GH_mys_age_ratio_ihme", "mid_mys_age_ratio_ihme", "upp_mys_age_ratio_ihme")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
-legend("bottomright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
-# dev.off()
+```{r trend_mys, fig.width = 12, fig.height = 8}
+df %>%
+  filter(year >= 1970 & !is.na(class_vv)) %>%
+  group_by(year) %>%
+  ggplot() + 
+    stat_summary(mapping = aes(x = year, y = mys_age_ratio_ihme, group = class_vv, color = class_vv), 
+                 fun = mean, geom = "line") + 
+    stat_summary(mapping = aes(x = year, y = mys_age_ratio_ihme), 
+                 fun = mean, geom = "line", color = "gray") + 
+    labs(x = "", y = "", color = "Classifications") + 
+    theme_minimal() + 
+    theme(legend.position = "top")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/trend_mys_age_ratio_ihme.pdf")
 ```
 
 ##### ASFR
-```{r pdf_asfr, fig.width = 12, fig.height = 8}
-# pdf(file = paste("_SIGHT_draft_report/trend_asfr_adol_wpp.pdf", sep = ""), width = 10, height = 5)
-par(mar = c(3, 2, 0, 1) + 0.1)
-dat <- na.omit(df_new[, c("year", "avg_asfr_adol_wpp", "low_asfr_adol_wpp", "HG_asfr_adol_wpp", "GH_asfr_adol_wpp", "mid_asfr_adol_wpp", "upp_asfr_adol_wpp")])
-matplot(x = dat$year, y = dat[, -1], type = "l", xlab = "", ylab = "", 
-        main = "", lwd = 2, lty = "solid", col = c("black", "red","orange", "purple", "green", "blue"))
-legend("topright", legend = c("global average", "low classification", "H>G classification", "G>H classification", "mid classification", "high classification"), 
-       lty = "solid", lwd = 2, col = c("black", "red","orange", "purple", "green", "blue"))
-# dev.off()
+```{r trend_asfr, fig.width = 12, fig.height = 8}
+df %>%
+  filter(year >= 1970 & !is.na(class_vv)) %>%
+  group_by(year) %>%
+  ggplot() + 
+    stat_summary(mapping = aes(x = year, y = -asfr_adol_wpp, group = class_vv, color = class_vv), 
+                 fun = mean, geom = "line") + 
+    stat_summary(mapping = aes(x = year, y = -asfr_adol_wpp), 
+                 fun = mean, geom = "line", color = "gray") + 
+    labs(x = "", y = "", color = "Classifications") + 
+    theme_minimal() + 
+    theme(legend.position = "top")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/trend_asfr_adol_wpp.pdf")
 ```
 
 #### Trends by 1995 classification groups {.tabset .tabset-fade .tabset-pills}
