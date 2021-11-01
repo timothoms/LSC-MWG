@@ -101,7 +101,11 @@ ViolenceCats <- function(dataset = df[!(df$country %in% missing_countries), ], s
 # 1981-1990 < seq starts 1995 (1991-1995) <= 1991-2015
 violence <- list(
   ViolenceCats(start_yr = 1971, end_yr = 2015, yrs_long = 5),
-  ViolenceCats(start_yr = 1991, end_yr = 2015, yrs_long = 5) 
+  ViolenceCats(start_yr = 1971, end_yr = 1995, yrs_long = 5),
+  ViolenceCats(start_yr = 1976, end_yr = 1995, yrs_long = 5),
+  ViolenceCats(start_yr = 1976, end_yr = 2015, yrs_long = 5),
+  ViolenceCats(start_yr = 1991, end_yr = 2015, yrs_long = 5),
+  ViolenceCats(start_yr = 1996, end_yr = 2015, yrs_long = 5)
 )
 violence <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = violence)
 # vars <- names(df)
@@ -192,6 +196,61 @@ new <- merge(seq[, names(seq)[!str_detect(names(seq), "sequence")]], new, by = "
 new <- merge(new, violence, by = "country", all = TRUE)
 df <- merge(df, seq[, names(seq)[!str_detect(names(seq), "sequence")]], by = "country", all = TRUE)
 df <- merge(df, violence, by = "country", all = TRUE)
+```
+
+```{r cross-tabs, include = FALSE, eval = FALSE}
+new$class_vv1975 <- factor(new$class_vv1975, levels = c("low", "G>H", "H>G", "mid", "upp"))
+new$class_vv1995 <- factor(new$class_vv1995, levels = c("low", "G>H", "H>G", "mid", "upp"))
+table(new$class_vv1975, useNA = "ifany")
+table(new$class_vv1995, useNA = "ifany")
+new$conflict_1976_1995 <- factor(new$conflict_1976_1995, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+new$conflict_1976_2015 <- factor(new$conflict_1976_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+new$conflict_1996_2015 <- factor(new$conflict_1996_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+# round(addmargins(prop.table(table(new[, c("conflict_1976_2015", "class_vv1975")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1975), ], 
+       mapping = aes(x = class_vv1975, fill = conflict_1976_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1975_1976.pdf")
+# round(addmargins(prop.table(table(new[, c("conflict_1976_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1975), ], 
+       mapping = aes(x = class_vv1975, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1975_1996.pdf")
+# round(addmargins(prop.table(table(new[, c("conflict_1996_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1995), ], 
+       mapping = aes(x = class_vv1995, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1996.pdf")
+# round(addmargins(prop.table(table(new[new$conflict_1976_1995 == "none", c("conflict_1996_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1995) & new$conflict_1976_1995 == "none", ], 
+       mapping = aes(x = class_vv1995, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1976_prenone.pdf")
+# round(addmargins(prop.table(table(new[new$conflict_1976_1995 != "none", c("conflict_1996_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1995) & new$conflict_1976_1995 != "none", ], 
+       mapping = aes(x = class_vv1995, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1976_presome.pdf")
 ```
 
 #### Countries
@@ -423,6 +482,7 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_e
 ##### Internal conflict
 ```{r conflict}
 new$conflict_1971_2015 <- factor(new$conflict_1971_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+# round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")]), margin = 1), margin = 2), 3) * 100
 ggplot(data = new, 
        mapping = aes(y = typology1975, fill = conflict_1971_2015)) +
   geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +

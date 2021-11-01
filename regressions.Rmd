@@ -224,6 +224,9 @@ summary(df$authority)
 
 ```{r new, include = FALSE, eval = FALSE}
 
+
+
+
 load("_data/sequences.RData", verbose = TRUE)
 df <- merge(new, seq[, c("country", "typology1995")], by = "country")
 vars <- names(df)
@@ -260,4 +263,19 @@ RunModel(deaths_civilians_osv_rate_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995
 RunModel(deaths_all_int_rate_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1996_2015 + deaths_all_int_rate_1995*class_HG_1995 + deaths_all_int_rate_1995*class_GH_1995 + deaths_all_int_rate_1995*class_mid_1995 + deaths_all_int_rate_1995*class_upp_1995)
 RunModel(deaths_all_nsc_rate_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1996_2015 + deaths_all_nsc_rate_1995*class_HG_1995 + deaths_all_nsc_rate_1995*class_GH_1995 + deaths_all_nsc_rate_1995*class_mid_1995 + deaths_all_nsc_rate_1995*class_upp_1995)
 RunModel(conflict_internal_cumulative1996_2015 ~ pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1996_2015 + conflict_internal_cumulative1989_1995*class_HG_1995 + conflict_internal_cumulative1989_1995*class_GH_1995 + conflict_internal_cumulative1989_1995*class_mid_1995 + conflict_internal_cumulative1989_1995*class_upp_1995)
+
+RunModel(conflict_1996_2015 ~ class_vv_1995 + pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + v2x_partip_cumulative1991_1995)
+
+
+
+df$conflict_1996_2015 <- ifelse(df$conflict_internal_cumulative1996_2015 == 0, 0, 1)
+df$conflict_1989_1995 <- ifelse(df$conflict_internal_cumulative1989_1995 == 0, 0, 1)
+df$war_1996_2015 <- ifelse(df$war_internal_cumulative1996_2015 == 0, 0, 1)
+df$war_1989_1995 <- ifelse(df$war_internal_cumulative1989_1995 == 0, 0, 1)
+round(prop.table(table(df$class_vv_1995, df$conflict_1989_1995), margin = 1), 2)
+round(prop.table(table(df$class_vv_1995, df$conflict_1996_2015), margin = 1), 2)
+round(prop.table(table(df$class_vv_1995, df$war_1989_1995), margin = 1), 2)
+round(prop.table(table(df$class_vv_1995, df$war_1996_2015), margin = 1), 2)
+round(prop.table(table(df[, c("class_vv_1995", "conflict_1996_2015", "conflict_1989_1995")]), margin = c(1, 3)), 2)
+round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")]), margin = c(1, 3)), 2)
 ```
