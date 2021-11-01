@@ -241,7 +241,7 @@ ggplot(data = new[!is.na(new$class_vv1995) & new$conflict_1976_1995 == "none", ]
   theme_minimal() + 
   theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
   labs(y = "Number of countries", x = "")
-ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1976_prenone.pdf")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1996_prenone.pdf")
 # round(addmargins(prop.table(table(new[new$conflict_1976_1995 != "none", c("conflict_1996_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
 ggplot(data = new[!is.na(new$class_vv1995) & new$conflict_1976_1995 != "none", ], 
        mapping = aes(x = class_vv1995, fill = conflict_1996_2015)) +
@@ -250,7 +250,7 @@ ggplot(data = new[!is.na(new$class_vv1995) & new$conflict_1976_1995 != "none", ]
   theme_minimal() + 
   theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
   labs(y = "Number of countries", x = "")
-ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1976_presome.pdf")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1996_presome.pdf")
 ```
 
 #### Countries
@@ -438,7 +438,7 @@ ggplot(data = new, mapping = aes(x = health_period, y = typology1975)) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
   geom_vline(xintercept = 0, color = "gray") + 
   # coord_cartesian(xlim = c(0, NA)) + 
-  labs(x = "Health change per period", y = "Sequence (1971-2015)") + 
+  labs(x = "Health change per period", y = "Sequence (1975-2015)") + 
   theme_minimal()
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_health.pdf")
 ```
@@ -450,7 +450,7 @@ ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) +
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
   geom_vline(xintercept = 0, color = "gray") + 
-  labs(x = "Gender change per period", y = "Sequence (1971-2015)") + 
+  labs(x = "Gender change per period", y = "Sequence (1975-2015)") + 
   theme_minimal()
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_gender.pdf")
 ```
@@ -461,7 +461,7 @@ ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) +
   geom_boxplot() + 
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
-  labs(x = "Health & gender change per period", y = "Sequence (1971-2015)") + 
+  labs(x = "Health & gender change per period", y = "Sequence (1975-2015)") + 
   geom_vline(xintercept = 0, color = "gray") + 
   theme_minimal()
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_health_gender.pdf")
@@ -474,7 +474,7 @@ ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) +
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
   geom_vline(xintercept = 0, color = "gray") + 
-  labs(x = "Path efficiency", y = "Sequence (1971-2015)") + 
+  labs(x = "Path efficiency", y = "Sequence (1975-2015)") + 
   theme_minimal()
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_efficiency.pdf")
 ```
@@ -490,7 +490,7 @@ ggplot(data = new,
   theme_minimal() + 
   theme(legend.position = "top",
         legend.key.size = unit(0.3, 'cm')) + 
-  labs(x = "Number of countries", y = "Sequence (1971-2015)")
+  labs(x = "Number of countries", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_conflict.pdf")
 ```
 
@@ -503,7 +503,7 @@ ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology19
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
   theme_minimal() + 
-  labs(x = "Average LPI", y = "Sequence (1971-2015)")
+  labs(x = "Average LPI", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_lpi.pdf")
 ```
 
@@ -514,7 +514,7 @@ ggplot(data = new, mapping = aes(x = v2clkill_1971_2015, y = typology1975)) +
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
   theme_minimal() + 
-  labs(x = "Average extrajudicial killings score", y = "Sequence (1971-2015)")
+  labs(x = "Average extrajudicial killings score", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_killings.pdf")
 ```
 
@@ -525,7 +525,7 @@ ggplot(data = new, mapping = aes(x = v2caviol_1971_2015, y = typology1975)) +
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
   theme_minimal() + 
-  labs(x = "Average societal violence score", y = "Sequence (1971-2015)")
+  labs(x = "Average societal violence score", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_societal.pdf")
 ```
 
