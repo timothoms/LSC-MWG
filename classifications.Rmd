@@ -22,7 +22,7 @@ load("_data/LSCMWG_working_data.RData")
 ```{r classification}
 Classification <- function(health, gender, 
   df = data, 
-  year_to_show = 1990, 
+  year_to_show = 1995, 
   min_to_include = 2 # this is not implemented well but works for the current setup
 ){
   qs <- paste("q", 1:5, sep = "") 
@@ -90,7 +90,9 @@ Classification <- function(health, gender,
   new$gender_class[new$gender >= quantile(new$gender, probs = seq(0, 1, 0.2), na.rm = TRUE)[4]] <- 4
   new$gender_class[new$gender >= quantile(new$gender, probs = seq(0, 1, 0.2), na.rm = TRUE)[5]] <- 5
   new$class <- paste("H", new$health_class, "G", new$gender_class, sep = "")
-  tab_st <- new %>% filter(year == 1990)
+  tab_st <- new %>% filter(year == year_to_show)
+  n_st <- table(health = tab_st$health_class, gender = tab_st$gender_class)
+  dimnames(n_st) <- lapply(dimnames(n_st), function(name) { paste("Q", name, sep = "") })
   tab_st <- tapply(tab_st$country, list(health = tab_st$health_class, gender = tab_st$gender_class), paste, collapse = "; ")
   tab_st[is.na(tab_st)] <- ""
   dimnames(tab_st) <- lapply(dimnames(tab_st), function(name) { paste("Q", name, sep = "") })
@@ -174,18 +176,19 @@ Classification <- function(health, gender,
   classifications <- lapply(classifications, paste, collapse = "; ")
   # print(matrix(names(classifications), 5, 5, dimnames = list(health = qs, gender = qs)))
   fuzzy_table <- matrix(classifications, 5, 5, dimnames = list(health = qs, gender = qs))
-  # cat("Number of countries classified: ", number_of_countries, "\n")
-  # if(number_of_countries != length(countries)) {
-  #   cat("\nNot classifying the same number of countries as the fuzzy way!")
-  # }
+  if(number_of_countries != length(countries)) {
+    cat("\nNot classifying the same number of countries as the fuzzy way!")
+  }
   df <- df[, !names(df) %in% vars]
-  return(list(df = df, n = number_of_countries, table = table_to_return, fuzzy = fuzzy_table, standardized = new, table_std = tab_st))  
+  return(list(df = df, n = test, table = table_to_return, fuzzy = fuzzy_table, standardized = new, table_std = tab_st, n_st = n_st))  
 }
-result <- Classification(health = variables$health, gender = variables$gender)
+result <- Classification(health = variables$health, gender = variables$gender, year_to_show = 1995)
 kableExtra::kable(result$table, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
   kableExtra::add_header_above(c(" " = 1, "Gender" = 5)) %>% 
   kableExtra::group_rows("Health", 1, 5)
+# sum(result$n_st)
+# xtable::xtable(result$n_st)
 ```
 
 #### Fuzzy version of classification 
@@ -198,7 +201,7 @@ kableExtra::kable(result$fuzzy, format = "html") %>%
 
 #### New version of classification based on standardized data
 ```{r classification_new}
-kableExtra::kable(result$table_std, format = "html") %>% 
+kableExtra::kable(result$n_std, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
   kableExtra::add_header_above(c(" " = 1, "Gender" = 5)) %>% 
   kableExtra::group_rows("Health", 1, 5)
