@@ -198,7 +198,7 @@ df <- merge(df, seq[, names(seq)[!str_detect(names(seq), "sequence")]], by = "co
 df <- merge(df, violence, by = "country", all = TRUE)
 ```
 
-```{r cross-tabs, include = FALSE, eval = FALSE}
+```{r cross-tabs, include = FALSE, fig.show = "hide"}
 new$class_vv1975 <- factor(new$class_vv1975, levels = c("low", "G>H", "H>G", "mid", "upp"))
 new$class_vv1995 <- factor(new$class_vv1995, levels = c("low", "G>H", "H>G", "mid", "upp"))
 table(new$class_vv1975, useNA = "ifany")
@@ -296,18 +296,21 @@ plotClass <- function(class, dat, range) {
     ggtitle(paste(class, " (", lookup[class], ")", sep = ""))
 }
 lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
-  plotClass(class = class, 
+  to_show <- plotClass(class = class, 
             dat = df[df$class_vv1975 == class & df$period > 1975, ],
             range = range_both)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1975_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
 })
 plotClass(class = "no 1975 classification", 
           dat = df[is.na(df$class_vv1975) & df$period > 1975, ],
           range = range_both)
+ggsave(device = "pdf", filename = "_figures/sequences_class1975_NA.pdf", width = 5, height = 5)
 ```
 
 ##### 1975 (from origin)
 ```{r class_1975_origin, results = 'hide', out.width = "33%", out.height = "33%"}
-new1975 <- df[df$period > 1975, ] %>%
+new1975 <- df[df$period > 1975 & !is.na(df$lag_gender) & !is.na(df$lag_health), ] %>% 
   arrange(country, period) %>% 
   group_by(country) %>% 
   mutate(first = min(period),
@@ -320,10 +323,16 @@ new1975 <- df[df$period > 1975, ] %>%
 # new1975 %>% select(country, period, first, health, lag_health, health_first, gender, lag_gender, gender_first) %>% print(n = 20) 
 range_both_new <- range(c(range(new1975$gender, na.rm = TRUE), range(new1975$health, na.rm = TRUE)))
 lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
-  plotClass(class = class, 
+  to_show <- plotClass(class = class, 
             dat = new1975[new1975$class_vv1975 == class, ], 
             range = range_both_new)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1975_origin_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
 })
+plotClass(class = "no 1975 classification", 
+          dat = new1975[is.na(new1975$class_vv1975), ],
+          range = range_both)
+ggsave(device = "pdf", filename = "_figures/sequences_class1975_origin_NA.pdf", width = 5, height = 5)
 ```
 
 ##### 1995 
@@ -331,18 +340,21 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
 lookup <- table(df$class_vv1995[df$period == 2015])
 lookup["no 1995 classification"] <- sum(is.na(df$class_vv1995[df$period == 2015]))
 lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
-  plotClass(class = class, 
+  to_show <- plotClass(class = class, 
             dat = df[df$class_vv1995 == class & df$period > 1995, ],
             range = range_both)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1995_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
 })
 plotClass(class = "no 1995 classification", 
           dat = df[is.na(df$class_vv1995) & df$period > 1995, ],
           range = range_both)
+ggsave(device = "pdf", filename = "_figures/sequences_class1995_NA.pdf", width = 5, height = 5)
 ```
 
 ##### 1995 (from origin)
 ```{r class_1995_origin, results = 'hide', out.width = "33%", out.height = "33%"}
-new1995 <- df[df$period > 1995, ] %>%
+new1995 <- df[df$period > 1995 & !is.na(df$lag_gender) & !is.na(df$lag_health), ] %>%
   arrange(country, period) %>% 
   group_by(country) %>% 
   mutate(first = min(period))
@@ -359,10 +371,17 @@ range_gender_new <- range(new1995$gender, na.rm = TRUE)
 range_health_new <- range(new1995$health, na.rm = TRUE)
 range_both_new <- range(c(range_gender_new, range_health_new))
 lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
-  plotClass(class = class, 
+  to_show <- plotClass(class = class, 
             dat = new1995[new1995$class_vv1995 == class, ], 
             range = range_both_new)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1995_origin_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
 })
+plotClass(class = "no 1995 classification", 
+          dat = new1995[is.na(new1995$class_vv1995), ],
+          range = range_both)
+ggsave(device = "pdf", filename = "_figures/sequences_class1995_origin_NA.pdf", width = 5, height = 5)
+
 ```
 
 #### Typology {.tabset .tabset-fade .tabset-pills}
@@ -383,9 +402,11 @@ plotCategory <- function(cat, dat, range) {
 }
 lookup <- table(seq$typology1975)
 lapply(sort(unique(df$typology1975)), function(sequ) {
-  plotCategory(cat = sequ,
-           dat = df[df$typology1975 == sequ & df$period > 1975, ],
-           range = range_both)
+  to_show <- plotCategory(cat = sequ,
+    dat = df[df$typology1975 == sequ & df$period > 1975, ],
+    range = range_both)
+  ggsave(plot = to_show, filename = paste("_figures/sequences_typology1975_", which(names(lookup) == sequ), ".pdf", sep = ""), width = 5, height = 5)
+  to_show
 })
 ```
 
@@ -393,9 +414,11 @@ lapply(sort(unique(df$typology1975)), function(sequ) {
 ```{r typology_1995, results = 'hide', out.width = "33%", out.height = "33%"}
 lookup <- table(seq$typology1995)
 lapply(sort(unique(df$typology1995)), function(sequ) {
-  plotCategory(cat = sequ, 
+  to_show <- plotCategory(cat = sequ, 
            dat = df[df$typology1995 == sequ & df$period > 1995, ], 
            range = range_both)
+  ggsave(plot = to_show, filename = paste("_figures/sequences_typology1995_", which(names(lookup) == sequ), ".pdf", sep = ""), width = 5, height = 5)
+  to_show
 })
 ```
 
