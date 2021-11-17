@@ -176,11 +176,11 @@ Classification <- function(health, gender,
   classifications <- lapply(classifications, paste, collapse = "; ")
   # print(matrix(names(classifications), 5, 5, dimnames = list(health = qs, gender = qs)))
   fuzzy_table <- matrix(classifications, 5, 5, dimnames = list(health = qs, gender = qs))
-  if(number_of_countries != length(countries)) {
-    cat("\nNot classifying the same number of countries as the fuzzy way!")
-  }
+  # if(number_of_countries != length(countries)) {
+  #   cat("\nNot classifying the same number of countries as the fuzzy way!")
+  # }
   df <- df[, !names(df) %in% vars]
-  return(list(df = df, n = test, table = table_to_return, fuzzy = fuzzy_table, standardized = new, table_std = tab_st, n_st = n_st))  
+  return(list(df = df, n = test, table = table_to_return, fuzzy = fuzzy_table, standardized = new, table_st = tab_st, n_st = n_st))  
 }
 result <- Classification(health = variables$health, gender = variables$gender, year_to_show = 1995)
 kableExtra::kable(result$table, format = "html") %>% 
@@ -201,7 +201,7 @@ kableExtra::kable(result$fuzzy, format = "html") %>%
 
 #### New version of classification based on standardized data
 ```{r classification_new}
-kableExtra::kable(result$n_std, format = "html") %>% 
+kableExtra::kable(result$table_st, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
   kableExtra::add_header_above(c(" " = 1, "Gender" = 5)) %>% 
   kableExtra::group_rows("Health", 1, 5)
