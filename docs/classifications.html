@@ -400,7 +400,7 @@ $(document).ready(function () {
 <h4>Classification with two variables on each dimensions for 1990</h4>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Classification <span class="ot">&lt;-</span> <span class="cf">function</span>(health, gender, </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">df =</span> data, </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_to_show =</span> <span class="dv">1990</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">year_to_show =</span> <span class="dv">1995</span>, </span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">min_to_include =</span> <span class="dv">2</span> <span class="co"># this is not implemented well but works for the current setup</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>){</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  qs <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;q&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>) </span>
@@ -468,102 +468,103 @@ $(document).ready(function () {
 <span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>  new<span class="sc">$</span>gender_class[new<span class="sc">$</span>gender <span class="sc">&gt;=</span> <span class="fu">quantile</span>(new<span class="sc">$</span>gender, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.2</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)[<span class="dv">4</span>]] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
 <span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>  new<span class="sc">$</span>gender_class[new<span class="sc">$</span>gender <span class="sc">&gt;=</span> <span class="fu">quantile</span>(new<span class="sc">$</span>gender, <span class="at">probs =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.2</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)[<span class="dv">5</span>]] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
 <span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>  new<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;H&quot;</span>, new<span class="sc">$</span>health_class, <span class="st">&quot;G&quot;</span>, new<span class="sc">$</span>gender_class, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>  tab_st <span class="ot">&lt;-</span> new <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">1990</span>)</span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>  tab_st <span class="ot">&lt;-</span> <span class="fu">tapply</span>(tab_st<span class="sc">$</span>country, <span class="fu">list</span>(<span class="at">health =</span> tab_st<span class="sc">$</span>health_class, <span class="at">gender =</span> tab_st<span class="sc">$</span>gender_class), paste, <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>  tab_st[<span class="fu">is.na</span>(tab_st)] <span class="ot">&lt;-</span> <span class="st">&quot;&quot;</span></span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dimnames</span>(tab_st) <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">dimnames</span>(tab_st), <span class="cf">function</span>(name) { <span class="fu">paste</span>(<span class="st">&quot;Q&quot;</span>, name, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>) })</span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>  <span class="do">### back to original version</span></span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df[, <span class="sc">!</span><span class="fu">names</span>(df) <span class="sc">%in%</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;q20&quot;</span>, <span class="st">&quot;q40&quot;</span>, <span class="st">&quot;q60&quot;</span>, <span class="st">&quot;q80&quot;</span>, <span class="st">&quot;quintile&quot;</span>, health, gender), <span class="cf">function</span>(x) <span class="fu">names</span>(df)[<span class="fu">str_detect</span>(<span class="fu">names</span>(df), x)]))]</span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>  health_true <span class="ot">&lt;-</span> df[, health_vars] <span class="sc">==</span> <span class="fu">apply</span>(df[, health_vars], <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> max)</span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>  gender_true <span class="ot">&lt;-</span> df[, gender_vars] <span class="sc">==</span> <span class="fu">apply</span>(df[, gender_vars], <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> max)</span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>  health_help <span class="ot">&lt;-</span> health_true <span class="sc">*</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">nrow =</span> <span class="fu">nrow</span>(health_true), <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>  gender_help <span class="ot">&lt;-</span> gender_true <span class="sc">*</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">nrow =</span> <span class="fu">nrow</span>(gender_true), <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>  help_floor <span class="ot">&lt;-</span> <span class="cf">function</span>(set) { <span class="fu">return</span>(<span class="fu">floor</span>(<span class="fu">mean</span>(set[set <span class="sc">!=</span> <span class="dv">0</span>]))) }</span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>  help_ceiling <span class="ot">&lt;-</span> <span class="cf">function</span>(set) { <span class="fu">return</span>(<span class="fu">ceiling</span>(<span class="fu">mean</span>(set[set <span class="sc">!=</span> <span class="dv">0</span>]))) }</span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(health_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_floor)</span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(gender_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_floor)</span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_class_alt <span class="ot">&lt;-</span> <span class="fu">apply</span>(health_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_ceiling)</span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_class_alt <span class="ot">&lt;-</span> <span class="fu">apply</span>(gender_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_ceiling)</span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_flag <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>health_class <span class="sc">!=</span> df<span class="sc">$</span>health_class_alt, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_flag <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>gender_class <span class="sc">!=</span> df<span class="sc">$</span>gender_class_alt, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>  health_index <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;health_q&quot;</span>, df<span class="sc">$</span>health_class, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>  gender_index <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;gender_q&quot;</span>, df<span class="sc">$</span>gender_class, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_n <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(health_index), <span class="cf">function</span>(index) { </span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.integer</span>(df[index, health_index[index]]) </span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>  }))</span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_n <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(gender_index), <span class="cf">function</span>(index) { </span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.integer</span>(df[index, gender_index[index]]) </span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>  }))</span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>combi <span class="ot">&lt;-</span> df<span class="sc">$</span>health_n <span class="sc">*</span> df<span class="sc">$</span>gender_n</span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;H&quot;</span>, df<span class="sc">$</span>health_class, <span class="st">&quot;G&quot;</span>, df<span class="sc">$</span>gender_class, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>class_alt <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;H&quot;</span>, df<span class="sc">$</span>health_class_alt, <span class="st">&quot;G&quot;</span>, df<span class="sc">$</span>gender_class_alt, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>  test <span class="ot">&lt;-</span> <span class="fu">table</span>(df[df<span class="sc">$</span>year <span class="sc">==</span> year_to_show <span class="sc">&amp;</span> df<span class="sc">$</span>valid <span class="sc">&gt;=</span> min_to_include, <span class="fu">c</span>(<span class="st">&quot;health_class&quot;</span>, <span class="st">&quot;gender_class&quot;</span>)])</span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print(test)</span></span>
-<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>  number_of_countries <span class="ot">&lt;-</span> <span class="fu">sum</span>(test)</span>
-<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>support <span class="ot">&lt;-</span> <span class="fu">paste</span>(df<span class="sc">$</span>country, <span class="st">&quot; (&quot;</span>, df<span class="sc">$</span>combi, <span class="st">&quot;/&quot;</span>, df<span class="sc">$</span>valid, <span class="st">&quot;)&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> year_to_show, ]</span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>  table_to_return <span class="ot">&lt;-</span> <span class="fu">tapply</span>(dat<span class="sc">$</span>support, </span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>                            <span class="at">INDEX =</span> <span class="fu">list</span>(<span class="at">health =</span> dat<span class="sc">$</span>health_class, <span class="at">gender =</span> dat<span class="sc">$</span>gender_class), </span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>                            paste, <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>  table_to_return[<span class="fu">is.na</span>(table_to_return)] <span class="ot">&lt;-</span> <span class="st">&quot;&quot;</span></span>
-<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dimnames</span>(table_to_return) <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">dimnames</span>(table_to_return), <span class="cf">function</span>(name) { <span class="fu">paste</span>(<span class="st">&quot;Q&quot;</span>, name, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>) })</span>
-<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>  <span class="do">## from here, this is the old way, to create the fuzzy table, not needed anymore but useful for comparison</span></span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
-<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
-<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
-<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
-<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
-<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
-<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
-<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
-<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
-<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
-<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
-<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
-<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
-<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
-<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
-<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
-<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
-<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
-<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
-<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
-<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>  vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;H1G1&quot;</span>, <span class="st">&quot;H2G1&quot;</span>, <span class="st">&quot;H3G1&quot;</span>, <span class="st">&quot;H4G1&quot;</span>, <span class="st">&quot;H5G1&quot;</span>, </span>
-<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G2&quot;</span>, <span class="st">&quot;H2G2&quot;</span>, <span class="st">&quot;H3G2&quot;</span>, <span class="st">&quot;H4G2&quot;</span>, <span class="st">&quot;H5G2&quot;</span>, </span>
-<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G3&quot;</span>, <span class="st">&quot;H2G3&quot;</span>, <span class="st">&quot;H3G3&quot;</span>, <span class="st">&quot;H4G3&quot;</span>, <span class="st">&quot;H5G3&quot;</span>, </span>
-<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G4&quot;</span>, <span class="st">&quot;H2G4&quot;</span>, <span class="st">&quot;H3G4&quot;</span>, <span class="st">&quot;H4G4&quot;</span>, <span class="st">&quot;H5G4&quot;</span>, </span>
-<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G5&quot;</span>, <span class="st">&quot;H2G5&quot;</span>, <span class="st">&quot;H3G5&quot;</span>, <span class="st">&quot;H4G5&quot;</span>, <span class="st">&quot;H5G5&quot;</span>)</span>
-<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars</span>
-<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(df[df<span class="sc">$</span>year <span class="sc">==</span> year_to_show, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;valid&quot;</span>, vars)])</span>
-<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>  classifications <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">mclapply</span>(vars, <span class="cf">function</span>(var_name) {</span>
-<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>    new <span class="ot">&lt;-</span> dat[dat[, var_name] <span class="sc">&gt;=</span> min_to_include, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, var_name, <span class="st">&quot;valid&quot;</span>)]</span>
-<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>    countries <span class="ot">&lt;-</span> new<span class="sc">$</span>country</span>
-<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>    new <span class="ot">&lt;-</span> <span class="fu">paste</span>(new[, <span class="st">&quot;country&quot;</span>], <span class="st">&quot; (&quot;</span>, new[, var_name], <span class="st">&quot;/&quot;</span>, new[, <span class="st">&quot;valid&quot;</span>], <span class="st">&quot;)&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>    new <span class="ot">&lt;-</span> new[new <span class="sc">!=</span> <span class="st">&quot; (/)&quot;</span>]    </span>
-<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">class =</span> new, <span class="at">ctry =</span> countries))</span>
-<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>  countries <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(classifications, <span class="cf">function</span>(x) { x<span class="sc">$</span>ctry }))))</span>
-<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>  classifications <span class="ot">&lt;-</span> <span class="fu">lapply</span>(classifications, <span class="cf">function</span>(class) { class<span class="sc">$</span>class })</span>
-<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>  classifications <span class="ot">&lt;-</span> <span class="fu">lapply</span>(classifications, paste, <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span>
-<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print(matrix(names(classifications), 5, 5, dimnames = list(health = qs, gender = qs)))</span></span>
-<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>  fuzzy_table <span class="ot">&lt;-</span> <span class="fu">matrix</span>(classifications, <span class="dv">5</span>, <span class="dv">5</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="at">health =</span> qs, <span class="at">gender =</span> qs))</span>
-<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>  <span class="co"># cat(&quot;Number of countries classified: &quot;, number_of_countries, &quot;\n&quot;)</span></span>
-<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if(number_of_countries != length(countries)) {</span></span>
-<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   cat(&quot;\nNot classifying the same number of countries as the fuzzy way!&quot;)</span></span>
-<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>  <span class="co"># }</span></span>
-<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df[, <span class="sc">!</span><span class="fu">names</span>(df) <span class="sc">%in%</span> vars]</span>
-<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">df =</span> df, <span class="at">n =</span> number_of_countries, <span class="at">table =</span> table_to_return, <span class="at">fuzzy =</span> fuzzy_table, <span class="at">standardized =</span> new, <span class="at">table_std =</span> tab_st))  </span>
-<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">Classification</span>(<span class="at">health =</span> variables<span class="sc">$</span>health, <span class="at">gender =</span> variables<span class="sc">$</span>gender)</span>
-<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>kableExtra<span class="sc">::</span><span class="fu">kable</span>(result<span class="sc">$</span>table, <span class="at">format =</span> <span class="st">&quot;html&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="st">&quot;striped&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">&quot; &quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;Gender&quot;</span> <span class="ot">=</span> <span class="dv">5</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">group_rows</span>(<span class="st">&quot;Health&quot;</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>  tab_st <span class="ot">&lt;-</span> new <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">==</span> year_to_show)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>  n_st <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">health =</span> tab_st<span class="sc">$</span>health_class, <span class="at">gender =</span> tab_st<span class="sc">$</span>gender_class)</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dimnames</span>(n_st) <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">dimnames</span>(n_st), <span class="cf">function</span>(name) { <span class="fu">paste</span>(<span class="st">&quot;Q&quot;</span>, name, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>) })</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>  tab_st <span class="ot">&lt;-</span> <span class="fu">tapply</span>(tab_st<span class="sc">$</span>country, <span class="fu">list</span>(<span class="at">health =</span> tab_st<span class="sc">$</span>health_class, <span class="at">gender =</span> tab_st<span class="sc">$</span>gender_class), paste, <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>  tab_st[<span class="fu">is.na</span>(tab_st)] <span class="ot">&lt;-</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dimnames</span>(tab_st) <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">dimnames</span>(tab_st), <span class="cf">function</span>(name) { <span class="fu">paste</span>(<span class="st">&quot;Q&quot;</span>, name, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>) })</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>  <span class="do">### back to original version</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df[, <span class="sc">!</span><span class="fu">names</span>(df) <span class="sc">%in%</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;q20&quot;</span>, <span class="st">&quot;q40&quot;</span>, <span class="st">&quot;q60&quot;</span>, <span class="st">&quot;q80&quot;</span>, <span class="st">&quot;quintile&quot;</span>, health, gender), <span class="cf">function</span>(x) <span class="fu">names</span>(df)[<span class="fu">str_detect</span>(<span class="fu">names</span>(df), x)]))]</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>  health_true <span class="ot">&lt;-</span> df[, health_vars] <span class="sc">==</span> <span class="fu">apply</span>(df[, health_vars], <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> max)</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>  gender_true <span class="ot">&lt;-</span> df[, gender_vars] <span class="sc">==</span> <span class="fu">apply</span>(df[, gender_vars], <span class="at">MARGIN =</span> <span class="dv">1</span>, <span class="at">FUN =</span> max)</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>  health_help <span class="ot">&lt;-</span> health_true <span class="sc">*</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">nrow =</span> <span class="fu">nrow</span>(health_true), <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>  gender_help <span class="ot">&lt;-</span> gender_true <span class="sc">*</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">nrow =</span> <span class="fu">nrow</span>(gender_true), <span class="at">ncol =</span> <span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>  help_floor <span class="ot">&lt;-</span> <span class="cf">function</span>(set) { <span class="fu">return</span>(<span class="fu">floor</span>(<span class="fu">mean</span>(set[set <span class="sc">!=</span> <span class="dv">0</span>]))) }</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>  help_ceiling <span class="ot">&lt;-</span> <span class="cf">function</span>(set) { <span class="fu">return</span>(<span class="fu">ceiling</span>(<span class="fu">mean</span>(set[set <span class="sc">!=</span> <span class="dv">0</span>]))) }</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(health_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_floor)</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_class <span class="ot">&lt;-</span> <span class="fu">apply</span>(gender_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_floor)</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_class_alt <span class="ot">&lt;-</span> <span class="fu">apply</span>(health_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_ceiling)</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_class_alt <span class="ot">&lt;-</span> <span class="fu">apply</span>(gender_help, <span class="at">MARGIN =</span> <span class="dv">1</span>, help_ceiling)</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_flag <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>health_class <span class="sc">!=</span> df<span class="sc">$</span>health_class_alt, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_flag <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>gender_class <span class="sc">!=</span> df<span class="sc">$</span>gender_class_alt, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>  health_index <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;health_q&quot;</span>, df<span class="sc">$</span>health_class, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>  gender_index <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;gender_q&quot;</span>, df<span class="sc">$</span>gender_class, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>health_n <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(health_index), <span class="cf">function</span>(index) { </span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.integer</span>(df[index, health_index[index]]) </span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>gender_n <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(gender_index), <span class="cf">function</span>(index) { </span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.integer</span>(df[index, gender_index[index]]) </span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>combi <span class="ot">&lt;-</span> df<span class="sc">$</span>health_n <span class="sc">*</span> df<span class="sc">$</span>gender_n</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;H&quot;</span>, df<span class="sc">$</span>health_class, <span class="st">&quot;G&quot;</span>, df<span class="sc">$</span>gender_class, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>class_alt <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;H&quot;</span>, df<span class="sc">$</span>health_class_alt, <span class="st">&quot;G&quot;</span>, df<span class="sc">$</span>gender_class_alt, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>  test <span class="ot">&lt;-</span> <span class="fu">table</span>(df[df<span class="sc">$</span>year <span class="sc">==</span> year_to_show <span class="sc">&amp;</span> df<span class="sc">$</span>valid <span class="sc">&gt;=</span> min_to_include, <span class="fu">c</span>(<span class="st">&quot;health_class&quot;</span>, <span class="st">&quot;gender_class&quot;</span>)])</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print(test)</span></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>  number_of_countries <span class="ot">&lt;-</span> <span class="fu">sum</span>(test)</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>support <span class="ot">&lt;-</span> <span class="fu">paste</span>(df<span class="sc">$</span>country, <span class="st">&quot; (&quot;</span>, df<span class="sc">$</span>combi, <span class="st">&quot;/&quot;</span>, df<span class="sc">$</span>valid, <span class="st">&quot;)&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> year_to_show, ]</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>  table_to_return <span class="ot">&lt;-</span> <span class="fu">tapply</span>(dat<span class="sc">$</span>support, </span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>                            <span class="at">INDEX =</span> <span class="fu">list</span>(<span class="at">health =</span> dat<span class="sc">$</span>health_class, <span class="at">gender =</span> dat<span class="sc">$</span>gender_class), </span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>                            paste, <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>  table_to_return[<span class="fu">is.na</span>(table_to_return)] <span class="ot">&lt;-</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dimnames</span>(table_to_return) <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">dimnames</span>(table_to_return), <span class="cf">function</span>(name) { <span class="fu">paste</span>(<span class="st">&quot;Q&quot;</span>, name, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>) })</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>  <span class="do">## from here, this is the old way, to create the fuzzy table, not needed anymore but useful for comparison</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G1 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q1</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G2 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q2</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G3 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q3</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G4 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q4</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H1G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q1 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H2G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q2 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H3G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q3 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H4G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q4 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>H5G5 <span class="ot">&lt;-</span> df<span class="sc">$</span>health_q5 <span class="sc">*</span> df<span class="sc">$</span>gender_q5</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>  vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;H1G1&quot;</span>, <span class="st">&quot;H2G1&quot;</span>, <span class="st">&quot;H3G1&quot;</span>, <span class="st">&quot;H4G1&quot;</span>, <span class="st">&quot;H5G1&quot;</span>, </span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G2&quot;</span>, <span class="st">&quot;H2G2&quot;</span>, <span class="st">&quot;H3G2&quot;</span>, <span class="st">&quot;H4G2&quot;</span>, <span class="st">&quot;H5G2&quot;</span>, </span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G3&quot;</span>, <span class="st">&quot;H2G3&quot;</span>, <span class="st">&quot;H3G3&quot;</span>, <span class="st">&quot;H4G3&quot;</span>, <span class="st">&quot;H5G3&quot;</span>, </span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G4&quot;</span>, <span class="st">&quot;H2G4&quot;</span>, <span class="st">&quot;H3G4&quot;</span>, <span class="st">&quot;H4G4&quot;</span>, <span class="st">&quot;H5G4&quot;</span>, </span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;H1G5&quot;</span>, <span class="st">&quot;H2G5&quot;</span>, <span class="st">&quot;H3G5&quot;</span>, <span class="st">&quot;H4G5&quot;</span>, <span class="st">&quot;H5G5&quot;</span>)</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(df[df<span class="sc">$</span>year <span class="sc">==</span> year_to_show, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;valid&quot;</span>, vars)])</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>  classifications <span class="ot">&lt;-</span> parallel<span class="sc">::</span><span class="fu">mclapply</span>(vars, <span class="cf">function</span>(var_name) {</span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>    new <span class="ot">&lt;-</span> dat[dat[, var_name] <span class="sc">&gt;=</span> min_to_include, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, var_name, <span class="st">&quot;valid&quot;</span>)]</span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>    countries <span class="ot">&lt;-</span> new<span class="sc">$</span>country</span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>    new <span class="ot">&lt;-</span> <span class="fu">paste</span>(new[, <span class="st">&quot;country&quot;</span>], <span class="st">&quot; (&quot;</span>, new[, var_name], <span class="st">&quot;/&quot;</span>, new[, <span class="st">&quot;valid&quot;</span>], <span class="st">&quot;)&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>    new <span class="ot">&lt;-</span> new[new <span class="sc">!=</span> <span class="st">&quot; (/)&quot;</span>]    </span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">class =</span> new, <span class="at">ctry =</span> countries))</span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>  countries <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">lapply</span>(classifications, <span class="cf">function</span>(x) { x<span class="sc">$</span>ctry }))))</span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>  classifications <span class="ot">&lt;-</span> <span class="fu">lapply</span>(classifications, <span class="cf">function</span>(class) { class<span class="sc">$</span>class })</span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>  classifications <span class="ot">&lt;-</span> <span class="fu">lapply</span>(classifications, paste, <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print(matrix(names(classifications), 5, 5, dimnames = list(health = qs, gender = qs)))</span></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>  fuzzy_table <span class="ot">&lt;-</span> <span class="fu">matrix</span>(classifications, <span class="dv">5</span>, <span class="dv">5</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="at">health =</span> qs, <span class="at">gender =</span> qs))</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if(number_of_countries != length(countries)) {</span></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   cat(&quot;\nNot classifying the same number of countries as the fuzzy way!&quot;)</span></span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>  <span class="co"># }</span></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df[, <span class="sc">!</span><span class="fu">names</span>(df) <span class="sc">%in%</span> vars]</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="at">df =</span> df, <span class="at">n =</span> test, <span class="at">table =</span> table_to_return, <span class="at">fuzzy =</span> fuzzy_table, <span class="at">standardized =</span> new, <span class="at">table_st =</span> tab_st, <span class="at">n_st =</span> n_st))  </span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">Classification</span>(<span class="at">health =</span> variables<span class="sc">$</span>health, <span class="at">gender =</span> variables<span class="sc">$</span>gender, <span class="at">year_to_show =</span> <span class="dv">1995</span>)</span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>kableExtra<span class="sc">::</span><span class="fu">kable</span>(result<span class="sc">$</span>table, <span class="at">format =</span> <span class="st">&quot;html&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="st">&quot;striped&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">&quot; &quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;Gender&quot;</span> <span class="ot">=</span> <span class="dv">5</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">group_rows</span>(<span class="st">&quot;Health&quot;</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div>
 <table class="table table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -606,12 +607,13 @@ Q5
 Q1
 </td>
 <td style="text-align:left;">
-Afghanistan (4/4); Angola (4/4); Bangladesh (2/4); Benin (2/4); Bhutan (1/4); Burkina Faso (4/4); Cameroon (1/4); Central African Republic (4/4); Chad (4/4); Congo, DRC (4/4); Cote d’Ivoire (4/4); Equatorial Guinea (4/4); Gambia (2/4); Guinea (4/4); Guinea-Bissau (2/4); Liberia (4/4); Madagascar (2/4); Malawi (4/4); Mali (4/4); Mozambique (2/4); Nepal (2/4); Niger (4/4); Nigeria (2/4); Sierra Leone (4/4); Tanzania (2/4); Uganda (2/4); Zambia (2/4)
+Afghanistan (4/4); Angola (4/4); Bangladesh (2/4); Benin (4/4); Bhutan (1/4); Burkina Faso (4/4); Burundi (2/4); Cameroon (2/4); Central African Republic (4/4); Chad (4/4); Congo (1/4); Congo, DRC (4/4); Cote d’Ivoire (4/4); Equatorial Guinea (4/4); Eritrea (2/4); Ethiopia (2/4); Gambia (2/4); Guinea (4/4); Guinea-Bissau (4/4); Liberia (4/4); Madagascar (2/4); Malawi (4/4); Mali (4/4); Mozambique (2/4); Nepal (2/4); Niger (4/4); Nigeria (2/4); Sierra Leone (4/4); Somalia (2/4); Tanzania (2/4); Uganda (4/4); Yemen (2/4); Zambia (2/4)
 </td>
 <td style="text-align:left;">
-Burundi (2/4); Cambodia (1/4); Haiti (2/4); Laos (4/4); Pakistan (0/4); Rwanda (2/4); Somalia (0/4)
+Cambodia (2/4); Haiti (2/4); Kenya (2/4); Laos (4/4); Pakistan (0/4); Rwanda (2/4); Zimbabwe (2/4)
 </td>
 <td style="text-align:left;">
+Tajikistan (2/4)
 </td>
 <td style="text-align:left;">
 </td>
@@ -623,16 +625,16 @@ Burundi (2/4); Cambodia (1/4); Haiti (2/4); Laos (4/4); Pakistan (0/4); Rwanda (
 Q2
 </td>
 <td style="text-align:left;">
-India (2/4); Kenya (2/4); Senegal (4/4); Sudan (2/4); Togo (2/4); Yemen (4/4)
+Comoros (2/4); Guatemala (2/4); India (2/4); Mauritania (2/4); Sao Tome &amp; Principe (2/4); Senegal (4/4); Sudan (2/4); Togo (2/4)
 </td>
 <td style="text-align:left;">
-Bolivia (2/4); Comoros (4/4); Congo (2/4); Djibouti (0/4); Egypt (2/4); El Salvador (2/4); Eswatini (0/4); Gabon (0/4); Ghana (4/4); Guatemala (2/4); Indonesia (2/4); Iran (2/4); Maldives (0/4); Mauritania (4/4); Morocco (0/4); Nicaragua (0/4); Papua New Guinea (2/4); Sao Tome &amp; Principe (4/4); Turkey (1/4); Zimbabwe (1/4)
+Bolivia (4/4); Djibouti (0/4); Egypt (2/4); Eswatini (0/4); Gabon (0/4); Ghana (4/4); Indonesia (2/4); Maldives (2/4); Morocco (0/4); Namibia (2/4); Papua New Guinea (2/4); Solomon Islands (2/4); Turkey (1/4)
 </td>
 <td style="text-align:left;">
-Botswana (0/4); Dominican Republic (0/4); Kiribati (2/4); Myanmar (2/4); Namibia (0/4); Peru (2/4)
+Azerbaijan (2/4); Botswana (0/4); Dominican Republic (0/4); Guyana (0/4); Kiribati (2/4); Kyrgyzstan (1/4); Lesotho (0/4); Micronesia (1/4); Myanmar (2/4); Peru (2/4); South Africa (0/4); Turkmenistan (2/4); Uzbekistan (2/4)
 </td>
 <td style="text-align:left;">
-Lesotho (0/4); Mongolia (4/4)
+Kazakhstan (4/4); Mongolia (4/4)
 </td>
 <td style="text-align:left;">
 </td>
@@ -644,13 +646,13 @@ Q3
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-Belize (1/4); Cape Verde (4/4); Honduras (0/4); Iraq (2/4); Oman (2/4); Saudi Arabia (0/4); Solomon Islands (4/4); Syria (1/4)
+Belize (0/4); Cape Verde (4/4); El Salvador (2/4); Honduras (0/4); Iran (2/4); Iraq (2/4); Nicaragua (0/4); Oman (2/4); Palestinian Territory (4/4); Saudi Arabia (0/4); Suriname (2/4)
 </td>
 <td style="text-align:left;">
-Algeria (2/4); China (0/4); Ecuador (2/4); Grenada (0/4); Guyana (2/4); Jordan (0/4); Libya (0/4); Mauritius (1/4); Mexico (2/4); Micronesia (2/4); Paraguay (2/4); South Africa (0/4); Suriname (4/4); Thailand (1/4); Tunisia (0/4); Vanuatu (4/4)
+Algeria (0/4); Armenia (2/4); China (0/4); Colombia (0/4); Ecuador (0/4); Fiji (0/4); Jordan (0/4); Libya (0/4); Macedonia (1/4); Mexico (2/4); North Korea (0/4); Paraguay (0/4); Romania (1/4); Trinidad &amp; Tobago (2/4); Tunisia (0/4); Vanuatu (4/4); Viet Nam (0/4)
 </td>
 <td style="text-align:left;">
-Albania (0/4); Brazil (0/4); Fiji (2/4); North Korea (0/4); Philippines (2/4); Samoa (1/4); Tonga (1/4); Trinidad &amp; Tobago (0/4); Viet Nam (0/4)
+Albania (0/4); Belarus (1/4); Brazil (0/4); Estonia (1/4); Georgia (0/4); Hungary (2/4); Latvia (1/4); Lithuania (1/4); Moldova (0/4); Philippines (2/4); Russian Federation (1/4); Samoa (1/4); Tonga (1/4); Ukraine (0/4)
 </td>
 <td style="text-align:left;">
 </td>
@@ -662,12 +664,13 @@ Q4
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
+Syria (2/4)
 </td>
 <td style="text-align:left;">
-Bahrain (2/4); Brunei (1/4); Colombia (2/4); Costa Rica (0/4); Jamaica (0/4); Kuwait (2/4); Lebanon (2/4); Panama (0/4); Saint Lucia (0/4); Saint Vincent &amp; the Grenadines (2/4); United Arab Emirates (4/4); Venezuela (0/4)
+Bahrain (0/4); Barbados (1/4); Bosnia &amp; Herzegovina (2/4); Brunei (1/4); Costa Rica (0/4); Grenada (2/4); Jamaica (0/4); Lebanon (2/4); Malaysia (0/4); Mauritius (2/4); Panama (0/4); Saint Lucia (0/4); Saint Vincent &amp; the Grenadines (0/4); Seychelles (2/4); Slovakia (1/4); Sri Lanka (2/4); Thailand (2/4); United Arab Emirates (0/4); Venezuela (0/4)
 </td>
 <td style="text-align:left;">
-Antigua &amp; Barbuda (0/4); Argentina (0/4); Bahamas (0/4); Barbados (2/4); Bulgaria (0/4); Chile (1/4); Hungary (2/4); Malaysia (0/4); Poland (2/4); Qatar (2/4); Romania (4/4); Seychelles (2/4); South Korea (0/4); Sri Lanka (4/4); Uruguay (2/4)
+Antigua &amp; Barbuda (0/4); Argentina (0/4); Bahamas (0/4); Bulgaria (0/4); Chile (0/4); Croatia (0/4); Czech Republic (2/4); Kuwait (0/4); Poland (2/4); Qatar (2/4); South Korea (0/4); Uruguay (0/4)
 </td>
 <td style="text-align:left;">
 </td>
@@ -681,10 +684,10 @@ Q5
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-Cuba (2/4); Cyprus (2/4)
+Cuba (2/4)
 </td>
 <td style="text-align:left;">
-Austria (2/4); Greece (0/4); Iceland (2/4); Israel (2/4); Italy (2/4); Japan (2/4); Luxembourg (2/4); Malta (2/4); Netherlands (2/4); New Zealand (2/4); Portugal (2/4); Singapore (0/4); Spain (2/4); Switzerland (0/4); Taiwan (0/4); United Kingdom (2/4); United States of America (2/4)
+Austria (0/4); Cyprus (0/4); Germany (2/4); Greece (0/4); Iceland (4/4); Israel (2/4); Italy (2/4); Japan (2/4); Luxembourg (2/4); Malta (2/4); Netherlands (2/4); New Zealand (2/4); Portugal (2/4); Singapore (0/4); Slovenia (2/4); Spain (2/4); Switzerland (0/4); Taiwan (0/4); United Kingdom (2/4); United States of America (0/4)
 </td>
 <td style="text-align:left;">
 Australia (4/4); Belgium (4/4); Canada (4/4); Denmark (4/4); Finland (4/4); France (4/4); Ireland (4/4); Norway (4/4); Sweden (4/4)
@@ -692,151 +695,12 @@ Australia (4/4); Belgium (4/4); Canada (4/4); Denmark (4/4); Finland (4/4); Fran
 </tr>
 </tbody>
 </table>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sum(result$n_st)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># xtable::xtable(result$n_st)</span></span></code></pre></div>
 </div>
 <div id="fuzzy-version-of-classification" class="section level4">
 <h4>Fuzzy version of classification</h4>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kableExtra<span class="sc">::</span><span class="fu">kable</span>(result<span class="sc">$</span>fuzzy, <span class="at">format =</span> <span class="st">&quot;html&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="st">&quot;striped&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">&quot; &quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;Gender&quot;</span> <span class="ot">=</span> <span class="dv">5</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">group_rows</span>(<span class="st">&quot;Health&quot;</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div>
-<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
-</th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="5">
-<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
-Gender
-</div>
-</th>
-</tr>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:left;">
-q1
-</th>
-<th style="text-align:left;">
-q2
-</th>
-<th style="text-align:left;">
-q3
-</th>
-<th style="text-align:left;">
-q4
-</th>
-<th style="text-align:left;">
-q5
-</th>
-</tr>
-</thead>
-<tbody>
-<tr grouplength="5">
-<td colspan="6" style="border-bottom: 1px solid;">
-<strong>Health</strong>
-</td>
-</tr>
-<tr>
-<td style="text-align:left;padding-left: 2em;" indentlevel="1">
-q1
-</td>
-<td style="text-align:left;">
-Afghanistan (4/4); Angola (4/4); Bangladesh (2/4); Benin (2/4); Burkina Faso (4/4); Central African Republic (4/4); Chad (4/4); Congo, DRC (4/4); Cote d’Ivoire (4/4); Equatorial Guinea (4/4); Gambia (2/4); Guinea (4/4); Guinea-Bissau (2/4); Liberia (4/4); Madagascar (2/4); Malawi (4/4); Mali (4/4); Mozambique (2/4); Nepal (2/4); Niger (4/4); Nigeria (2/4); Sierra Leone (4/4); Somalia (2/4); Tanzania (2/4); Uganda (2/4); Zambia (2/4)
-</td>
-<td style="text-align:left;">
-Benin (2/4); Burundi (2/4); Guinea-Bissau (2/4); Haiti (2/4); Laos (4/4); Madagascar (2/4); Mozambique (2/4); Nepal (2/4); Nigeria (2/4); Rwanda (2/4); Tanzania (2/4); Uganda (2/4); Zambia (2/4)
-</td>
-<td style="text-align:left;">
-Burundi (2/4); Haiti (2/4); Rwanda (2/4); Somalia (2/4)
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;padding-left: 2em;" indentlevel="1">
-q2
-</td>
-<td style="text-align:left;">
-Bangladesh (2/4); Djibouti (2/4); Gabon (2/4); Gambia (2/4); India (2/4); Kenya (2/4); Maldives (2/4); Senegal (4/4); Sudan (2/4); Togo (2/4); Yemen (4/4)
-</td>
-<td style="text-align:left;">
-Bolivia (2/4); Comoros (4/4); Congo (2/4); Egypt (2/4); El Salvador (2/4); Ghana (4/4); Guatemala (2/4); India (2/4); Indonesia (2/4); Iran (2/4); Kenya (2/4); Mauritania (4/4); Papua New Guinea (2/4); Sao Tome &amp; Principe (4/4); Sudan (2/4); Togo (2/4)
-</td>
-<td style="text-align:left;">
-Bolivia (2/4); El Salvador (2/4); Guatemala (2/4); Indonesia (2/4); Kiribati (2/4); Lesotho (2/4); Maldives (2/4); Myanmar (2/4); Papua New Guinea (2/4); Peru (2/4)
-</td>
-<td style="text-align:left;">
-Djibouti (2/4); Gabon (2/4); Kiribati (2/4); Mongolia (4/4); Myanmar (2/4)
-</td>
-<td style="text-align:left;">
-Lesotho (2/4)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;padding-left: 2em;" indentlevel="1">
-q3
-</td>
-<td style="text-align:left;">
-Honduras (2/4); Saudi Arabia (2/4); Tunisia (2/4)
-</td>
-<td style="text-align:left;">
-Cape Verde (4/4); Congo (2/4); Egypt (2/4); Iran (2/4); Iraq (2/4); Libya (2/4); Oman (2/4); Solomon Islands (4/4); South Africa (2/4)
-</td>
-<td style="text-align:left;">
-Algeria (2/4); Brazil (2/4); Ecuador (2/4); Guyana (2/4); Iraq (2/4); Mexico (2/4); Micronesia (2/4); Oman (2/4); Paraguay (2/4); Peru (2/4); Saudi Arabia (2/4); Suriname (4/4); Vanuatu (4/4)
-</td>
-<td style="text-align:left;">
-Algeria (2/4); Ecuador (2/4); Fiji (2/4); Guyana (2/4); Honduras (2/4); Micronesia (2/4); Paraguay (2/4); Philippines (2/4); South Africa (2/4)
-</td>
-<td style="text-align:left;">
-Brazil (2/4); Libya (2/4); Philippines (2/4); Tunisia (2/4)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;padding-left: 2em;" indentlevel="1">
-q4
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-Jamaica (2/4); Panama (2/4); Saint Lucia (2/4); Venezuela (2/4)
-</td>
-<td style="text-align:left;">
-Antigua &amp; Barbuda (2/4); Argentina (2/4); Bahamas (2/4); Bahrain (2/4); Colombia (2/4); Kuwait (2/4); Lebanon (2/4); Mexico (2/4); Saint Vincent &amp; the Grenadines (2/4); United Arab Emirates (4/4)
-</td>
-<td style="text-align:left;">
-Bahrain (2/4); Barbados (2/4); Colombia (2/4); Fiji (2/4); Hungary (2/4); Kuwait (2/4); Lebanon (2/4); Poland (2/4); Qatar (2/4); Romania (4/4); Saint Vincent &amp; the Grenadines (2/4); Seychelles (2/4); Sri Lanka (4/4); Uruguay (2/4); Venezuela (2/4)
-</td>
-<td style="text-align:left;">
-Antigua &amp; Barbuda (2/4); Argentina (2/4); Bahamas (2/4); Hungary (2/4); Jamaica (2/4); Panama (2/4); Poland (2/4); Saint Lucia (2/4); Seychelles (2/4); Uruguay (2/4)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;padding-left: 2em;" indentlevel="1">
-q5
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-</td>
-<td style="text-align:left;">
-Cuba (2/4); Cyprus (2/4); Greece (2/4); Singapore (2/4); Switzerland (2/4); Taiwan (2/4)
-</td>
-<td style="text-align:left;">
-Austria (2/4); Barbados (2/4); Cuba (2/4); Cyprus (2/4); Iceland (2/4); Israel (2/4); Italy (2/4); Japan (2/4); Luxembourg (2/4); Malta (2/4); Netherlands (2/4); New Zealand (2/4); Portugal (2/4); Qatar (2/4); Spain (2/4); United Kingdom (2/4); United States of America (2/4)
-</td>
-<td style="text-align:left;">
-Australia (4/4); Austria (2/4); Belgium (4/4); Canada (4/4); Denmark (4/4); Finland (4/4); France (4/4); Greece (2/4); Iceland (2/4); Ireland (4/4); Israel (2/4); Italy (2/4); Japan (2/4); Luxembourg (2/4); Malta (2/4); Netherlands (2/4); New Zealand (2/4); Norway (4/4); Portugal (2/4); Singapore (2/4); Spain (2/4); Sweden (4/4); Switzerland (2/4); Taiwan (2/4); United Kingdom (2/4); United States of America (2/4)
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="new-version-of-classification-based-on-standardized-data" class="section level4">
-<h4>New version of classification based on standardized data</h4>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>kableExtra<span class="sc">::</span><span class="fu">kable</span>(result<span class="sc">$</span>table_std, <span class="at">format =</span> <span class="st">&quot;html&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>kableExtra<span class="sc">::</span><span class="fu">kable</span>(result<span class="sc">$</span>fuzzy, <span class="at">format =</span> <span class="st">&quot;html&quot;</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="st">&quot;striped&quot;</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">&quot; &quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;Gender&quot;</span> <span class="ot">=</span> <span class="dv">5</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">group_rows</span>(<span class="st">&quot;Health&quot;</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div>
@@ -855,6 +719,147 @@ Gender
 <th style="text-align:left;">
 </th>
 <th style="text-align:left;">
+q1
+</th>
+<th style="text-align:left;">
+q2
+</th>
+<th style="text-align:left;">
+q3
+</th>
+<th style="text-align:left;">
+q4
+</th>
+<th style="text-align:left;">
+q5
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="5">
+<td colspan="6" style="border-bottom: 1px solid;">
+<strong>Health</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+q1
+</td>
+<td style="text-align:left;">
+Afghanistan (4/4); Angola (4/4); Bangladesh (2/4); Benin (4/4); Burkina Faso (4/4); Burundi (2/4); Cameroon (2/4); Central African Republic (4/4); Chad (4/4); Congo, DRC (4/4); Cote d’Ivoire (4/4); Equatorial Guinea (4/4); Eritrea (2/4); Ethiopia (2/4); Gambia (2/4); Guinea (4/4); Guinea-Bissau (4/4); Liberia (4/4); Madagascar (2/4); Malawi (4/4); Mali (4/4); Mozambique (2/4); Nepal (2/4); Niger (4/4); Nigeria (2/4); Sierra Leone (4/4); Somalia (2/4); Tanzania (2/4); Uganda (4/4); Yemen (2/4); Zambia (2/4)
+</td>
+<td style="text-align:left;">
+Burundi (2/4); Cambodia (2/4); Cameroon (2/4); Eritrea (2/4); Ethiopia (2/4); Haiti (2/4); Kenya (2/4); Laos (4/4); Madagascar (2/4); Mozambique (2/4); Nigeria (2/4); Rwanda (2/4); Somalia (2/4); Tanzania (2/4); Zambia (2/4); Zimbabwe (2/4)
+</td>
+<td style="text-align:left;">
+Cambodia (2/4); Haiti (2/4); Rwanda (2/4); Tajikistan (2/4)
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+q2
+</td>
+<td style="text-align:left;">
+Bangladesh (2/4); Comoros (2/4); Djibouti (2/4); Eswatini (2/4); Gabon (2/4); Gambia (2/4); Guatemala (2/4); India (2/4); Mauritania (2/4); Nepal (2/4); Sao Tome &amp; Principe (2/4); Senegal (4/4); Sudan (2/4); Togo (2/4); Yemen (2/4)
+</td>
+<td style="text-align:left;">
+Bolivia (4/4); Comoros (2/4); Egypt (2/4); Ghana (4/4); Guatemala (2/4); India (2/4); Indonesia (2/4); Kenya (2/4); Lesotho (2/4); Maldives (2/4); Mauritania (2/4); Namibia (2/4); Papua New Guinea (2/4); Sao Tome &amp; Principe (2/4); Solomon Islands (2/4); Sudan (2/4); Togo (2/4); Zimbabwe (2/4)
+</td>
+<td style="text-align:left;">
+Azerbaijan (2/4); Egypt (2/4); Eswatini (2/4); Indonesia (2/4); Kiribati (2/4); Maldives (2/4); Myanmar (2/4); Namibia (2/4); Papua New Guinea (2/4); Peru (2/4); Tajikistan (2/4); Turkmenistan (2/4); Uzbekistan (2/4)
+</td>
+<td style="text-align:left;">
+Azerbaijan (2/4); Djibouti (2/4); Gabon (2/4); Kazakhstan (4/4); Kiribati (2/4); Mongolia (4/4); Myanmar (2/4); Turkmenistan (2/4)
+</td>
+<td style="text-align:left;">
+Lesotho (2/4)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+q3
+</td>
+<td style="text-align:left;">
+Honduras (2/4); Nicaragua (2/4)
+</td>
+<td style="text-align:left;">
+Algeria (2/4); Cape Verde (4/4); China (2/4); Ecuador (2/4); El Salvador (2/4); Iran (2/4); Iraq (2/4); Libya (2/4); Oman (2/4); Palestinian Territory (4/4); Paraguay (2/4); Solomon Islands (2/4); Suriname (2/4)
+</td>
+<td style="text-align:left;">
+Armenia (2/4); Brazil (2/4); El Salvador (2/4); Iran (2/4); Iraq (2/4); Mexico (2/4); Moldova (2/4); Oman (2/4); Peru (2/4); Suriname (2/4); Trinidad &amp; Tobago (2/4); Uzbekistan (2/4); Vanuatu (4/4)
+</td>
+<td style="text-align:left;">
+Armenia (2/4); Ecuador (2/4); Honduras (2/4); Hungary (2/4); Nicaragua (2/4); Paraguay (2/4); Philippines (2/4); Trinidad &amp; Tobago (2/4)
+</td>
+<td style="text-align:left;">
+Algeria (2/4); Brazil (2/4); China (2/4); Libya (2/4); Moldova (2/4); Philippines (2/4)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+q4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+Bahrain (2/4); Saint Lucia (2/4); Saint Vincent &amp; the Grenadines (2/4); Syria (2/4); Venezuela (2/4)
+</td>
+<td style="text-align:left;">
+Antigua &amp; Barbuda (2/4); Argentina (2/4); Bahamas (2/4); Bosnia &amp; Herzegovina (2/4); Bulgaria (2/4); Grenada (2/4); Kuwait (2/4); Lebanon (2/4); Mauritius (2/4); Mexico (2/4); Seychelles (2/4); Sri Lanka (2/4); Syria (2/4); Thailand (2/4)
+</td>
+<td style="text-align:left;">
+Bosnia &amp; Herzegovina (2/4); Czech Republic (2/4); Grenada (2/4); Hungary (2/4); Lebanon (2/4); Mauritius (2/4); Poland (2/4); Qatar (2/4); Saint Vincent &amp; the Grenadines (2/4); Seychelles (2/4); Sri Lanka (2/4); Thailand (2/4); Venezuela (2/4)
+</td>
+<td style="text-align:left;">
+Antigua &amp; Barbuda (2/4); Argentina (2/4); Bahamas (2/4); Bahrain (2/4); Bulgaria (2/4); Kuwait (2/4); Poland (2/4); Saint Lucia (2/4)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;padding-left: 2em;" indentlevel="1">
+q5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+Austria (2/4); Cuba (2/4); Cyprus (2/4); Greece (2/4); Singapore (2/4); Switzerland (2/4); Taiwan (2/4); United States of America (2/4)
+</td>
+<td style="text-align:left;">
+Cuba (2/4); Czech Republic (2/4); Germany (2/4); Iceland (4/4); Israel (2/4); Italy (2/4); Japan (2/4); Luxembourg (2/4); Malta (2/4); Netherlands (2/4); New Zealand (2/4); Portugal (2/4); Qatar (2/4); Slovenia (2/4); Spain (2/4); United Kingdom (2/4)
+</td>
+<td style="text-align:left;">
+Australia (4/4); Austria (2/4); Belgium (4/4); Canada (4/4); Cyprus (2/4); Denmark (4/4); Finland (4/4); France (4/4); Germany (2/4); Greece (2/4); Ireland (4/4); Israel (2/4); Italy (2/4); Japan (2/4); Luxembourg (2/4); Malta (2/4); Netherlands (2/4); New Zealand (2/4); Norway (4/4); Portugal (2/4); Singapore (2/4); Slovenia (2/4); Spain (2/4); Sweden (4/4); Switzerland (2/4); Taiwan (2/4); United Kingdom (2/4); United States of America (2/4)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="new-version-of-classification-based-on-standardized-data" class="section level4">
+<h4>New version of classification based on standardized data</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>kableExtra<span class="sc">::</span><span class="fu">kable</span>(result<span class="sc">$</span>table_st, <span class="at">format =</span> <span class="st">&quot;html&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="st">&quot;striped&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">add_header_above</span>(<span class="fu">c</span>(<span class="st">&quot; &quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;Gender&quot;</span> <span class="ot">=</span> <span class="dv">5</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">group_rows</span>(<span class="st">&quot;Health&quot;</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div>
+<table class="table table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="5">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Gender
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
 Q1
 </th>
 <th style="text-align:left;">
@@ -882,10 +887,10 @@ Q5
 Q1
 </td>
 <td style="text-align:left;">
-Afghanistan; Angola; Bangladesh; Benin; Bhutan; Burkina Faso; Cameroon; Central African Republic; Chad; Congo, DRC; Cote d’Ivoire; Equatorial Guinea; Guinea; Guinea-Bissau; Liberia; Malawi; Mali; Mozambique; Nepal; Niger; Nigeria; Sierra Leone; Tanzania; Uganda; Zambia
+Afghanistan; Angola; Benin; Burkina Faso; Cameroon; Central African Republic; Chad; Congo, DRC; Cote d’Ivoire; Equatorial Guinea; Eritrea; Ethiopia; Guinea; Guinea-Bissau; Liberia; Malawi; Mali; Mozambique; Niger; Nigeria; Sierra Leone; Somalia; Tanzania; Uganda; Zambia
 </td>
 <td style="text-align:left;">
-Bolivia; Burundi; Haiti; Laos; Madagascar; Rwanda; Somalia
+Burundi; Cambodia; Haiti; Laos; Madagascar; Rwanda
 </td>
 <td style="text-align:left;">
 </td>
@@ -899,19 +904,19 @@ Bolivia; Burundi; Haiti; Laos; Madagascar; Rwanda; Somalia
 Q2
 </td>
 <td style="text-align:left;">
-Gambia; Kenya; Pakistan; Senegal; Togo; Yemen
+Bangladesh; Bhutan; Comoros; Congo; Gambia; Nepal; Pakistan; Sao Tome &amp; Principe; Senegal; Sudan; Togo; Yemen
 </td>
 <td style="text-align:left;">
-Cambodia; Comoros; Congo; Djibouti; Egypt; Eswatini; Gabon; Ghana; Guatemala; India; Iran; Maldives; Mauritania; Morocco; Nicaragua; Papua New Guinea; Sao Tome &amp; Principe; Sudan; Zimbabwe
+Bolivia; Djibouti; Egypt; Eswatini; Gabon; Ghana; Guatemala; India; Kenya; Maldives; Mauritania; Papua New Guinea; Zimbabwe
 </td>
 <td style="text-align:left;">
-El Salvador; Indonesia; Myanmar; Namibia; Turkey
+Botswana; Indonesia; Kiribati; Myanmar; Namibia; Tajikistan
 </td>
 <td style="text-align:left;">
-Kiribati
+Azerbaijan; Mongolia; Turkmenistan
 </td>
 <td style="text-align:left;">
-Lesotho; Mongolia
+Lesotho
 </td>
 </tr>
 <tr>
@@ -921,16 +926,16 @@ Q3
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-Cape Verde; Iraq; Oman; Saudi Arabia; Solomon Islands
+Belize; Cape Verde; Honduras; Iran; Iraq; Morocco; Nicaragua; Oman; Palestinian Territory; Saudi Arabia; Solomon Islands; Turkey
 </td>
 <td style="text-align:left;">
-Algeria; Botswana; China; Dominican Republic; Ecuador; Guyana; Honduras; Libya; Mexico; Micronesia; Paraguay; Peru; South Africa; Suriname; Tunisia; Vanuatu
+Algeria; Armenia; Brazil; China; Dominican Republic; Ecuador; El Salvador; Fiji; Guyana; Jordan; Kyrgyzstan; Libya; Micronesia; Paraguay; Peru; South Africa; Suriname; Tunisia; Uzbekistan; Vanuatu; Viet Nam
 </td>
 <td style="text-align:left;">
-Brazil; Fiji; Trinidad &amp; Tobago
+Georgia; Kazakhstan; Moldova; North Korea; Philippines; Russian Federation; Trinidad &amp; Tobago
 </td>
 <td style="text-align:left;">
-Philippines; Samoa
+Latvia; Samoa
 </td>
 </tr>
 <tr>
@@ -940,16 +945,16 @@ Q4
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-Belize; Syria
+Syria
 </td>
 <td style="text-align:left;">
-Bahrain; Colombia; Grenada; Jamaica; Jordan; Mauritius; Panama; Saint Lucia; Saint Vincent &amp; the Grenadines; United Arab Emirates; Venezuela
+Colombia; Grenada; Jamaica; Macedonia; Mauritius; Mexico; Panama; Saint Lucia; Saint Vincent &amp; the Grenadines; Thailand; United Arab Emirates; Venezuela
 </td>
 <td style="text-align:left;">
-Antigua &amp; Barbuda; Argentina; Bahamas; Brunei; Bulgaria; Chile; Kuwait; Lebanon; Malaysia; North Korea; Romania; Seychelles; South Korea; Thailand; Viet Nam
+Albania; Antigua &amp; Barbuda; Argentina; Bahamas; Bahrain; Bosnia &amp; Herzegovina; Brunei; Bulgaria; Chile; Croatia; Czech Republic; Kuwait; Lebanon; Lithuania; Malaysia; Romania; Seychelles; Slovakia; South Korea; Sri Lanka; Ukraine; Uruguay
 </td>
 <td style="text-align:left;">
-Albania; Hungary; Poland; Sri Lanka; Tonga; Uruguay
+Belarus; Estonia; Hungary; Poland; Tonga
 </td>
 </tr>
 <tr>
@@ -961,81 +966,81 @@ Q5
 <td style="text-align:left;">
 </td>
 <td style="text-align:left;">
-Cuba
+Costa Rica; Cuba
 </td>
 <td style="text-align:left;">
-Barbados; Costa Rica; Cyprus; Qatar; Singapore; Taiwan
+Barbados; Cyprus; Qatar; Singapore; Taiwan; United States of America
 </td>
 <td style="text-align:left;">
-Australia; Austria; Belgium; Canada; Denmark; Finland; France; Greece; Iceland; Ireland; Israel; Italy; Japan; Luxembourg; Malta; Netherlands; New Zealand; Norway; Portugal; Spain; Sweden; Switzerland; United Kingdom; United States of America
+Australia; Austria; Belgium; Canada; Denmark; Finland; France; Germany; Greece; Iceland; Ireland; Israel; Italy; Japan; Luxembourg; Malta; Netherlands; New Zealand; Norway; Portugal; Slovenia; Spain; Sweden; Switzerland; United Kingdom
 </td>
 </tr>
 </tbody>
 </table>
 <!-- ### Classification using the performance versions of the health and gender inputs -->
 <!-- #### Merging classifications into dataset -->
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health_class&quot;</span>, <span class="st">&quot;gender_class&quot;</span>, <span class="st">&quot;health_class_alt&quot;</span>, <span class="st">&quot;gender_class_alt&quot;</span>, <span class="st">&quot;health_flag&quot;</span>, <span class="st">&quot;gender_flag&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(result<span class="sc">$</span>standardized[, <span class="fu">names</span>(result<span class="sc">$</span>standardized) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, variables<span class="sc">$</span>class)])</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># flagged &lt;- df[df$year == 1990 &amp; (df$health_flag == 1 | df$gender_flag == 1), c(&quot;country&quot;, variables$class)]</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>health_class <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&lt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">&quot;low&quot;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>health_class <span class="sc">&gt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&gt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">&quot;upp&quot;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[<span class="sc">!</span>(df<span class="sc">$</span>health_class <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&lt;</span> <span class="dv">3</span>) <span class="sc">&amp;</span> <span class="sc">!</span>(df<span class="sc">$</span>health_class <span class="sc">&gt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&gt;</span> <span class="dv">3</span>)] <span class="ot">&lt;-</span> <span class="st">&quot;mid&quot;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;mid&quot;</span> <span class="sc">&amp;</span> df<span class="sc">$</span>health_class <span class="sc">&gt;</span> df<span class="sc">$</span>gender_class] <span class="ot">&lt;-</span> <span class="st">&quot;H&gt;G&quot;</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;mid&quot;</span> <span class="sc">&amp;</span> df<span class="sc">$</span>health_class <span class="sc">&lt;</span> df<span class="sc">$</span>gender_class] <span class="ot">&lt;-</span> <span class="st">&quot;G&gt;H&quot;</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="do">## alt</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt &lt;- NA</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$health_class_alt &lt; 3 &amp; df$gender_class_alt &lt; 3] &lt;- &quot;low&quot;</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$health_class_alt &gt; 3 &amp; df$gender_class_alt &gt; 3] &lt;- &quot;upp&quot;</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[!(df$health_class_alt &lt; 3 &amp; df$gender_class_alt &lt; 3) &amp; !(df$health_class_alt &gt; 3 &amp; df$gender_class_alt &gt; 3)] &lt;- &quot;mid&quot;</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$class_vv_alt == &quot;mid&quot; &amp; df$health_class_alt &gt; df$gender_class_alt] &lt;- &quot;H&gt;G&quot;</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$class_vv_alt == &quot;mid&quot; &amp; df$health_class_alt &lt; df$gender_class_alt] &lt;- &quot;G&gt;H&quot;</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># addmargins(table(df$class_vv, df$class))</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_low <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;low&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_upp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;upp&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_mid <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;mid&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_HG <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;H&gt;G&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_GH <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;G&gt;H&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>class_core <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;class&quot;</span>, <span class="st">&quot;health_class&quot;</span>, <span class="st">&quot;gender_class&quot;</span>, <span class="st">&quot;class_vv&quot;</span>)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>class1975 <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">1975</span>, variables<span class="sc">$</span>class_core]</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(class1975) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="fu">paste</span>(<span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;class_vv&quot;</span>), <span class="dv">1975</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>class1990 <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">1990</span>, variables<span class="sc">$</span>class_core]</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(class1990) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="fu">paste</span>(<span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;class_vv&quot;</span>), <span class="dv">1990</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>class1995 <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">1995</span>, variables<span class="sc">$</span>class_core]</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(class1995) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="fu">paste</span>(<span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;class_vv&quot;</span>), <span class="dv">1995</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, df, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(df, class1975, <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(df, class1990, <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(df, class1995, <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[<span class="fu">order</span>(df<span class="sc">$</span>country, df<span class="sc">$</span>year), </span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>         <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>, <span class="fu">names</span>(df)[<span class="sc">!</span><span class="fu">names</span>(df) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>)])]</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>filepath <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class&quot;</span>, <span class="st">&quot;.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span> )</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df, <span class="at">file =</span> filepath)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health_class&quot;</span>, <span class="st">&quot;gender_class&quot;</span>, <span class="st">&quot;health_class_alt&quot;</span>, <span class="st">&quot;gender_class_alt&quot;</span>, <span class="st">&quot;health_flag&quot;</span>, <span class="st">&quot;gender_flag&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(result<span class="sc">$</span>standardized[, <span class="fu">names</span>(result<span class="sc">$</span>standardized) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, variables<span class="sc">$</span>class)])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># flagged &lt;- df[df$year == 1990 &amp; (df$health_flag == 1 | df$gender_flag == 1), c(&quot;country&quot;, variables$class)]</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>health_class <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&lt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">&quot;low&quot;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>health_class <span class="sc">&gt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&gt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">&quot;upp&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[<span class="sc">!</span>(df<span class="sc">$</span>health_class <span class="sc">&lt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&lt;</span> <span class="dv">3</span>) <span class="sc">&amp;</span> <span class="sc">!</span>(df<span class="sc">$</span>health_class <span class="sc">&gt;</span> <span class="dv">3</span> <span class="sc">&amp;</span> df<span class="sc">$</span>gender_class <span class="sc">&gt;</span> <span class="dv">3</span>)] <span class="ot">&lt;-</span> <span class="st">&quot;mid&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;mid&quot;</span> <span class="sc">&amp;</span> df<span class="sc">$</span>health_class <span class="sc">&gt;</span> df<span class="sc">$</span>gender_class] <span class="ot">&lt;-</span> <span class="st">&quot;H&gt;G&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv[df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;mid&quot;</span> <span class="sc">&amp;</span> df<span class="sc">$</span>health_class <span class="sc">&lt;</span> df<span class="sc">$</span>gender_class] <span class="ot">&lt;-</span> <span class="st">&quot;G&gt;H&quot;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="do">## alt</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt &lt;- NA</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$health_class_alt &lt; 3 &amp; df$gender_class_alt &lt; 3] &lt;- &quot;low&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$health_class_alt &gt; 3 &amp; df$gender_class_alt &gt; 3] &lt;- &quot;upp&quot;</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[!(df$health_class_alt &lt; 3 &amp; df$gender_class_alt &lt; 3) &amp; !(df$health_class_alt &gt; 3 &amp; df$gender_class_alt &gt; 3)] &lt;- &quot;mid&quot;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$class_vv_alt == &quot;mid&quot; &amp; df$health_class_alt &gt; df$gender_class_alt] &lt;- &quot;H&gt;G&quot;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># df$class_vv_alt[df$class_vv_alt == &quot;mid&quot; &amp; df$health_class_alt &lt; df$gender_class_alt] &lt;- &quot;G&gt;H&quot;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># addmargins(table(df$class_vv, df$class))</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_low <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;low&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_upp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;upp&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_mid <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;mid&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_HG <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;H&gt;G&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_GH <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;G&gt;H&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>class_core <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;class&quot;</span>, <span class="st">&quot;health_class&quot;</span>, <span class="st">&quot;gender_class&quot;</span>, <span class="st">&quot;class_vv&quot;</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>class1975 <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">1975</span>, variables<span class="sc">$</span>class_core]</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(class1975) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="fu">paste</span>(<span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;class_vv&quot;</span>), <span class="dv">1975</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>class1990 <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">1990</span>, variables<span class="sc">$</span>class_core]</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(class1990) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="fu">paste</span>(<span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;class_vv&quot;</span>), <span class="dv">1990</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>class1995 <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">==</span> <span class="dv">1995</span>, variables<span class="sc">$</span>class_core]</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(class1995) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="fu">paste</span>(<span class="fu">c</span>(<span class="st">&quot;class&quot;</span>, <span class="st">&quot;health&quot;</span>, <span class="st">&quot;gender&quot;</span>, <span class="st">&quot;class_vv&quot;</span>), <span class="dv">1995</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, df, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(df, class1975, <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(df, class1990, <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">merge</span>(df, class1995, <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[<span class="fu">order</span>(df<span class="sc">$</span>country, df<span class="sc">$</span>year), </span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>         <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>, <span class="fu">names</span>(df)[<span class="sc">!</span><span class="fu">names</span>(df) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;period&quot;</span>)])]</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>filepath <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class&quot;</span>, <span class="st">&quot;.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;&quot;</span> )</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(df, <span class="at">file =</span> filepath)</span></code></pre></div>
 <!-- #### Subset of 1990 classifications for which "floor" rule was applied -->
 <!-- ### Classification trajectories (in 5-year increments based on global distributions in same time period) -->
 <!-- ### Descriptives of control variables by 1990 classification: mean (SD) -->
 </div>
 <div id="which-countries-move-more-than-2-cells" class="section level4">
 <h4>Which countries move more than 2 cells?</h4>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_num <span class="ot">&lt;-</span> df<span class="sc">$</span>health_class <span class="sc">*</span> df<span class="sc">$</span>gender_class</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1990</span>, <span class="dv">1995</span>, <span class="dv">2015</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(df[df<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;class_num&quot;</span>)])</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(df)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;class&quot;</span>, year, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> dat)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>diff <span class="ot">&lt;-</span> dat<span class="sc">$</span>class2015 <span class="sc">-</span> dat<span class="sc">$</span>class1990</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>diff_alt <span class="ot">&lt;-</span> dat<span class="sc">$</span>class2015 <span class="sc">-</span> dat<span class="sc">$</span>class1995</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>better <span class="ot">&lt;-</span> dat[<span class="fu">IsTrue</span>(dat<span class="sc">$</span>diff <span class="sc">&gt;</span> <span class="dv">2</span> <span class="sc">|</span> dat<span class="sc">$</span>diff_alt <span class="sc">&gt;</span> <span class="dv">2</span>), ]</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>worse <span class="ot">&lt;-</span> dat[<span class="fu">IsTrue</span>(dat<span class="sc">$</span>diff <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">2</span> <span class="sc">|</span> dat<span class="sc">$</span>diff_alt <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">2</span>), ]</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>better </span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_num <span class="ot">&lt;-</span> df<span class="sc">$</span>health_class <span class="sc">*</span> df<span class="sc">$</span>gender_class</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1990</span>, <span class="dv">1995</span>, <span class="dv">2015</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(df[df<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;class_num&quot;</span>)])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(df)[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;class&quot;</span>, year, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> dat)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>diff <span class="ot">&lt;-</span> dat<span class="sc">$</span>class2015 <span class="sc">-</span> dat<span class="sc">$</span>class1990</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>diff_alt <span class="ot">&lt;-</span> dat<span class="sc">$</span>class2015 <span class="sc">-</span> dat<span class="sc">$</span>class1995</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>better <span class="ot">&lt;-</span> dat[<span class="fu">IsTrue</span>(dat<span class="sc">$</span>diff <span class="sc">&gt;</span> <span class="dv">2</span> <span class="sc">|</span> dat<span class="sc">$</span>diff_alt <span class="sc">&gt;</span> <span class="dv">2</span>), ]</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>worse <span class="ot">&lt;-</span> dat[<span class="fu">IsTrue</span>(dat<span class="sc">$</span>diff <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">2</span> <span class="sc">|</span> dat<span class="sc">$</span>diff_alt <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">2</span>), ]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>better </span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["class1990"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["class1995"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class2015"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["diff"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["diff_alt"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Armenia","2":"NA","3":"9","4":"12","5":"NA","6":"3"},{"1":"Bahrain","2":"12","3":"16","4":"16","5":"4","6":"0"},{"1":"Belize","2":"8","3":"6","4":"9","5":"1","6":"3"},{"1":"Bhutan","2":"1","3":"2","4":"4","5":"3","6":"2"},{"1":"China","2":"9","3":"9","4":"12","5":"3","6":"3"},{"1":"Cyprus","2":"20","3":"20","4":"25","5":"5","6":"5"},{"1":"Czech Republic","2":"NA","3":"16","4":"25","5":"NA","6":"9"},{"1":"Ecuador","2":"9","3":"9","4":"12","5":"3","6":"3"},{"1":"El Salvador","2":"6","3":"9","4":"9","5":"3","6":"0"},{"1":"Eritrea","2":"NA","3":"1","4":"4","5":"NA","6":"3"},{"1":"Honduras","2":"9","3":"6","4":"9","5":"0","6":"3"},{"1":"Indonesia","2":"6","3":"6","4":"9","5":"3","6":"3"},{"1":"Iran","2":"4","3":"6","4":"9","5":"5","6":"3"},{"1":"Kyrgyzstan","2":"NA","3":"9","4":"12","5":"NA","6":"3"},{"1":"Latvia","2":"NA","3":"15","4":"20","5":"NA","6":"5"},{"1":"Lithuania","2":"NA","3":"16","4":"20","5":"NA","6":"4"},{"1":"Macedonia","2":"NA","3":"12","4":"16","5":"NA","6":"4"},{"1":"Maldives","2":"4","3":"4","4":"16","5":"12","6":"12"},{"1":"Mongolia","2":"10","3":"8","4":"12","5":"2","6":"4"},{"1":"Nicaragua","2":"4","3":"6","4":"9","5":"5","6":"3"},{"1":"Oman","2":"6","3":"6","4":"12","5":"6","6":"6"},{"1":"Qatar","2":"20","3":"20","4":"25","5":"5","6":"5"},{"1":"South Korea","2":"16","3":"16","4":"20","5":"4","6":"4"},{"1":"Tunisia","2":"9","3":"9","4":"12","5":"3","6":"3"},{"1":"Turkey","2":"6","3":"6","4":"12","5":"6","6":"6"},{"1":"Uzbekistan","2":"NA","3":"9","4":"12","5":"NA","6":"3"}],"options":{"columns":{"min":[10],"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>worse</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>worse</span></code></pre></div>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["country"],"name":[1],"type":["chr"],"align":["left"]},{"label":["class1990"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["class1995"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["class2015"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["diff"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["diff_alt"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Albania","2":"20","3":"16","4":"16","5":"-4","6":"0"},{"1":"Argentina","2":"16","3":"16","4":"12","5":"-4","6":"-4"},{"1":"Bahamas","2":"16","3":"16","4":"12","5":"-4","6":"-4"},{"1":"Barbados","2":"20","3":"20","4":"12","5":"-8","6":"-8"},{"1":"Brazil","2":"12","3":"9","4":"9","5":"-3","6":"0"},{"1":"Chile","2":"16","3":"16","4":"12","5":"-4","6":"-4"},{"1":"Costa Rica","2":"20","3":"15","4":"12","5":"-8","6":"-3"},{"1":"Dominican Republic","2":"9","3":"9","4":"6","5":"-3","6":"-3"},{"1":"Fiji","2":"12","3":"9","4":"6","5":"-6","6":"-3"},{"1":"Georgia","2":"NA","3":"12","4":"9","5":"NA","6":"-3"},{"1":"Greece","2":"25","3":"25","4":"20","5":"-5","6":"-5"},{"1":"Guyana","2":"9","3":"9","4":"6","5":"-3","6":"-3"},{"1":"Hungary","2":"20","3":"20","4":"16","5":"-4","6":"-4"},{"1":"Jamaica","2":"12","3":"12","4":"9","5":"-3","6":"-3"},{"1":"Jordan","2":"12","3":"9","4":"9","5":"-3","6":"0"},{"1":"Lesotho","2":"10","3":"10","4":"4","5":"-6","6":"-6"},{"1":"Mauritania","2":"4","3":"4","4":"1","5":"-3","6":"-3"},{"1":"Mauritius","2":"12","3":"12","4":"9","5":"-3","6":"-3"},{"1":"Mexico","2":"9","3":"12","4":"9","5":"0","6":"-3"},{"1":"New Zealand","2":"25","3":"25","4":"20","5":"-5","6":"-5"},{"1":"North Korea","2":"16","3":"12","4":"12","5":"-4","6":"0"},{"1":"Philippines","2":"15","3":"12","4":"9","5":"-6","6":"-3"},{"1":"Romania","2":"16","3":"16","4":"12","5":"-4","6":"-4"},{"1":"Saint Vincent & the Grenadines","2":"12","3":"12","4":"9","5":"-3","6":"-3"},{"1":"Samoa","2":"15","3":"15","4":"12","5":"-3","6":"-3"},{"1":"Seychelles","2":"16","3":"16","4":"9","5":"-7","6":"-7"},{"1":"South Africa","2":"9","3":"9","4":"6","5":"-3","6":"-3"},{"1":"Sri Lanka","2":"20","3":"16","4":"16","5":"-4","6":"0"},{"1":"Thailand","2":"16","3":"12","4":"12","5":"-4","6":"0"},{"1":"Tonga","2":"20","3":"20","4":"12","5":"-8","6":"-8"},{"1":"Ukraine","2":"NA","3":"16","4":"12","5":"NA","6":"-4"},{"1":"United States of America","2":"25","3":"20","4":"20","5":"-5","6":"0"},{"1":"Uruguay","2":"20","3":"16","4":"12","5":"-8","6":"-4"},{"1":"Venezuela","2":"12","3":"12","4":"9","5":"-3","6":"-3"},{"1":"Viet Nam","2":"16","3":"9","4":"9","5":"-7","6":"0"}],"options":{"columns":{"min":[10],"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
@@ -1045,105 +1050,74 @@ Australia; Austria; Belgium; Canada; Denmark; Finland; France; Greece; Iceland; 
 <div id="removing-countries-with-untrustworthy-statistics" class="section level4">
 <h4>Removing countries with untrustworthy statistics</h4>
 <p>All data is subject to measurement error. This is particularly problematic if measurement is systematically biased. Without other data to validate a given measure, this is a very difficult to problem to overcome. We only use data from reputable sources, such as academic centre and international organizations, but some self-reported data are still suspect. The World Bank and some NGOs have attempted to rate the capacity of National Statistical System, and some countries are not inlcuded in their rankings because assessments could be not be made based on available information. For instance, the ODIN rankings from 2015 to 2018 do not include the Central African Republic, Eritrea, Equatorial Guinea, and North Korea. Interestingly, among these, only North Korea is relatively highly ranked on the gender and health dimensions according to these data, which is simply not believable. Therefore, we remove only North Korea from the analyses.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[df<span class="sc">$</span>country <span class="sc">!=</span> <span class="st">&quot;North Korea&quot;</span>, ]</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df[df<span class="sc">$</span>country <span class="sc">!=</span> <span class="st">&quot;North Korea&quot;</span>, ]</span></code></pre></div>
 </div>
 <div id="trends-by-classification-groups-over-time" class="section level4 tabset tabset-fade tabset-pills">
 <h4 class="tabset tabset-fade tabset-pills">Trends by classification groups over time</h4>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">### making trend figures for the Dec 9 presentation</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">%in%</span> <span class="dv">1965</span><span class="sc">:</span><span class="dv">2018</span>, </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;class_vv&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)]</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> df_new <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">avg_life_exp_wpp =</span> <span class="fu">mean</span>(life_exp_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> df_new <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">avg_imr_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(imr_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> df_new <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">avg_mys_age_ratio_ihme =</span> <span class="fu">mean</span>(mys_age_ratio_ihme, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> df_new <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">avg_asfr_adol_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(asfr_adol_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">unique</span>(df_new[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;avg_life_exp_wpp&quot;</span>, <span class="st">&quot;avg_imr_wpp&quot;</span>, <span class="st">&quot;avg_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;avg_asfr_adol_wpp&quot;</span>)])</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>df_low <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">%in%</span> <span class="dv">1965</span><span class="sc">:</span><span class="dv">2018</span> <span class="sc">&amp;</span> df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;low&quot;</span>, </span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;class_vv&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)]</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>df_low <span class="ot">&lt;-</span> df_low <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">low_life_exp_wpp =</span> <span class="fu">mean</span>(life_exp_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>df_low <span class="ot">&lt;-</span> df_low <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">low_imr_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(imr_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>df_low <span class="ot">&lt;-</span> df_low <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">low_mys_age_ratio_ihme =</span> <span class="fu">mean</span>(mys_age_ratio_ihme, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>df_low <span class="ot">&lt;-</span> df_low <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">low_asfr_adol_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(asfr_adol_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>df_low <span class="ot">&lt;-</span> <span class="fu">unique</span>(df_low[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;low_life_exp_wpp&quot;</span>, <span class="st">&quot;low_imr_wpp&quot;</span>, <span class="st">&quot;low_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;low_asfr_adol_wpp&quot;</span>)])</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>df_upp <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">%in%</span> <span class="dv">1965</span><span class="sc">:</span><span class="dv">2018</span> <span class="sc">&amp;</span> df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;upp&quot;</span>, </span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;class_vv&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)]</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>df_upp <span class="ot">&lt;-</span> df_upp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upp_life_exp_wpp =</span> <span class="fu">mean</span>(life_exp_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>df_upp <span class="ot">&lt;-</span> df_upp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upp_imr_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(imr_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>df_upp <span class="ot">&lt;-</span> df_upp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upp_mys_age_ratio_ihme =</span> <span class="fu">mean</span>(mys_age_ratio_ihme, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>df_upp <span class="ot">&lt;-</span> df_upp <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">upp_asfr_adol_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(asfr_adol_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>df_upp <span class="ot">&lt;-</span> <span class="fu">unique</span>(df_upp[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;upp_life_exp_wpp&quot;</span>, <span class="st">&quot;upp_imr_wpp&quot;</span>, <span class="st">&quot;upp_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;upp_asfr_adol_wpp&quot;</span>)])</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>df_mid <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">%in%</span> <span class="dv">1965</span><span class="sc">:</span><span class="dv">2018</span> <span class="sc">&amp;</span> df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;mid&quot;</span>, </span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;class_vv&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)]</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>df_mid <span class="ot">&lt;-</span> df_mid <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">mid_life_exp_wpp =</span> <span class="fu">mean</span>(life_exp_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>df_mid <span class="ot">&lt;-</span> df_mid <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">mid_imr_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(imr_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>df_mid <span class="ot">&lt;-</span> df_mid <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">mid_mys_age_ratio_ihme =</span> <span class="fu">mean</span>(mys_age_ratio_ihme, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>df_mid <span class="ot">&lt;-</span> df_mid <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">mid_asfr_adol_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(asfr_adol_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>df_mid <span class="ot">&lt;-</span> <span class="fu">unique</span>(df_mid[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;mid_life_exp_wpp&quot;</span>, <span class="st">&quot;mid_imr_wpp&quot;</span>, <span class="st">&quot;mid_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;mid_asfr_adol_wpp&quot;</span>)])</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>df_Hlop <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">%in%</span> <span class="dv">1965</span><span class="sc">:</span><span class="dv">2018</span> <span class="sc">&amp;</span> df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;H&gt;G&quot;</span>, </span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;class_vv&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)]</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>df_Hlop <span class="ot">&lt;-</span> df_Hlop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">HG_life_exp_wpp =</span> <span class="fu">mean</span>(life_exp_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>df_Hlop <span class="ot">&lt;-</span> df_Hlop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">HG_imr_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(imr_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>df_Hlop <span class="ot">&lt;-</span> df_Hlop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">HG_mys_age_ratio_ihme =</span> <span class="fu">mean</span>(mys_age_ratio_ihme, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>df_Hlop <span class="ot">&lt;-</span> df_Hlop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">HG_asfr_adol_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(asfr_adol_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>df_Hlop <span class="ot">&lt;-</span> <span class="fu">unique</span>(df_Hlop[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;HG_life_exp_wpp&quot;</span>, <span class="st">&quot;HG_imr_wpp&quot;</span>, <span class="st">&quot;HG_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;HG_asfr_adol_wpp&quot;</span>)])</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>df_Glop <span class="ot">&lt;-</span> df[df<span class="sc">$</span>year <span class="sc">%in%</span> <span class="dv">1965</span><span class="sc">:</span><span class="dv">2018</span> <span class="sc">&amp;</span> df<span class="sc">$</span>class_vv <span class="sc">==</span> <span class="st">&quot;G&gt;H&quot;</span>, </span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>             <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;class_vv&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)]</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>df_Glop <span class="ot">&lt;-</span> df_Glop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">GH_life_exp_wpp =</span> <span class="fu">mean</span>(life_exp_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>df_Glop <span class="ot">&lt;-</span> df_Glop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">GH_imr_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(imr_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>df_Glop <span class="ot">&lt;-</span> df_Glop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">GH_mys_age_ratio_ihme =</span> <span class="fu">mean</span>(mys_age_ratio_ihme, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>df_Glop <span class="ot">&lt;-</span> df_Glop <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">GH_asfr_adol_wpp =</span> <span class="sc">-</span><span class="fu">mean</span>(asfr_adol_wpp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>df_Glop <span class="ot">&lt;-</span> <span class="fu">unique</span>(df_Glop[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;GH_life_exp_wpp&quot;</span>, <span class="st">&quot;GH_imr_wpp&quot;</span>, <span class="st">&quot;GH_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;GH_asfr_adol_wpp&quot;</span>)])</span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">merge</span>(df_new, df_low, <span class="at">by =</span> <span class="st">&quot;year&quot;</span>, <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">merge</span>(df_new, df_mid, <span class="at">by =</span> <span class="st">&quot;year&quot;</span>, <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">merge</span>(df_new, df_Hlop, <span class="at">by =</span> <span class="st">&quot;year&quot;</span>, <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">merge</span>(df_new, df_Glop, <span class="at">by =</span> <span class="st">&quot;year&quot;</span>, <span class="at">all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>df_new <span class="ot">&lt;-</span> <span class="fu">merge</span>(df_new, df_upp, <span class="at">by =</span> <span class="st">&quot;year&quot;</span>, <span class="at">all =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <div id="life-expectancy" class="section level5">
 <h5>Life expectancy</h5>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf(file = paste(&quot;_SIGHT_draft_report/trend_life_exp_wpp.pdf&quot;, sep = &quot;&quot;), width = 10, height = 5)</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fl">0.1</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_new[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;avg_life_exp_wpp&quot;</span>, <span class="st">&quot;low_life_exp_wpp&quot;</span>, <span class="st">&quot;HG_life_exp_wpp&quot;</span>, <span class="st">&quot;GH_life_exp_wpp&quot;</span>, <span class="st">&quot;mid_life_exp_wpp&quot;</span>, <span class="st">&quot;upp_life_exp_wpp&quot;</span>)])</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="at">x =</span> dat<span class="sc">$</span>year, <span class="at">y =</span> dat[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>, </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;global average&quot;</span>, <span class="st">&quot;low classification&quot;</span>, <span class="st">&quot;H&gt;G classification&quot;</span>, <span class="st">&quot;G&gt;H classification&quot;</span>, <span class="st">&quot;mid classification&quot;</span>, <span class="st">&quot;high classification&quot;</span>), </span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span></code></pre></div>
-<p><img src="classifications_files/figure-html/pdf_life-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>class_vv <span class="ot">&lt;-</span> <span class="fu">factor</span>(df<span class="sc">$</span>class_vv, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;low&quot;</span>, <span class="st">&quot;G&gt;H&quot;</span>, <span class="st">&quot;H&gt;G&quot;</span>, <span class="st">&quot;mid&quot;</span>, <span class="st">&quot;upp&quot;</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1970</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(class_vv)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> life_exp_wpp, <span class="at">group =</span> class_vv, <span class="at">color =</span> class_vv), </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> life_exp_wpp), </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="at">color =</span> <span class="st">&quot;gray&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Classifications&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
+<p><img src="classifications_files/figure-html/trend_life-1.png" width="67%" height="67%" /></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">device =</span> <span class="st">&quot;pdf&quot;</span>, <span class="at">height =</span> <span class="dv">4</span>, <span class="at">width =</span> <span class="fl">6.5</span>, <span class="at">filename =</span> <span class="st">&quot;_figures/trend_life_exp_wpp.pdf&quot;</span>)</span></code></pre></div>
 </div>
 <div id="imr" class="section level5">
 <h5>IMR</h5>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf(file = paste(&quot;_SIGHT_draft_report/trend_imr_wpp.pdf&quot;, sep = &quot;&quot;), width = 10, height = 5)</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fl">0.1</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_new[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;avg_imr_wpp&quot;</span>, <span class="st">&quot;low_imr_wpp&quot;</span>, <span class="st">&quot;HG_imr_wpp&quot;</span>, <span class="st">&quot;GH_imr_wpp&quot;</span>, <span class="st">&quot;mid_imr_wpp&quot;</span>, <span class="st">&quot;upp_imr_wpp&quot;</span>)])</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="at">x =</span> dat<span class="sc">$</span>year, <span class="at">y =</span> dat[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>, </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;global average&quot;</span>, <span class="st">&quot;low classification&quot;</span>, <span class="st">&quot;H&gt;G classification&quot;</span>, <span class="st">&quot;G&gt;H classification&quot;</span>, <span class="st">&quot;mid classification&quot;</span>, <span class="st">&quot;high classification&quot;</span>), </span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span></code></pre></div>
-<p><img src="classifications_files/figure-html/pdf_imr-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1970</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(class_vv)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> <span class="sc">-</span>imr_wpp, <span class="at">group =</span> class_vv, <span class="at">color =</span> class_vv), </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> <span class="sc">-</span>imr_wpp), </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="at">color =</span> <span class="st">&quot;gray&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Classifications&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
+<p><img src="classifications_files/figure-html/trend_imr-1.png" width="67%" height="67%" /></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">device =</span> <span class="st">&quot;pdf&quot;</span>, <span class="at">height =</span> <span class="dv">4</span>, <span class="at">width =</span> <span class="fl">6.5</span>, <span class="at">filename =</span> <span class="st">&quot;_figures/trend_imr_wpp.pdf&quot;</span>)</span></code></pre></div>
 </div>
 <div id="mys" class="section level5">
 <h5>MYS</h5>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf(file = paste(&quot;_SIGHT_draft_report/trend_mys_age_ratio_ihme.pdf&quot;, sep = &quot;&quot;), width = 10, height = 5)</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fl">0.1</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_new[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;avg_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;low_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;HG_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;GH_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;mid_mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;upp_mys_age_ratio_ihme&quot;</span>)])</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="at">x =</span> dat<span class="sc">$</span>year, <span class="at">y =</span> dat[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>, </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;global average&quot;</span>, <span class="st">&quot;low classification&quot;</span>, <span class="st">&quot;H&gt;G classification&quot;</span>, <span class="st">&quot;G&gt;H classification&quot;</span>, <span class="st">&quot;mid classification&quot;</span>, <span class="st">&quot;high classification&quot;</span>), </span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span></code></pre></div>
-<p><img src="classifications_files/figure-html/pdf_mys-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1970</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(class_vv)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> mys_age_ratio_ihme, <span class="at">group =</span> class_vv, <span class="at">color =</span> class_vv), </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> mys_age_ratio_ihme), </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="at">color =</span> <span class="st">&quot;gray&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Classifications&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
+<p><img src="classifications_files/figure-html/trend_mys-1.png" width="67%" height="67%" /></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">device =</span> <span class="st">&quot;pdf&quot;</span>, <span class="at">height =</span> <span class="dv">4</span>, <span class="at">width =</span> <span class="fl">6.5</span>, <span class="at">filename =</span> <span class="st">&quot;_figures/trend_mys_age_ratio_ihme.pdf&quot;</span>)</span></code></pre></div>
 </div>
 <div id="asfr" class="section level5">
 <h5>ASFR</h5>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf(file = paste(&quot;_SIGHT_draft_report/trend_asfr_adol_wpp.pdf&quot;, sep = &quot;&quot;), width = 10, height = 5)</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fl">0.1</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(df_new[, <span class="fu">c</span>(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;avg_asfr_adol_wpp&quot;</span>, <span class="st">&quot;low_asfr_adol_wpp&quot;</span>, <span class="st">&quot;HG_asfr_adol_wpp&quot;</span>, <span class="st">&quot;GH_asfr_adol_wpp&quot;</span>, <span class="st">&quot;mid_asfr_adol_wpp&quot;</span>, <span class="st">&quot;upp_asfr_adol_wpp&quot;</span>)])</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">matplot</span>(<span class="at">x =</span> dat<span class="sc">$</span>year, <span class="at">y =</span> dat[, <span class="sc">-</span><span class="dv">1</span>], <span class="at">type =</span> <span class="st">&quot;l&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>, </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">&quot;&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;global average&quot;</span>, <span class="st">&quot;low classification&quot;</span>, <span class="st">&quot;H&gt;G classification&quot;</span>, <span class="st">&quot;G&gt;H classification&quot;</span>, <span class="st">&quot;mid classification&quot;</span>, <span class="st">&quot;high classification&quot;</span>), </span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">lty =</span> <span class="st">&quot;solid&quot;</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>,<span class="st">&quot;orange&quot;</span>, <span class="st">&quot;purple&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>))</span></code></pre></div>
-<p><img src="classifications_files/figure-html/pdf_asfr-1.png" width="67%" height="67%" /></p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dev.off()</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1970</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(class_vv)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> <span class="sc">-</span>asfr_adol_wpp, <span class="at">group =</span> class_vv, <span class="at">color =</span> class_vv), </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stat_summary</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> <span class="sc">-</span>asfr_adol_wpp), </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">&quot;line&quot;</span>, <span class="at">color =</span> <span class="st">&quot;gray&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;&quot;</span>, <span class="at">y =</span> <span class="st">&quot;&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Classifications&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
+<p><img src="classifications_files/figure-html/trend_asfr-1.png" width="67%" height="67%" /></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">device =</span> <span class="st">&quot;pdf&quot;</span>, <span class="at">height =</span> <span class="dv">4</span>, <span class="at">width =</span> <span class="fl">6.5</span>, <span class="at">filename =</span> <span class="st">&quot;_figures/trend_asfr_adol_wpp.pdf&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="trends-by-1995-classification-groups" class="section level4 tabset tabset-fade tabset-pills">
