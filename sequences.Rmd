@@ -64,8 +64,14 @@ lapply(unique(df$country), function(ctry) {
 ```{r sequencing, results = 'hide', out.width = "25%", out.height = "25%"}
 missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan", "Serbia & Montenegro")
 # table(df[, c("conf_intra", "wars_intra")])
-ViolenceCats <- function(dataset = df[!(df$country %in% missing_countries), ], start_yr = 1975, end_yr = 2015, yrs_long = 3) {
-  df <- dataset %>% select(country, year, conf_intra, wars_intra, latentmean_fariss, v2caviol, v2clkill, v2cltort) %>%
+ViolenceVars <- function(dataset = df[!(df$country %in% missing_countries), ], start_yr = 1975, end_yr = 2015, yrs_long = 3) {
+  df <- dataset %>% 
+    select(country, year, 
+           conf_intra, wars_intra, 
+           latentmean_fariss, v2caviol, v2clkill, v2cltort, 
+           conflicts_osv, conflicts_nsc, 
+           deaths_all_int, deaths_all_osv, deaths_all_nsc, 
+           deaths_all_int_rate, deaths_all_osv_rate, deaths_all_nsc_rate, hom_odcwho_rate) %>%
     filter(year >= start_yr & year <= end_yr) %>%
     arrange(country, year) %>%
     group_by(country) %>%
@@ -73,39 +79,50 @@ ViolenceCats <- function(dataset = df[!(df$country %in% missing_countries), ], s
            war_yrs = sum(wars_intra > 0),
            latentmean_fariss = mean(latentmean_fariss, na.rm = TRUE),
            v2caviol = mean(v2caviol, na.rm = TRUE),
+           v2cltort = mean(v2cltort, na.rm = TRUE),
            v2clkill = mean(v2clkill, na.rm = TRUE),
-           v2cltort = mean(v2cltort, na.rm = TRUE)) %>%
+           osv_yrs = sum(conflicts_osv > 0),
+           nsc_yrs = sum(conflicts_nsc > 0),
+           deaths_all_int_rate = mean(deaths_all_int_rate, na.rm = TRUE),
+           deaths_all_osv_rate = mean(deaths_all_osv_rate, na.rm = TRUE),
+           deaths_all_nsc_rate = mean(deaths_all_nsc_rate, na.rm = TRUE),
+           hom_odcwho_rate = mean(hom_odcwho_rate, na.rm = TRUE)) %>%
     filter(year == end_yr)
+  ### internal conflict
   df$conflict[df$conflict_yrs > 0] <- "conflict"
   df$conflict[df$conflict_yrs > (yrs_long -1)] <- paste("conflict (", yrs_long, "+ yrs)", sep = "")
   df$conflict[df$war_yrs > 0] <- "war"
   df$conflict[df$war_yrs > (yrs_long -1)] <- paste("war (", yrs_long, "+ yrs)", sep = "")
   df$conflict[df$conflict_yrs == 0 & df$war_yrs == 0] <- "none"
   df$conflict <- as.factor(df$conflict)
-  df <- df %>% select(country, latentmean_fariss, v2caviol, v2clkill, v2cltort, conflict)
-  vars <- c("latentmean_fariss", "v2caviol", "v2clkill", "v2cltort")
+  ### OSV
+  df$osv[df$osv_yrs == 0] <- "none"
+  df$osv[df$osv_yrs > 0] <- "OSV"
+  df$osv[df$osv_yrs > (yrs_long -1)] <- paste("OSV (", yrs_long, "+ yrs)", sep = "")
+  df$osv <- as.factor(df$osv)
+  ### NSC
+  df$nsc[df$nsc_yrs == 0] <- "none"
+  df$nsc[df$nsc_yrs > 0] <- "NSC"
+  df$nsc[df$nsc_yrs > (yrs_long -1)] <- paste("NSC (", yrs_long, "+ yrs)", sep = "")
+  df$nsc <- as.factor(df$nsc)
+  vars <- c("latentmean_fariss", "v2caviol", "v2clkill", "v2cltort", "hom_odcwho_rate")
   df[, vars] <- lapply(df[, vars], function(col) {
     col[is.nan(col)] <- NA
-    col
-    # new <- rep(NA, length(col))
-    # new[col >= quantile(col, na.rm = TRUE)[1]] <- "1st quartile"
-    # new[col >= quantile(col, na.rm = TRUE)[2]] <- "2nd quartile"
-    # new[col >= quantile(col, na.rm = TRUE)[3]] <- "3rd quartile"
-    # new[col >= quantile(col, na.rm = TRUE)[4]] <- "4th quartile"
-    # return(as.factor(new))
+    return(col)
   })
+  df <- df %>% select(-year)
   names(df)[-1] <- paste(names(df)[-1], start_yr, end_yr, sep = "_")
   return(df)
 }
 # 1961-1970 < seq starts 1975 (1971-1975) <= 1971-2015
 # 1981-1990 < seq starts 1995 (1991-1995) <= 1991-2015
 violence <- list(
-  ViolenceCats(start_yr = 1971, end_yr = 2015, yrs_long = 5),
-  ViolenceCats(start_yr = 1971, end_yr = 1995, yrs_long = 5),
-  ViolenceCats(start_yr = 1976, end_yr = 1995, yrs_long = 5),
-  ViolenceCats(start_yr = 1976, end_yr = 2015, yrs_long = 5),
-  ViolenceCats(start_yr = 1991, end_yr = 2015, yrs_long = 5),
-  ViolenceCats(start_yr = 1996, end_yr = 2015, yrs_long = 5)
+  ViolenceVars(start_yr = 1971, end_yr = 2015, yrs_long = 5),
+  ViolenceVars(start_yr = 1971, end_yr = 1995, yrs_long = 5),
+  ViolenceVars(start_yr = 1976, end_yr = 1995, yrs_long = 5),
+  ViolenceVars(start_yr = 1976, end_yr = 2015, yrs_long = 5),
+  ViolenceVars(start_yr = 1991, end_yr = 2015, yrs_long = 5),
+  ViolenceVars(start_yr = 1996, end_yr = 2015, yrs_long = 5)
 )
 violence <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = violence)
 # vars <- names(df)
@@ -207,6 +224,26 @@ new$conflict_1976_1995 <- factor(new$conflict_1976_1995, levels = c("none", "con
 new$conflict_1976_2015 <- factor(new$conflict_1976_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
 new$conflict_1996_2015 <- factor(new$conflict_1996_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
 # round(addmargins(prop.table(table(new[, c("conflict_1976_2015", "class_vv1975")]), margin = 2), margin = 1), 3) * 100
+# table(new[, c("class_vv1995", "osv_1996_2015")])
+# new$osv_1996_2015 <- factor(new$osv_1996_2015, levels = c("none", "OSV", "OSV (5+ yrs)"))
+ggplot(data = new[!is.na(new$class_vv1995), ], 
+       mapping = aes(x = class_vv1995, fill = osv_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "OSV", "OSV (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_osv_1995_1996.pdf")
+# table(new[, c("class_vv1995", "nsc_1996_2015")])
+# new$nsc_1996_2015 <- factor(new$nsc_1996_2015, levels = c("none", "NSC", "NSC (5+ yrs)"))
+ggplot(data = new[!is.na(new$class_vv1995), ], 
+       mapping = aes(x = class_vv1995, fill = nsc_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "NSC", "NSC (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_nsc_1995_1996.pdf")
 ggplot(data = new[!is.na(new$class_vv1975), ], 
        mapping = aes(x = class_vv1975, fill = conflict_1976_2015)) +
   geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
@@ -331,7 +368,7 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
 })
 plotClass(class = "no 1975 classification", 
           dat = new1975[is.na(new1975$class_vv1975), ],
-          range = range_both)
+          range = range_both_new)
 ggsave(device = "pdf", filename = "_figures/sequences_class1975_origin_NA.pdf", width = 5, height = 5)
 ```
 
@@ -379,7 +416,7 @@ lapply(c("low", "H>G", "G>H", "mid", "upp"), function(class) {
 })
 plotClass(class = "no 1995 classification", 
           dat = new1995[is.na(new1995$class_vv1995), ],
-          range = range_both)
+          range = range_both_new)
 ggsave(device = "pdf", filename = "_figures/sequences_class1995_origin_NA.pdf", width = 5, height = 5)
 
 ```
@@ -446,8 +483,10 @@ lapply(c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), functi
 
 #### Bivariate distributions {.tabset .tabset-fade .tabset-pills}
 
-##### Health change
+##### Health
 ```{r bivariate_health}
+new$typology1975 <- factor(new$typology1975, levels = c("both setbacks", "G-setbacks", "H-setbacks", "G-led", "H-led"))
+new$typology1995 <- factor(new$typology1995, levels = c("both setbacks", "G-setbacks", "H-setbacks", "G-led", "H-led"))
 # round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")]), margin = 1) * 100, margin = 2), 1)
 data_summary <- function(x) {
   m <- mean(x)
@@ -455,24 +494,27 @@ data_summary <- function(x) {
   ymax <- quantile(x)[["75%"]]
   return(c(y = m, ymin = ymin, ymax = ymax))
 }
-ggplot(data = new, mapping = aes(x = health_period, y = typology1975)) +
+rangeHG <- range(new$health_period, new$gender_period)
+ggplot(data = new, 
+       mapping = aes(x = health_period, y = typology1975)) +
   geom_boxplot() + 
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
   geom_vline(xintercept = 0, color = "gray") + 
-  # coord_cartesian(xlim = c(0, NA)) + 
+  coord_cartesian(xlim = rangeHG) + 
   labs(x = "Health change per period", y = "Sequence (1975-2015)") + 
   theme_minimal()
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_health.pdf")
 ```
 
-##### Gender change
+##### Gender
 ```{r bivariate_gender}
 ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) +
   geom_boxplot() + 
   stat_summary(fun = mean, geom = "point", shape = 18) +
   # stat_summary(fun.data = data_summary, geom = "pointrange") + 
   geom_vline(xintercept = 0, color = "gray") + 
+  coord_cartesian(xlim = rangeHG) + 
   labs(x = "Gender change per period", y = "Sequence (1975-2015)") + 
   theme_minimal()
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_gender.pdf")
@@ -505,7 +547,7 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_e
 ##### Internal conflict
 ```{r conflict}
 new$conflict_1971_2015 <- factor(new$conflict_1971_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
-# round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")]), margin = 1), margin = 2), 3) * 100
+new$conflict_1991_2015 <- factor(new$conflict_1991_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
 ggplot(data = new, 
        mapping = aes(y = typology1975, fill = conflict_1971_2015)) +
   geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
@@ -515,12 +557,51 @@ ggplot(data = new,
         legend.key.size = unit(0.3, 'cm')) + 
   labs(x = "Number of countries", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_conflict.pdf")
+ggplot(data = new, 
+       mapping = aes(y = typology1995, fill = conflict_1991_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_conflict.pdf")
+round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")]), margin = 1), margin = 2), 3) * 100
+round(addmargins(prop.table(table(new[, c("typology1995", "conflict_1991_2015")]), margin = 1), margin = 2), 3) * 100
+```
+
+##### NSC
+```{r nsc}
+new$nsc_1991_2015 <- factor(new$nsc_1991_2015, levels = c("none", "NSC", "NSC (5+ yrs)"))
+ggplot(data = new, 
+       mapping = aes(y = typology1995, fill = nsc_1991_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "NSC", "NSC (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_nsc.pdf")
+round(addmargins(prop.table(table(new[, c("typology1995", "nsc_1991_2015")]), margin = 1), margin = 2), 3) * 100
+```
+
+##### OSV
+```{r osv}
+new$osv_1991_2015 <- factor(new$osv_1991_2015, levels = c("none", "OSV", "OSV (5+ yrs)"))
+ggplot(data = new, 
+       mapping = aes(y = typology1995, fill = osv_1991_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "OSV", "OSV (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_osv.pdf")
+round(addmargins(prop.table(table(new[, c("typology1995", "osv_1991_2015")]), margin = 1), margin = 2), 3) * 100
 ```
 
 ##### LPI
 ```{r lpi}
-# round(addmargins(prop.table(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]), margin = 1) * 100, margin = 2), 1)
-# addmargins(table(new[, c("typology1975", "latentmean_fariss_1971_2015")]))
 ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology1975)) +
   geom_boxplot() + 
   stat_summary(fun = mean, geom = "point", shape = 18) +
@@ -528,6 +609,13 @@ ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology19
   theme_minimal() + 
   labs(x = "Average LPI", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_lpi.pdf")
+ggplot(data = new, mapping = aes(x = latentmean_fariss_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  theme_minimal() + 
+  labs(x = "Average LPI", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_lpi.pdf")
 ```
 
 ##### Extra-judicial killings
@@ -539,6 +627,31 @@ ggplot(data = new, mapping = aes(x = v2clkill_1971_2015, y = typology1975)) +
   theme_minimal() + 
   labs(x = "Average extrajudicial killings score", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_killings.pdf")
+ggplot(data = new, mapping = aes(x = v2clkill_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  theme_minimal() + 
+  labs(x = "Average extrajudicial killings score", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_killings.pdf")
+```
+
+##### Torture
+```{r torture}
+ggplot(data = new, mapping = aes(x = v2cltort_1971_2015, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  theme_minimal() + 
+  labs(x = "Average torture score", y = "Sequence (1975-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_torture.pdf")
+ggplot(data = new, mapping = aes(x = v2cltort_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  theme_minimal() + 
+  labs(x = "Average torture score", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_torture.pdf")
 ```
 
 ##### Societal violence
@@ -550,6 +663,24 @@ ggplot(data = new, mapping = aes(x = v2caviol_1971_2015, y = typology1975)) +
   theme_minimal() + 
   labs(x = "Average societal violence score", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_societal.pdf")
+ggplot(data = new, mapping = aes(x = v2caviol_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
+  theme_minimal() + 
+  labs(x = "Average societal violence score", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_societal.pdf")
+```
+
+##### Homicides
+```{r homicides}
+ggplot(data = new, mapping = aes(x = hom_odcwho_rate_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun = mean, geom = "point", shape = 18) +
+  # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
+  theme_minimal() + 
+  labs(x = "Average homicide rate", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_homicides.pdf")
 ```
 
 ```{r violence_rates, fig.width = 10, fig.height = 10, echo = FALSE, eval = FALSE}
