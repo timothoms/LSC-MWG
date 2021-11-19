@@ -1,8 +1,8 @@
 ---
 title: "Mapping trajectories"
 params: 
-  cache: false
-  optimize: true
+  cache: true
+  optimize: false
 ---
 
 ```{r setup, include = FALSE}
@@ -498,8 +498,7 @@ rangeHG <- range(new$health_period, new$gender_period)
 ggplot(data = new, 
        mapping = aes(x = health_period, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   geom_vline(xintercept = 0, color = "gray") + 
   coord_cartesian(xlim = rangeHG) + 
   labs(x = "Health change per period", y = "Sequence (1975-2015)") + 
@@ -511,8 +510,7 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_h
 ```{r bivariate_gender}
 ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   geom_vline(xintercept = 0, color = "gray") + 
   coord_cartesian(xlim = rangeHG) + 
   labs(x = "Gender change per period", y = "Sequence (1975-2015)") + 
@@ -524,8 +522,7 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_g
 ```{r bivariate_both}
 ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   labs(x = "Health & gender change per period", y = "Sequence (1975-2015)") + 
   geom_vline(xintercept = 0, color = "gray") + 
   theme_minimal()
@@ -536,8 +533,7 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_h
 ```{r bivariate_efficiency}
 ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   geom_vline(xintercept = 0, color = "gray") + 
   labs(x = "Path efficiency", y = "Sequence (1975-2015)") + 
   theme_minimal()
@@ -604,15 +600,13 @@ round(addmargins(prop.table(table(new[, c("typology1995", "osv_1991_2015")]), ma
 ```{r lpi}
 ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   theme_minimal() + 
   labs(x = "Average LPI", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_lpi.pdf")
 ggplot(data = new, mapping = aes(x = latentmean_fariss_1991_2015, y = typology1995)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   theme_minimal() + 
   labs(x = "Average LPI", y = "Sequence (1995-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_lpi.pdf")
@@ -622,15 +616,13 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences19
 ```{r killings}
 ggplot(data = new, mapping = aes(x = v2clkill_1971_2015, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   theme_minimal() + 
   labs(x = "Average extrajudicial killings score", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_killings.pdf")
 ggplot(data = new, mapping = aes(x = v2clkill_1991_2015, y = typology1995)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   theme_minimal() + 
   labs(x = "Average extrajudicial killings score", y = "Sequence (1995-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_killings.pdf")
@@ -640,15 +632,13 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences19
 ```{r torture}
 ggplot(data = new, mapping = aes(x = v2cltort_1971_2015, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   theme_minimal() + 
   labs(x = "Average torture score", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_torture.pdf")
 ggplot(data = new, mapping = aes(x = v2cltort_1991_2015, y = typology1995)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
-  # stat_summary(fun.data = data_summary, geom = "pointrange") + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   theme_minimal() + 
   labs(x = "Average torture score", y = "Sequence (1995-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_torture.pdf")
@@ -658,14 +648,14 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences19
 ```{r societal}
 ggplot(data = new, mapping = aes(x = v2caviol_1971_2015, y = typology1975)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
   theme_minimal() + 
   labs(x = "Average societal violence score", y = "Sequence (1975-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_societal.pdf")
 ggplot(data = new, mapping = aes(x = v2caviol_1991_2015, y = typology1995)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
   theme_minimal() + 
   labs(x = "Average societal violence score", y = "Sequence (1995-2015)")
@@ -676,7 +666,7 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences19
 ```{r homicides}
 ggplot(data = new, mapping = aes(x = hom_odcwho_rate_1991_2015, y = typology1995)) +
   geom_boxplot() + 
-  stat_summary(fun = mean, geom = "point", shape = 18) +
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
   theme_minimal() + 
   labs(x = "Average homicide rate", y = "Sequence (1995-2015)")
