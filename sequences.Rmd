@@ -664,12 +664,12 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences19
 
 ##### Homicides
 ```{r homicides}
-ggplot(data = new, mapping = aes(x = hom_odcwho_rate_1991_2015, y = typology1995)) +
+ggplot(data = new, mapping = aes(x = log(hom_odcwho_rate_1991_2015), y = typology1995)) +
   geom_boxplot() + 
   stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
   # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
   theme_minimal() + 
-  labs(x = "Average homicide rate", y = "Sequence (1995-2015)")
+  labs(x = "Average logged homicide rate", y = "Sequence (1995-2015)")
 ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_homicides.pdf")
 ```
 
