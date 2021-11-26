@@ -228,13 +228,6 @@ df$class_vv[df$health_class > 3 & df$gender_class > 3] <- "upp"
 df$class_vv[!(df$health_class < 3 & df$gender_class < 3) & !(df$health_class > 3 & df$gender_class > 3)] <- "mid"
 df$class_vv[df$class_vv == "mid" & df$health_class > df$gender_class] <- "H>G"
 df$class_vv[df$class_vv == "mid" & df$health_class < df$gender_class] <- "G>H"
-## alt
-# df$class_vv_alt <- NA
-# df$class_vv_alt[df$health_class_alt < 3 & df$gender_class_alt < 3] <- "low"
-# df$class_vv_alt[df$health_class_alt > 3 & df$gender_class_alt > 3] <- "upp"
-# df$class_vv_alt[!(df$health_class_alt < 3 & df$gender_class_alt < 3) & !(df$health_class_alt > 3 & df$gender_class_alt > 3)] <- "mid"
-# df$class_vv_alt[df$class_vv_alt == "mid" & df$health_class_alt > df$gender_class_alt] <- "H>G"
-# df$class_vv_alt[df$class_vv_alt == "mid" & df$health_class_alt < df$gender_class_alt] <- "G>H"
 # addmargins(table(df$class_vv, df$class))
 df$class_low <- ifelse(df$class_vv == "low", 1, 0)
 df$class_upp <- ifelse(df$class_vv == "upp", 1, 0)

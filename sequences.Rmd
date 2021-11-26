@@ -1,8 +1,8 @@
 ---
 title: "Mapping trajectories"
 params: 
-  cache: true
-  optimize: false
+  cache: false
+  optimize: true
 ---
 
 ```{r setup, include = FALSE}
@@ -152,13 +152,7 @@ df <- df[df$period == df$year & df$period %in% seq(1975, 2015, 5), names(df) != 
 #            imr = table(df$period, is.na(df$imr_wpp_avg))[, 1],
 #            asfr = table(df$period, is.na(df$asfr_adol_wpp_avg))[, 1],
 #            mys = table(df$period, is.na(df$mys_age_ratio_ihme_avg))[, 1])
-class1975 <- df[IsTrue(df$period == 1975), c("country", "class", "health_class", "gender_class")]
-class1975$class_vv <- NA
-class1975$class_vv[class1975$health_class < 3 & class1975$gender_class < 3] <- "low"
-class1975$class_vv[class1975$health_class > 3 & class1975$gender_class > 3] <- "upp"
-class1975$class_vv[!(class1975$health_class < 3 & class1975$gender_class < 3) & !(class1975$health_class > 3 & class1975$gender_class > 3)] <- "mid"
-class1975$class_vv[class1975$class_vv == "mid" & class1975$health_class > class1975$gender_class] <- "H>G"
-class1975$class_vv[class1975$class_vv == "mid" & class1975$health_class < class1975$gender_class] <- "G>H"
+class1975 <- df[IsTrue(df$period == 1975), c("country", "class", "health_class", "gender_class", "class_vv")]
 names(class1975)[-1] <- paste(names(class1975)[-1], "1975", sep = "")
 df <- merge(df, class1975, by = "country", all.x = TRUE)
 df <- df[!is.na(df$country), ]

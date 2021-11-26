@@ -2306,25 +2306,3 @@ lapply(c("m6", "m7"), function(mod) {
   IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
 })
 ```
-
-```{r echo = FALSE}
-knitr::asis_output("##### DV: Societal Violence")
-```
-```{r societal}
-results <- RunModels(labelspace = 20, equations = c(
-  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
-  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
-  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
-  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
-  v2caviol ~ lag_v2caviol + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_HG + lag_class_GH + lag_class_mid + lag_class_upp,
-  v2caviol ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2caviol*lag_class_HG + lag_v2caviol*lag_class_GH + lag_v2caviol*lag_class_mid + lag_v2caviol*lag_class_upp,
-  v2caviol ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2caviol*lag_class_HG + lag_v2caviol*lag_class_GH + lag_v2caviol*lag_class_mid + lag_v2caviol*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
-) 
-results$tests
-```
-```{r int_societal, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
-lapply(c("m6", "m7"), function(mod) {
-  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2caviol", title = "Effect of Societal Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
-  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2caviol", title = "Effect of Societal Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
-})
-```
