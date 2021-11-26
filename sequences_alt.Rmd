@@ -1,0 +1,679 @@
+---
+title: "Mapping trajectories"
+params: 
+  cache: false
+  optimize: false
+---
+
+```{r setup, include = FALSE}
+source("setup.R")
+knitr::opts_chunk$set(warning = FALSE, message = FALSE,
+                      fig.show = "hold",
+                      fig.width = 5, fig.height = 5, 
+                      out.width = "50%", out.height = "50%",
+                      rownames.print = FALSE, rows.print = 12, 
+                      cols.print = 10, cols.min.print = 10)
+```
+### {.tabset .tabset-fade .tabset-pills}
+
+```{r data, results = "hide"}
+IsTrue <- function(x) { !is.na(x) & x }
+load("_data/LSCMWG_working_class.RData")
+link <- "https://docs.google.com/spreadsheets/d/1KPUMNCixfyFU4KryzV0_5BYUHCUIyOq2heei9KdpSF8/edit?usp=sharing"
+googlesheets4::gs4_deauth()
+seq <- googlesheets4::read_sheet(link, sheet = "coding", na = "..")
+save(seq, file = "_data/sequences.RData")
+```
+
+```{r class, results = 'hide', out.width = "25%", out.height = "25%", eval = FALSE, echo = FALSE}
+df <- unique(df[, c("country", "period", "health_class", "gender_class", "class", "class_vv")])
+df$period <- str_sub(df$period, 7, 10)
+df <- df[!is.na(df$class) & df$period != 2020, ]
+df_new <- pivot_wider(df[, c("country", "period", "class_vv")], names_from = period, values_from = class_vv)
+df_new[, -1] <- lapply(df_new[, -1], function(col) {
+  col[is.na(col)] <- ""
+  return(col)
+})
+as.data.frame(df_new)
+df_new <- pivot_wider(df[, c("country", "period", "class")], names_from = period, values_from = class)
+df_new[, -1] <- lapply(df_new[, -1], function(col) {
+  col[is.na(col)] <- ""
+  return(col)
+})
+df <- df %>% arrange(country, period)
+df <- df %>% group_by(country) %>% 
+  mutate(lag_health_class = lag(health_class), lag_gender_class = lag(gender_class), lag_class = lag(class))
+df <- df[!is.na(df$lag_class), ]
+df <- df[IsTrue(df$lag_class != df$class), ]
+list(as.data.frame(df_new[df_new$country %in% df_new$country[!df_new$country %in% unique(df$country)], ]))
+lapply(unique(df$country), function(ctry) {
+  ggplot(df[df$country == ctry, ], 
+         aes(x = lag_gender_class, y = lag_health_class, xend = gender_class, yend = health_class)) + 
+    geom_segment(arrow = arrow(angle = 15, type = "closed")) + 
+    geom_point(aes(x = lag_gender_class[period == min(period)], 
+                   y = lag_health_class[period == min(period)]), 
+               shape = 22, size = 3, fill = "red") + 
+    geom_point(aes(x = gender_class[period == max(period)], 
+                   y = health_class[period == max(period)]), 
+               shape = 23, size = 3, fill = "green") + 
+    coord_cartesian(xlim = c(0.5, 5.5), ylim = c(0.5, 5.5)) + 
+    labs(x = "Gender", y = "Health") + theme_classic() + ggtitle(ctry)
+})
+```
+
+```{r sequencing, results = 'hide', out.width = "25%", out.height = "25%"}
+missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan", "Serbia & Montenegro")
+# table(df[, c("conf_intra", "wars_intra")])
+ViolenceVars <- function(dataset = df[!(df$country %in% missing_countries), ], start_yr = 1975, end_yr = 2015, yrs_long = 3) {
+  df <- dataset %>% 
+    select(country, year, 
+           conf_intra, wars_intra, 
+           latentmean_fariss, v2caviol, v2clkill, v2cltort, 
+           conflicts_osv, conflicts_nsc, 
+           deaths_all_int, deaths_all_osv, deaths_all_nsc, 
+           deaths_all_int_rate, deaths_all_osv_rate, deaths_all_nsc_rate, hom_odcwho_rate) %>%
+    filter(year >= start_yr & year <= end_yr) %>%
+    arrange(country, year) %>%
+    group_by(country) %>%
+    mutate(conflict_yrs = sum(conf_intra > 0),
+           war_yrs = sum(wars_intra > 0),
+           latentmean_fariss = mean(latentmean_fariss, na.rm = TRUE),
+           v2caviol = mean(v2caviol, na.rm = TRUE),
+           v2cltort = mean(v2cltort, na.rm = TRUE),
+           v2clkill = mean(v2clkill, na.rm = TRUE),
+           osv_yrs = sum(conflicts_osv > 0),
+           nsc_yrs = sum(conflicts_nsc > 0),
+           deaths_all_int_rate = mean(deaths_all_int_rate, na.rm = TRUE),
+           deaths_all_osv_rate = mean(deaths_all_osv_rate, na.rm = TRUE),
+           deaths_all_nsc_rate = mean(deaths_all_nsc_rate, na.rm = TRUE),
+           hom_odcwho_rate = mean(hom_odcwho_rate, na.rm = TRUE)) %>%
+    filter(year == end_yr)
+  ### internal conflict
+  df$conflict[df$conflict_yrs > 0] <- "conflict"
+  df$conflict[df$conflict_yrs > (yrs_long -1)] <- paste("conflict (", yrs_long, "+ yrs)", sep = "")
+  df$conflict[df$war_yrs > 0] <- "war"
+  df$conflict[df$war_yrs > (yrs_long -1)] <- paste("war (", yrs_long, "+ yrs)", sep = "")
+  df$conflict[df$conflict_yrs == 0 & df$war_yrs == 0] <- "none"
+  df$conflict <- as.factor(df$conflict)
+  ### OSV
+  df$osv[df$osv_yrs == 0] <- "none"
+  df$osv[df$osv_yrs > 0] <- "OSV"
+  df$osv[df$osv_yrs > (yrs_long -1)] <- paste("OSV (", yrs_long, "+ yrs)", sep = "")
+  df$osv <- as.factor(df$osv)
+  ### NSC
+  df$nsc[df$nsc_yrs == 0] <- "none"
+  df$nsc[df$nsc_yrs > 0] <- "NSC"
+  df$nsc[df$nsc_yrs > (yrs_long -1)] <- paste("NSC (", yrs_long, "+ yrs)", sep = "")
+  df$nsc <- as.factor(df$nsc)
+  vars <- c("latentmean_fariss", "v2caviol", "v2clkill", "v2cltort", "hom_odcwho_rate")
+  df[, vars] <- lapply(df[, vars], function(col) {
+    col[is.nan(col)] <- NA
+    return(col)
+  })
+  df <- df %>% select(-year)
+  names(df)[-1] <- paste(names(df)[-1], start_yr, end_yr, sep = "_")
+  return(df)
+}
+# 1961-1970 < seq starts 1975 (1971-1975) <= 1971-2015
+# 1981-1990 < seq starts 1995 (1991-1995) <= 1991-2015
+violence <- list(
+  ViolenceVars(start_yr = 1971, end_yr = 2015, yrs_long = 5),
+  ViolenceVars(start_yr = 1971, end_yr = 1995, yrs_long = 5),
+  ViolenceVars(start_yr = 1976, end_yr = 1995, yrs_long = 5),
+  ViolenceVars(start_yr = 1976, end_yr = 2015, yrs_long = 5),
+  ViolenceVars(start_yr = 1991, end_yr = 2015, yrs_long = 5),
+  ViolenceVars(start_yr = 1996, end_yr = 2015, yrs_long = 5)
+)
+violence <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = violence)
+# vars <- names(df)
+# vars <- vars[!str_detect(vars, "perf_")]
+# lapply(c(variables$health, variables$gender), function(x) {
+#   vars[str_detect(vars, x)]
+# })
+# vars[str_detect(vars, "class") ]
+df <- df[df$year > 1970, ] %>% 
+  arrange(country, year) %>% 
+  group_by(country, period) %>% 
+  mutate(latentmean_fariss_avg = mean(latentmean_fariss, na.rm = TRUE),
+         v2caviol_avg = mean(v2caviol, na.rm = TRUE),
+         v2clkill_avg = mean(v2clkill, na.rm = TRUE),
+         v2cltort_avg = mean(v2cltort, na.rm = TRUE),
+         hom_odcwho_rate_avg = mean(hom_odcwho_rate, na.rm = TRUE),
+         deaths_all_int_rate_avg = mean(deaths_all_int_rate, na.rm = TRUE),
+         deaths_all_nsc_rate_avg = mean(deaths_all_nsc_rate, na.rm = TRUE),
+         deaths_civilians_osv_rate_avg = mean(deaths_civilians_osv_rate, na.rm = TRUE),
+         deaths_civilians_int_rate_avg = mean(deaths_civilians_int_rate, na.rm = TRUE),
+         deaths_civilians_nsc_rate_avg = mean(deaths_civilians_nsc_rate, na.rm = TRUE))
+df <- df[, c("country", "year", "period", "health_class", "gender_class", "class", "class_vv", "class1990", "class_vv1990", "class1995", "class_vv1995", "life_exp_wpp_avg", "imr_wpp_avg", "mys_age_ratio_ihme_avg", "asfr_adol_wpp_avg", "latentmean_fariss_avg", "v2caviol_avg", "v2clkill_avg", "v2cltort_avg", "hom_odcwho_rate_avg", "deaths_all_int_rate_avg", "deaths_all_nsc_rate_avg", "deaths_civilians_osv_rate_avg", "deaths_civilians_int_rate_avg", "deaths_civilians_nsc_rate_avg")]
+df$period <- as.integer(str_sub(df$period, 7, 10))
+df <- df[df$period == df$year & df$period %in% seq(1975, 2015, 5), names(df) != "year"]
+# data.frame(class = table(df$period, is.na(df$class))[, 1],
+#            life = table(df$period, is.na(df$life_exp_wpp_avg))[, 1],
+#            imr = table(df$period, is.na(df$imr_wpp_avg))[, 1],
+#            asfr = table(df$period, is.na(df$asfr_adol_wpp_avg))[, 1],
+#            mys = table(df$period, is.na(df$mys_age_ratio_ihme_avg))[, 1])
+class1975 <- df[IsTrue(df$period == 1975), c("country", "class", "health_class", "gender_class", "class_vv")]
+names(class1975)[-1] <- paste(names(class1975)[-1], "1975", sep = "")
+df <- merge(df, class1975, by = "country", all.x = TRUE)
+df <- df[!is.na(df$country), ]
+df <- df[!(df$country %in% missing_countries), ]
+df$life_exp_wpp_avg <- as.numeric(scale(df$life_exp_wpp_avg))
+df$imr_wpp_avg <- as.numeric(scale(df$imr_wpp_avg))
+df$mys_age_ratio_ihme_avg <- as.numeric(scale(df$mys_age_ratio_ihme_avg))
+df$asfr_adol_wpp_avg <- as.numeric(scale(df$asfr_adol_wpp_avg))
+df$health <- rowMeans(df[, c("life_exp_wpp_avg", "imr_wpp_avg")], na.rm = FALSE)
+df$gender <- rowMeans(df[, c("mys_age_ratio_ihme_avg", "asfr_adol_wpp_avg")], na.rm = FALSE)
+df <- df %>% 
+  arrange(country, period) %>% 
+  group_by(country) %>% 
+  mutate(lag_imr_wpp_avg = lag(imr_wpp_avg), 
+         lag_asfr_adol_wpp_avg = lag(asfr_adol_wpp_avg),
+         lag_life_exp_wpp_avg = lag(life_exp_wpp_avg),
+         lag_mys_age_ratio_ihme_avg = lag(mys_age_ratio_ihme_avg),
+         lag_health = lag(health),
+         lag_gender = lag(gender))
+mean_health <- mean(df$health, na.rm = TRUE)
+range_health <- range(df$health, na.rm = TRUE)
+mean_gender <- mean(df$gender, na.rm = TRUE)
+range_gender <- range(df$gender, na.rm = TRUE)
+range_both <- range(c(range_health, range_gender))
+df$health_chg <- df$health - df$lag_health
+df$gender_chg <- df$gender - df$lag_gender
+df$distance <- sqrt((df$health_chg)^2 + (df$gender_chg)^2)
+# df$slope <- (df$health - df$lag_health)/(df$gender - df$lag_gender)
+df <- df %>% group_by(country) %>% mutate(total = sum(distance, na.rm = TRUE), first = min(period), last = max(period), periods = length(unique(period)))
+first <- df[df$period == df$first, c("country", "first", "periods", "class_vv1975", "class_vv1995", "total", "health", "gender")]
+names(first)[7:8] <- paste("first", names(first)[7:8], sep = "_")
+last <- df[df$period == df$last, c("country", "health", "gender")]
+names(last)[-1] <- paste("last", names(last)[-1], sep = "_")
+new <- merge(first, last, by = "country")
+new$distance <- sqrt((new$last_health - new$first_health)^2 + (new$last_gender - new$first_gender)^2)
+new$dist_total <- new$distance / new$total
+new$dist_period <- new$distance / new$periods
+new$health_period <- (new$last_health - new$first_health) / new$periods
+new$gender_period <- (new$last_gender - new$first_gender) / new$periods
+new[, -c(1:5)] <- lapply(new[, -c(1:5)], round, 3)
+vars <- c("dist_total", "dist_period", "health_period", "gender_period")
+new[, paste(vars, "quart", sep = "_")] <- lapply(new[, vars], function(col) {
+  new <- rep(NA, length(col))
+  new[col >= quantile(col, na.rm = TRUE)[1]] <- "1st quartile"
+  new[col >= quantile(col, na.rm = TRUE)[2]] <- "2nd quartile"
+  new[col >= quantile(col, na.rm = TRUE)[3]] <- "3rd quartile"
+  new[col >= quantile(col, na.rm = TRUE)[4]] <- "4th quartile"
+  return(as.factor(new))
+})
+new <- new[, !names(new) %in% c("last_health", "first_health", "last_gender", "first_gender")]
+new <- merge(seq[, names(seq)[!str_detect(names(seq), "sequence")]], new, by = "country", all = TRUE)
+new <- merge(new, violence, by = "country", all = TRUE)
+df <- merge(df, seq[, names(seq)[!str_detect(names(seq), "sequence")]], by = "country", all = TRUE)
+df <- merge(df, violence, by = "country", all = TRUE)
+```
+
+```{r cross-tabs, include = FALSE, fig.show = "hide"}
+new$class_vv1975 <- factor(new$class_vv1975, levels = c("low", "G>H", "H>G", "upp"))
+new$class_vv1995 <- factor(new$class_vv1995, levels = c("low", "G>H", "H>G", "upp"))
+table(new$class_vv1975, useNA = "ifany")
+table(new$class_vv1995, useNA = "ifany")
+new$conflict_1976_1995 <- factor(new$conflict_1976_1995, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+new$conflict_1976_2015 <- factor(new$conflict_1976_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+new$conflict_1996_2015 <- factor(new$conflict_1996_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+# round(addmargins(prop.table(table(new[, c("conflict_1976_2015", "class_vv1975")]), margin = 2), margin = 1), 3) * 100
+# table(new[, c("class_vv1995", "osv_1996_2015")])
+# new$osv_1996_2015 <- factor(new$osv_1996_2015, levels = c("none", "OSV", "OSV (5+ yrs)"))
+ggplot(data = new[!is.na(new$class_vv1995), ], 
+       mapping = aes(x = class_vv1995, fill = osv_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "OSV", "OSV (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_osv_1995_1996.pdf")
+# table(new[, c("class_vv1995", "nsc_1996_2015")])
+# new$nsc_1996_2015 <- factor(new$nsc_1996_2015, levels = c("none", "NSC", "NSC (5+ yrs)"))
+ggplot(data = new[!is.na(new$class_vv1995), ], 
+       mapping = aes(x = class_vv1995, fill = nsc_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "NSC", "NSC (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_nsc_1995_1996.pdf")
+ggplot(data = new[!is.na(new$class_vv1975), ], 
+       mapping = aes(x = class_vv1975, fill = conflict_1976_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1975_1976.pdf")
+# round(addmargins(prop.table(table(new[, c("conflict_1976_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1975), ], 
+       mapping = aes(x = class_vv1975, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1975_1996.pdf")
+# round(addmargins(prop.table(table(new[, c("conflict_1996_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1995), ], 
+       mapping = aes(x = class_vv1995, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1996.pdf")
+# round(addmargins(prop.table(table(new[new$conflict_1976_1995 == "none", c("conflict_1996_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1995) & new$conflict_1976_1995 == "none", ], 
+       mapping = aes(x = class_vv1995, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1996_prenone.pdf")
+# round(addmargins(prop.table(table(new[new$conflict_1976_1995 != "none", c("conflict_1996_2015", "class_vv1995")]), margin = 2), margin = 1), 3) * 100
+ggplot(data = new[!is.na(new$class_vv1995) & new$conflict_1976_1995 != "none", ], 
+       mapping = aes(x = class_vv1995, fill = conflict_1996_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top", legend.key.size = unit(0.3, 'cm')) + 
+  labs(y = "Number of countries", x = "")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_conflict_1995_1996_presome.pdf")
+```
+
+#### Countries
+```{r countries, results = 'hide', out.width = "33%", out.height = "33%"}
+lapply(unique(df$country), function(ctry) {
+  ggplot(data = df[df$country == ctry  & df$period > 1975, ], # & !is.na(df$lag_health) & !is.na(df$lag_gender)
+         mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health) ) + 
+    coord_fixed(ratio = 1) + 
+    geom_vline(xintercept = mean_gender, color = "gray") + 
+    geom_hline(yintercept = mean_health, color = "gray") + 
+    geom_abline(intercept = 0, slope = 1, color = "gray") + 
+    geom_segment(lineend = "round", mapping = aes(color = as.factor(period))) + 
+    scale_color_manual(values = c("1975" = "gray", "1980" = "red", "1985" = "orange", "1990" = "red", "1995" = "orange", 
+                                  "2000" = "purple", "2005" = "blue", "2010" = "purple", "2015" = "blue")) +
+    geom_point(aes(x = lag_gender[period == min(period)], y = lag_health[period == min(period)]), 
+               shape = 20, size = 0.75, color = "green", fill = "green") + 
+    geom_point(aes(x = gender[period == max(period)], y = health[period == max(period)]), 
+               shape = 20, size = 0.75, color = "red", fill = "red") + 
+    coord_cartesian(xlim = range_both, ylim = range_both) + 
+    labs(x = "Gender", y = "Health") + 
+    theme_classic() + theme(legend.position = "none") + 
+    ggtitle(label = ctry, subtitle = paste("\nfrom 1975: ", seq$typology1975[seq$country == ctry],
+                                           "\nfrom 1995: ", seq$typology1995[seq$country == ctry]))
+})
+```
+
+#### Classification {.tabset .tabset-fade .tabset-pills}
+
+##### 1975
+```{r class_1975, results = 'hide', out.width = "33%", out.height = "33%"}
+lookup <- table(df$class_vv1975[df$period == 2015])
+lookup["no 1975 classification"] <- sum(is.na(df$class_vv1975[df$period == 2015]))
+plotClass <- function(class, dat, range) {
+  ggplot(data = dat, 
+         mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health, group = country, color = country)) + 
+    coord_fixed(ratio = 1) + 
+    geom_vline(xintercept = mean_gender, color = "gray") + 
+    geom_hline(yintercept = mean_health, color = "gray") + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(4, "points"))) + 
+    labs(x = "Gender", y = "Health") + 
+    coord_cartesian(xlim = range, ylim = range) + 
+    theme_classic() + theme(legend.position = "none") + 
+    ggtitle(paste(class, " (", lookup[class], ")", sep = ""))
+}
+lapply(c("low", "H>G", "G>H", "upp"), function(class) {
+  to_show <- plotClass(class = class, 
+            dat = df[df$class_vv1975 == class & df$period > 1975, ],
+            range = range_both)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1975_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
+})
+plotClass(class = "no 1975 classification", 
+          dat = df[is.na(df$class_vv1975) & df$period > 1975, ],
+          range = range_both)
+ggsave(device = "pdf", filename = "_figures/sequences_class1975_NA.pdf", width = 5, height = 5)
+```
+
+##### 1975 (from origin)
+```{r class_1975_origin, results = 'hide', out.width = "33%", out.height = "33%"}
+new1975 <- df[df$period > 1975 & !is.na(df$lag_gender) & !is.na(df$lag_health), ] %>% 
+  arrange(country, period) %>% 
+  group_by(country) %>% 
+  mutate(first = min(period),
+         health_first = lag_health[period == first],
+         gender_first = lag_gender[period == first]) %>% 
+  mutate(health = health - health_first,
+         lag_health = lag_health - health_first,
+         gender = gender - gender_first,
+         lag_gender = lag_gender - gender_first)
+# new1975 %>% select(country, period, first, health, lag_health, health_first, gender, lag_gender, gender_first) %>% print(n = 20) 
+range_both_new <- range(c(range(new1975$gender, na.rm = TRUE), range(new1975$health, na.rm = TRUE)))
+lapply(c("low", "H>G", "G>H", "upp"), function(class) {
+  to_show <- plotClass(class = class, 
+            dat = new1975[new1975$class_vv1975 == class, ], 
+            range = range_both_new)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1975_origin_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
+})
+plotClass(class = "no 1975 classification", 
+          dat = new1975[is.na(new1975$class_vv1975), ],
+          range = range_both_new)
+ggsave(device = "pdf", filename = "_figures/sequences_class1975_origin_NA.pdf", width = 5, height = 5)
+```
+
+##### 1995 
+```{r class_1995, results = 'hide', out.width = "33%", out.height = "33%"}
+lookup <- table(df$class_vv1995[df$period == 2015])
+lookup["no 1995 classification"] <- sum(is.na(df$class_vv1995[df$period == 2015]))
+lapply(c("low", "H>G", "G>H", "upp"), function(class) {
+  to_show <- plotClass(class = class, 
+            dat = df[df$class_vv1995 == class & df$period > 1995, ],
+            range = range_both)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1995_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
+})
+plotClass(class = "no 1995 classification", 
+          dat = df[is.na(df$class_vv1995) & df$period > 1995, ],
+          range = range_both)
+ggsave(device = "pdf", filename = "_figures/sequences_class1995_NA.pdf", width = 5, height = 5)
+```
+
+##### 1995 (from origin)
+```{r class_1995_origin, results = 'hide', out.width = "33%", out.height = "33%"}
+new1995 <- df[df$period > 1995 & !is.na(df$lag_gender) & !is.na(df$lag_health), ] %>%
+  arrange(country, period) %>% 
+  group_by(country) %>% 
+  mutate(first = min(period))
+# new1995$first[new1995$first < 1995] <- 1995
+new1995 <- new1995 %>% 
+  mutate(health_first = lag_health[period == first],
+         gender_first = lag_gender[period == first]) %>% 
+  mutate(health = health - health_first, 
+         lag_health = lag_health - health_first,
+         gender = gender - gender_first,
+         lag_gender = lag_gender - gender_first)
+# new1995 %>% select(country, period, first, health, lag_health, health_first, gender, lag_gender, gender_first) %>% print(n = 100) 
+range_gender_new <- range(new1995$gender, na.rm = TRUE)
+range_health_new <- range(new1995$health, na.rm = TRUE)
+range_both_new <- range(c(range_gender_new, range_health_new))
+lapply(c("low", "H>G", "G>H", "upp"), function(class) {
+  to_show <- plotClass(class = class, 
+            dat = new1995[new1995$class_vv1995 == class, ], 
+            range = range_both_new)
+  ggsave(device = "pdf", plot = to_show, filename = paste("_figures/sequences_class1995_origin_", class, ".pdf", sep = ""), width = 5, height = 5)
+  to_show
+})
+plotClass(class = "no 1995 classification", 
+          dat = new1995[is.na(new1995$class_vv1995), ],
+          range = range_both_new)
+ggsave(device = "pdf", filename = "_figures/sequences_class1995_origin_NA.pdf", width = 5, height = 5)
+
+```
+
+#### Typology {.tabset .tabset-fade .tabset-pills}
+
+##### from 1975
+```{r typology_1975, results = 'hide', out.width = "33%", out.height = "33%"}
+plotCategory <- function(cat, dat, range) {
+  ggplot(data = dat, 
+         mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health, group = country, color = country)) + 
+    coord_fixed(ratio = 1) + 
+    geom_segment(lineend = "round", arrow = arrow(angle = 10, type = "open", length = unit(5, "points"))) + 
+    geom_vline(xintercept = mean_gender, color = "gray") + 
+    geom_hline(yintercept = mean_health, color = "gray") + 
+    labs(x = "Gender", y = "Health") + 
+    coord_cartesian(xlim = range, ylim = range) + 
+    theme_classic() + theme(legend.position = "none") + 
+    ggtitle(paste(cat, " (", lookup[cat], ")", sep = ""))
+}
+lookup <- table(seq$typology1975)
+lapply(sort(unique(df$typology1975)), function(sequ) {
+  to_show <- plotCategory(cat = sequ,
+    dat = df[df$typology1975 == sequ & df$period > 1975, ],
+    range = range_both)
+  ggsave(plot = to_show, filename = paste("_figures/sequences_typology1975_", which(names(lookup) == sequ), ".pdf", sep = ""), width = 5, height = 5)
+  to_show
+})
+```
+
+##### from 1995
+```{r typology_1995, results = 'hide', out.width = "33%", out.height = "33%"}
+lookup <- table(seq$typology1995)
+lapply(sort(unique(df$typology1995)), function(sequ) {
+  to_show <- plotCategory(cat = sequ, 
+           dat = df[df$typology1995 == sequ & df$period > 1995, ], 
+           range = range_both)
+  ggsave(plot = to_show, filename = paste("_figures/sequences_typology1995_", which(names(lookup) == sequ), ".pdf", sep = ""), width = 5, height = 5)
+  to_show
+})
+```
+
+##### Data
+```{r typology_table}
+new[, c("country", "typology1975", "typology1995", "class_vv1975", "class_vv1995")]
+```
+
+#### Health & gender 
+
+```{r summary}
+new[, c("country", "first", "periods", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")]
+summary(new[, c("first", "total", "distance", "dist_total", "dist_period", "health_period", "gender_period")])
+```
+
+#### Internal conflict
+```{r sequences_conflict, results = 'hide', out.width = "33%", out.height = "33%"}
+lookup <- table(new$conflict_1971_2015)
+lapply(c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), function(cat) {
+  plotCategory(cat = cat, 
+           dat = df[df$conflict_1971_2015 == cat & df$period > 1975, ], 
+           range = range_both)
+})
+```
+
+#### Bivariate distributions {.tabset .tabset-fade .tabset-pills}
+
+##### Health
+```{r bivariate_health}
+new$typology1975 <- factor(new$typology1975, levels = c("both setbacks", "G-setbacks", "H-setbacks", "G-led", "H-led"))
+new$typology1995 <- factor(new$typology1995, levels = c("both setbacks", "G-setbacks", "H-setbacks", "G-led", "H-led"))
+# round(addmargins(prop.table(table(new[, c("typology1975", "health_period_quart")]), margin = 1) * 100, margin = 2), 1)
+data_summary <- function(x) {
+  m <- mean(x)
+  ymin <- quantile(x)[["25%"]]
+  ymax <- quantile(x)[["75%"]]
+  return(c(y = m, ymin = ymin, ymax = ymax))
+}
+rangeHG <- range(new$health_period, new$gender_period)
+ggplot(data = new, 
+       mapping = aes(x = health_period, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  geom_vline(xintercept = 0, color = "gray") + 
+  coord_cartesian(xlim = rangeHG) + 
+  labs(x = "Health change per period", y = "Sequence (1975-2015)") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_health.pdf")
+```
+
+##### Gender
+```{r bivariate_gender}
+ggplot(data = new, mapping = aes(x = gender_period, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  geom_vline(xintercept = 0, color = "gray") + 
+  coord_cartesian(xlim = rangeHG) + 
+  labs(x = "Gender change per period", y = "Sequence (1975-2015)") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_gender.pdf")
+```
+
+##### Overall change
+```{r bivariate_both}
+ggplot(data = new, mapping = aes(x = dist_period, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  labs(x = "Health & gender change per period", y = "Sequence (1975-2015)") + 
+  geom_vline(xintercept = 0, color = "gray") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_health_gender.pdf")
+```
+
+##### Path efficiency
+```{r bivariate_efficiency}
+ggplot(data = new, mapping = aes(x = dist_total, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  geom_vline(xintercept = 0, color = "gray") + 
+  labs(x = "Path efficiency", y = "Sequence (1975-2015)") + 
+  theme_minimal()
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_efficiency.pdf")
+```
+
+##### Internal conflict
+```{r conflict}
+new$conflict_1971_2015 <- factor(new$conflict_1971_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+new$conflict_1991_2015 <- factor(new$conflict_1991_2015, levels = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"))
+ggplot(data = new, 
+       mapping = aes(y = typology1975, fill = conflict_1971_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1975-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_conflict.pdf")
+ggplot(data = new, 
+       mapping = aes(y = typology1995, fill = conflict_1991_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "conflict", "conflict (5+ yrs)", "war", "war (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_conflict.pdf")
+round(addmargins(prop.table(table(new[, c("typology1975", "conflict_1971_2015")]), margin = 1), margin = 2), 3) * 100
+round(addmargins(prop.table(table(new[, c("typology1995", "conflict_1991_2015")]), margin = 1), margin = 2), 3) * 100
+```
+
+##### NSC
+```{r nsc}
+new$nsc_1991_2015 <- factor(new$nsc_1991_2015, levels = c("none", "NSC", "NSC (5+ yrs)"))
+ggplot(data = new, 
+       mapping = aes(y = typology1995, fill = nsc_1991_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "NSC", "NSC (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_nsc.pdf")
+round(addmargins(prop.table(table(new[, c("typology1995", "nsc_1991_2015")]), margin = 1), margin = 2), 3) * 100
+```
+
+##### OSV
+```{r osv}
+new$osv_1991_2015 <- factor(new$osv_1991_2015, levels = c("none", "OSV", "OSV (5+ yrs)"))
+ggplot(data = new, 
+       mapping = aes(y = typology1995, fill = osv_1991_2015)) +
+  geom_bar(stat = "count", position = position_dodge2(preserve = "single")) +
+  scale_fill_discrete(limits = c("none", "OSV", "OSV (5+ yrs)"), name = "") +
+  theme_minimal() + 
+  theme(legend.position = "top",
+        legend.key.size = unit(0.3, 'cm')) + 
+  labs(x = "Number of countries", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_osv.pdf")
+round(addmargins(prop.table(table(new[, c("typology1995", "osv_1991_2015")]), margin = 1), margin = 2), 3) * 100
+```
+
+##### LPI
+```{r lpi}
+ggplot(data = new, mapping = aes(x = latentmean_fariss_1971_2015, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  theme_minimal() + 
+  labs(x = "Average LPI", y = "Sequence (1975-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_lpi.pdf")
+ggplot(data = new, mapping = aes(x = latentmean_fariss_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  theme_minimal() + 
+  labs(x = "Average LPI", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_lpi.pdf")
+```
+
+##### Extra-judicial killings
+```{r killings}
+ggplot(data = new, mapping = aes(x = v2clkill_1971_2015, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  theme_minimal() + 
+  labs(x = "Average extrajudicial killings score", y = "Sequence (1975-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_killings.pdf")
+ggplot(data = new, mapping = aes(x = v2clkill_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  theme_minimal() + 
+  labs(x = "Average extrajudicial killings score", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_killings.pdf")
+```
+
+##### Torture
+```{r torture}
+ggplot(data = new, mapping = aes(x = v2cltort_1971_2015, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  theme_minimal() + 
+  labs(x = "Average torture score", y = "Sequence (1975-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_torture.pdf")
+ggplot(data = new, mapping = aes(x = v2cltort_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  theme_minimal() + 
+  labs(x = "Average torture score", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_torture.pdf")
+```
+
+##### Societal violence
+```{r societal}
+ggplot(data = new, mapping = aes(x = v2caviol_1971_2015, y = typology1975)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
+  theme_minimal() + 
+  labs(x = "Average societal violence score", y = "Sequence (1975-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_societal.pdf")
+ggplot(data = new, mapping = aes(x = v2caviol_1991_2015, y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
+  theme_minimal() + 
+  labs(x = "Average societal violence score", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences1995_societal.pdf")
+```
+
+##### Homicides
+```{r homicides}
+ggplot(data = new, mapping = aes(x = log(hom_odcwho_rate_1991_2015), y = typology1995)) +
+  geom_boxplot() + 
+  stat_summary(fun.data = "mean_cl_normal", geom = "pointrange", shape = 18, color = "red") +
+  # stat_summary(fun.data = data_summary, geom = "pointrange", color = "red") +
+  theme_minimal() + 
+  labs(x = "Average logged homicide rate", y = "Sequence (1995-2015)")
+ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/sequences_homicides.pdf")
+```
+
+```{r violence_rates, fig.width = 10, fig.height = 10, echo = FALSE, eval = FALSE}
+temp <- df %>% 
+  arrange(country, period) %>% 
+  group_by(period) %>% 
+  select(country, period, typology1975, deaths_all_int_rate_avg, deaths_all_nsc_rate_avg, hom_odcwho_rate_avg) %>% 
+  pivot_longer(-c(country, period, typology1975), names_to = "variable", values_to = "value")
+ggplot(data = temp) + 
+  stat_summary(mapping = aes(x = period, y = value, color = variable), fun = "mean", geom = "line") + 
+  facet_wrap(~typology1975) + theme_classic() + theme(legend.position = "bottom")
+```
