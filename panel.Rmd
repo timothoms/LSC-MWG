@@ -2,7 +2,7 @@
 params: 
   set_title: "Panel Regressions"
   cache: false
-  optimize: false
+  optimize: true
   pdfs: false
   lags: 1
   begin: 1975
