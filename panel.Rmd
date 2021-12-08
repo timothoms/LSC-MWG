@@ -23,38 +23,29 @@ library(plm)
 ```{r prelim}
 IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_class.RData")
-vars <- c("pc_rgdpe_pwt", "pop_wpp", unlist(variables[c("health_full", "gender_full", "conflict_incidence", 
-                                                        "death_rates", "measurement_models", "political")], 
-                                            use.names = FALSE), 
-          paste("perf", unlist(variables[c("health", "gender")], use.names = FALSE), "avg", sep = "_"),
-          "gdi_hdr", "gii_hdr", "mmr_unicef"          
-          )
-dfp <- df[, c("country", "year", "period", "health_class", "gender_class", 
-              "class", "class_vv", "class_low", "class_HG", "class_GH", "class_mid", "class_upp", vars)]
-dfp <- dfp %>% dplyr::arrange(country, period, year)
-dfp <- dfp %>% group_by(country, period) %>% 
-  mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}"), .keep = "all")
-dfp[, vars] <- lapply(dfp[, vars], function(col) {
-  col[is.nan(col)] <- NA
-  return(col)
-})
-take_logs <- c("pc_rgdpe_pwt", "pop_wpp", "life_exp_wpp")
-take_logs_negative <- c("imr_wpp", "ufmr_wpp", "daly_ihme", "asfr_adol_wpp")
-dfp[, paste("lg", take_logs, sep = "_")] <- lapply(dfp[, take_logs], log)
-dfp[, paste("lg", take_logs_negative, sep = "_")] <- lapply(dfp[, take_logs_negative], 
-                                                            function(col) { -log(-col) })
-# summary(dfp[, c(take_logs, take_logs_negative)])
-viol_vars <- c("conflict_internal", "war_internal", "conflict_non_state", 
-               "conflict_one_sided", "latentmean_fariss", "v2cltort", "v2clkill")
-viol_vars_log <- c("deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
-                   "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate")
-dfp[, paste("lg", viol_vars_log, sep = "_")] <- lapply(dfp[, viol_vars_log], function(col) { log(col + 1) })
-dfp$health_class_low <- ifelse(dfp$health_class < 3, 1, 0)
-dfp$health_class_upp <- ifelse(dfp$health_class > 3, 1, 0)
-dfp$gender_class_low <- ifelse(dfp$gender_class < 3, 1, 0)
-dfp$gender_class_upp <- ifelse(dfp$gender_class > 3, 1, 0)
-
-dfp_lag <- dfp <- dfp[dfp$year %in% c(seq(1965, 2015, 5), 2018), names(dfp) != "period"]
+vars <- c("pc_rgdpe_pwt", "growth_rgdpe_pwt", "pop_wpp", "pop_density_wpp", "imr_wpp", 
+          "ufmr_wpp", "life_exp_wpp", "daly_ihme", "asfr_adol_wpp", "mys_age_ratio_ihme", 
+          "mys_pop_ratio_ihme", "mys_ratio_hdr", "gii_hdr", "conflict_internal", "war_internal", 
+          "conflict_non_state", "conflict_one_sided", "deaths_all_int_rate", 
+          "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
+          "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", 
+          "hom_odcwho_rate", "latentmean_fariss", "v2cltort", "v2clkill", "v2caviol", 
+          "v2x_polyarchy", "v2x_libdem", "v2x_liberal", "v2x_partipdem", "v2x_partip")
+select <- c(vars, names(df)[names(df) %in% paste("lg", vars, sep = "_")])
+select <- c(select, names(df)[names(df) %in% paste(select, "avg", sep = "_")])
+dfp <- df[df$year %in% c(seq(1970, 2015, 5), 2018), c("country", "year", "period", "health_class", 
+                                                       "gender_class", "class", "class_vv", 
+                                                       "class_low", "class_HG", "class_GH", 
+                                                       "class_mid", "class_upp", select)]
+dfp$life_exp_wpp_avg_scaled <- as.numeric(scale(dfp$life_exp_wpp_avg))
+dfp$imr_wpp_avg_scaled <- as.numeric(scale(dfp$imr_wpp_avg))
+dfp$mys_age_ratio_ihme_avg_scaled <- as.numeric(scale(dfp$mys_age_ratio_ihme_avg))
+dfp$asfr_adol_wpp_avg_scaled <- as.numeric(scale(dfp$asfr_adol_wpp_avg))
+dfp$health <- rowMeans(dfp[, c("life_exp_wpp_avg_scaled", "imr_wpp_avg_scaled")], na.rm = FALSE)
+dfp$gender <- rowMeans(dfp[, c("mys_age_ratio_ihme_avg_scaled", "asfr_adol_wpp_avg_scaled")], na.rm = FALSE)
+dfp <- dfp[, names(dfp)[!names(dfp) %in% vars]]
+names(dfp) <- str_replace(names(dfp), "_avg", "")
+dfp_lag <- dfp <- dfp[, names(dfp) != "period"]
 names(dfp_lag)[!names(dfp_lag) %in% c("country", "year", "period")] <- 
   paste("lag", names(dfp_lag)[!names(dfp_lag) %in% c("country", "year", "period")], sep = "_")
 number_of_lags <- ifelse(params$lags %in% 1:3, params$lags, 1)
@@ -63,14 +54,14 @@ dfp_lag$year[dfp_lag$year == 2020] <- 2018
 dfp <- merge(dfp, dfp_lag, by = c("country", "year"), all.x = TRUE)
 dfp <- dfp[dfp$year >= 1965 + 5*number_of_lags, ]
 dfp <- dfp[dfp$year >= params$begin & dfp$year <= params$end, ]
-dfp[, paste("growth", c(variables$health, variables$gender), sep = "_")] <- 
-  lapply(c(variables$health, variables$gender), function(colname) {
-    dfp[, colname] - dfp[, paste("lag", colname, sep = "_")]
-  })
-dfp[, paste("growth_lg", c(variables$health, "asfr_adol_wpp"), sep = "_")] <- 
-  lapply(c(variables$health, "asfr_adol_wpp"), function(colname) {
-    dfp[, paste("lg", colname, sep = "_")] - dfp[, paste("lag_lg", colname, sep = "_")]
-  })
+# dfp[, paste("growth", c(variables$health, variables$gender), sep = "_")] <- 
+#   lapply(c(variables$health, variables$gender), function(colname) {
+#     dfp[, colname] - dfp[, paste("lag", colname, sep = "_")]
+#   })
+# dfp[, paste("growth_lg", c(variables$health, "asfr_adol_wpp"), sep = "_")] <- 
+#   lapply(c(variables$health, "asfr_adol_wpp"), function(colname) {
+#     dfp[, paste("lg", colname, sep = "_")] - dfp[, paste("lag_lg", colname, sep = "_")]
+#   })
 
 # functions
 source("~/Dropbox/Analyses/functions/RegressionFig.R")

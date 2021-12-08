@@ -20,12 +20,14 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE,
 All the analyses are based on a large global dataset (and accompanying codebook) which we assembled from commonly used quantitative indicators on health, gender equality and several types of violence. The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Lancet Commission Metrics Working Group, or at this [link](https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing) (access via logging into the shared folder provides more functionality). The dataset is also available in the shared Dropbox folder of the Working Group.) We begin by considering the following measures within the categories of health outcomes, gender inequalities, state-based violent conflict, one-sided violence, and societal violence. The code also sets up vectors of variable names for later use.)  
 
 ```{r startup, results = "hide"}
-load("_data/dataset_LSCMWG.RData")
-data <- data %>% filter(year >=1960)
 link <- "https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing"
 googlesheets4::gs4_deauth()
 codebook <- googlesheets4::read_sheet(link, sheet = "codebook")
 IsTrue <- function(x) { !is.na(x) & x }
+load("_data/dataset_LSCMWG.RData")
+data <- data %>% 
+  filter(year >= 1960)
+# data <- data[, names(data) %in% codebook$variable[codebook$flag %in% c("id", "maybe", "use")]]
 categories <- list(
   one_sided = codebook$variable[IsTrue(codebook$flag == "use") & 
     codebook$sub_category %in% c("one-sided violence", "repression")],
@@ -106,7 +108,7 @@ Based on theoretical relevance and representativeness (see within-category corre
 variables_to_include <- c("labor_mod_ratio15_ilo", "mys_ratio_hdr", "mys_age_ratio_ihme", "tfr_wpp", 
                           "asfr_adol_wpp", "imr_wpp", "ufmr_wpp", "daly_ihme", "physicians_pc_wdi", 
                           "life_exp_wpp", "pc_rgdpe_pwt", "deaths_all_int_rate", "deaths_all_osv_rate", 
-                          "latentmean_fariss", "deaths_all_nsc_rate", "hom_odcwho_rate")
+                          "latentmean_fariss", "killing_estimate_mean_fariss", "deaths_all_nsc_rate", "hom_odcwho_rate")
 GGally::ggpairs(data[, variables_to_include], mapping = aes(stroke = 0, alpha = 0.25)) + 
   theme_bw() + theme(strip.text.y.right = element_text(angle = 0))
 ```
@@ -119,7 +121,7 @@ We noticed that some of the education ratios (female to male) are surprisingly h
 variables$ed <- c("mys_ratio_hdr", "mys_ratio_uis", "mys_age_ratio_ihme", "eys_ratio_hdr", "eys_ratio_uis")
 summary(data[, variables$ed])
 paste(unique(data$country[IsTrue(data$mys_ratio_hdr > 1)]), collapse = "; ")
-data[IsTrue(data$mys_ratio_hdr > 1), c("country", "year", variables$ed)]
+# data[IsTrue(data$mys_ratio_hdr > 1), c("country", "year", variables$ed)]
 ```
 
 #### Inverting variables for comparable interpretations
@@ -141,21 +143,36 @@ summary(data[, c(variables$negative[1:9])])
 data <- data %>% 
   dplyr::arrange(country, year) %>% 
   mutate(period = cut(year, seq(1960, 2020, 5), right = TRUE))
-names(vars) <- vars <- c(variables$health, variables$gender, "mys_ratio_hdr", "pc_rgdpe_pwt")
+names(vars) <- vars <- c("pc_rgdpe_pwt", "growth_rgdpe_pwt", "pop_wpp", "pop_density_wpp", 
+                         "imr_wpp", "ufmr_wpp", "life_exp_wpp", "daly_ihme", 
+                         "asfr_adol_wpp", "mys_age_ratio_ihme", "mys_pop_ratio_ihme", "mys_ratio_hdr", "gii_hdr", 
+                         "conflict_internal", "war_internal", "conflict_non_state", "conflict_one_sided", 
+                         "deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
+                         "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate",
+                         "latentmean_fariss", "v2cltort", "v2clkill", "v2caviol", 
+                         "v2x_polyarchy", "v2x_libdem", "v2x_liberal", "v2x_partipdem", "v2x_partip")
 data <- data %>% 
+  dplyr::arrange(country, period, year) %>% 
   group_by(country, period) %>% 
   mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}_avg"), .keep = "all")
 data[, paste(vars, "avg", sep = "_")] <- lapply(data[, paste(vars, "avg", sep = "_")], function(col) {
   col[is.nan(col)] <- NA
   return(col)
 })
-take_logs <- c("pc_rgdpe_pwt", "life_exp_wpp")
+take_logs <- c("pc_rgdpe_pwt", "pop_wpp", "pop_density_wpp", "life_exp_wpp")
+# take_logs_deaths <- c("deaths_all_int", "deaths_civilians_int", "deaths_civilians_osv", "deaths_all_nsc", "deaths_civilians_nsc")
 take_logs <- c(take_logs, paste(take_logs, "avg", sep = "_"))
-take_logs_negative <- c("imr_wpp", "asfr_adol_wpp")
+take_logs_negative <- c("imr_wpp", "ufmr_wpp", "daly_ihme", "asfr_adol_wpp")
 take_logs_negative <- c(take_logs_negative, paste(take_logs_negative, "avg", sep = "_"))
 summary(data[, sort(c(take_logs, take_logs_negative))])
 data[, paste("lg", take_logs, sep = "_")] <- lapply(data[, take_logs], log)
 data[, paste("lg", take_logs_negative, sep = "_")] <- lapply(data[, take_logs_negative], function(col) { -log(-col) })
+# viol_vars <- c("conflict_internal", "war_internal", "conflict_non_state", 
+#                "conflict_one_sided", "latentmean_fariss", "v2cltort", "v2clkill")
+viol_vars_log <- c("deaths_all_int", "deaths_civilians_int", "deaths_civilians_osv", 
+                   "deaths_all_nsc", "deaths_civilians_nsc", "deaths_all_ucdp", "hom_odcwho")
+viol_vars_log <- c(viol_vars_log, paste(viol_vars_log, "rate", sep = "_"))
+data[, paste("lg", viol_vars_log, sep = "_")] <- lapply(data[, viol_vars_log], function(col) { log(col + 1) })
 summary(data[, paste ("lg", sort(c(take_logs, take_logs_negative)), sep = "_")])
 CodePerformance <- function(y_var, x_vars, df) {
   x_vars <- paste(x_vars, collapse = " + ")

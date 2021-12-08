@@ -234,6 +234,10 @@ df$class_upp <- ifelse(df$class_vv == "upp", 1, 0)
 df$class_mid <- ifelse(df$class_vv == "mid", 1, 0)
 df$class_HG <- ifelse(df$class_vv == "H>G", 1, 0)
 df$class_GH <- ifelse(df$class_vv == "G>H", 1, 0)
+df$health_class_low <- ifelse(df$health_class < 3, 1, 0)
+df$health_class_upp <- ifelse(df$health_class > 3, 1, 0)
+df$gender_class_low <- ifelse(df$gender_class < 3, 1, 0)
+df$gender_class_upp <- ifelse(df$gender_class > 3, 1, 0)
 variables$class_core <- c("country", "class", "health_class", "gender_class", "class_vv")
 class1975 <- df[df$year == 1975, variables$class_core]
 names(class1975) <- c("country", paste(c("class", "health", "gender", "class_vv"), 1975, sep = ""))
@@ -247,8 +251,8 @@ df <- merge(df, class1990, by = "country", all.x = TRUE)
 df <- merge(df, class1995, by = "country", all.x = TRUE)
 df <- df[order(df$country, df$year), 
          c("country", "year", "period", names(df)[!names(df) %in% c("country", "year", "period")])]
-filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class", ".csv", sep = "" )
-write_csv(df, file = filepath)
+# filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class", ".csv", sep = "" )
+# write_csv(df, file = filepath)
 ```
 
 <!-- #### Subset of 1990 classifications for which "floor" rule was applied -->
@@ -438,10 +442,8 @@ lapply(variables$conflict_incidence, function(var) {
 GrowthRatesTtest <- function(var, min_obs = 2) { 
   dat1995 <- df[df$year == 1995, c("country", "class", "health_class", "gender_class", var)]
   dat2015 <- df[df$year == 2015, c("country", var)]
-  names(dat1995)[names(dat1995) != "country"] <- paste(names(dat1995)[names(dat1995) != "country"] , 
-                                                       1995, sep = "_")
-  names(dat2015)[names(dat2015) != "country"] <- paste(names(dat2015)[names(dat2015) != "country"] , 
-                                                       2015, sep = "_")
+  names(dat1995)[names(dat1995) != "country"] <- paste(names(dat1995)[names(dat1995) != "country"], 1995, sep = "_")
+  names(dat2015)[names(dat2015) != "country"] <- paste(names(dat2015)[names(dat2015) != "country"], 2015, sep = "_")
   dat <- merge(dat1995, dat2015, by = c("country"), all = TRUE)
   dat$growth <- dat[, paste(var, 2015, sep ="_")] - dat[, paste(var, 1995, sep ="_")]
   tbl <- tapply(dat$growth, list(health = dat$health_class_1995, gender = dat$gender_class_1995), function(df) {
@@ -530,8 +532,8 @@ performance_measures <- unlist(lapply(c(1990, 1995), function(year) {
 }), recursive = FALSE)
 performance_measures <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = performance_measures)
 new <- merge(new, performance_measures, by = "country", all = TRUE)
-filepath <- "~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional.csv"
-write.csv(new, file = filepath)
+# filepath <- "~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional.csv"
+# write.csv(new, file = filepath)
 ```
 
 #### Performance Rankings within classification groups {.tabset .tabset-fade .tabset-pills}
