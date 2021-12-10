@@ -14,6 +14,7 @@ title: "`r params$set_title`"
 ```{r global, include = FALSE}
 source("setup.R")
 knitr::opts_chunk$set(fig.width = 12, fig.height = 16, rows.print = 12, 
+                      cols.print = 14, cols.min.print = 14,
                       out.width = "100%", out.height = "100%", dpi = 96)
 library(plm)
 ```
@@ -65,7 +66,7 @@ dfp <- dfp[dfp$year >= params$begin & dfp$year <= params$end, ]
 # functions
 source("~/Dropbox/Analyses/functions/RegressionFig.R")
 RunModels <- function(equations,
-  estimators_to_show = c("ols", "fe", "fegls"),
+  estimators_to_show = c("fe", "fegls"),
   labelspace = 18,
   pdfname = NULL,
   pdfswitch = params$pdfs
@@ -234,15 +235,21 @@ IntPlot <- function(fit, eff_var,
 
 ### {.tabset .tabset-fade .tabset-pills}
 
-#### Health
+#### Health {.tabset .tabset-fade .tabset-pills}
+
+##### Conflict
 
 ```{r health_conflict}
 results <- RunModels(labelspace = 16, equations = c(
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health + lag_conflict_internal:lag_gender,
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender,
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_gender)
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_gender,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender)
 )
 results$tests
 ```
@@ -250,56 +257,56 @@ results$tests
 mods_health <- seq(round(min(dfp$health, na.rm = TRUE), 1), round(max(dfp$health, na.rm = TRUE), 1), 0.05)
 mods_gender <- seq(round(min(dfp$gender, na.rm = TRUE), 1), round(max(dfp$gender, na.rm = TRUE), 1), 0.05)
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_gender, 
           ylabel =  "Health", xlabel = "past Gender",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_health, 
           ylabel =  "Health", xlabel = "past Health",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
           int_vars = "lag_conflict_internal:lag_health", 
           modvalues = mods_health, 
           ylabel = "Health", xlabel = "past Health",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
           int_vars = "lag_conflict_internal:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Health", xlabel = "past Gender",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_health", 
           modvalues = mods_health, 
           ylabel = "Health", xlabel = "past Health",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Health", xlabel = "past Gender",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
 
-#### Health & classifications
+##### Conflict & Classifications
 
 ```{r health_conflict_class}
 results <- RunModels(labelspace = 16, equations = c(
@@ -326,70 +333,74 @@ lapply(c("fe", "fegls"), function(estimator) {
 })
 ```
 
-#### Health (War) 
+##### War
 
 ```{r health_war}
 results <- RunModels(labelspace = 16, equations = c(
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health + lag_war_internal:lag_gender,
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender,
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_gender)
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_gender,
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender)
 )
 results$tests
 ```
 ```{r int_health_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_gender, 
           ylabel =  "Health", xlabel = "past Gender",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_health, 
           ylabel =  "Health", xlabel = "past Health",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
           int_vars = "lag_war_internal:lag_health", 
           modvalues = mods_health, 
           ylabel = "Health", xlabel = "past Health",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
           int_vars = "lag_war_internal:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Health", xlabel = "past Gender",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_health", 
           modvalues = mods_health, 
           ylabel = "Health", xlabel = "past Health",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Health", xlabel = "past Gender",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
 
-#### Health & classifications (War) 
+##### War & Classifications
 
 ```{r health_war_class}
 results <- RunModels(labelspace = 16, equations = c(
@@ -416,70 +427,76 @@ lapply(c("fe", "fegls"), function(estimator) {
 })
 ```
 
-#### Gender
+#### Gender {.tabset .tabset-fade .tabset-pills}
+
+##### Conflict 
 
 ```{r gender_conflict}
 results <- RunModels(labelspace = 16, equations = c(
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_gender,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health + lag_conflict_internal:lag_gender,
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender,
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health)
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_gender,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender)
 )
 results$tests
 ```
 ```{r int_gender_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_gender, 
           ylabel =  "Gender", xlabel = "past Gender",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_health, 
           ylabel =  "Gender", xlabel = "past Health",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
           int_vars = "lag_conflict_internal:lag_health", 
           modvalues = mods_health, 
           ylabel = "Gender", xlabel = "past Health",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
           int_vars = "lag_conflict_internal:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Gender", xlabel = "past Gender",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_health", 
           modvalues = mods_health, 
           ylabel = "Gender", xlabel = "past Health",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Gender", xlabel = "past Gender",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
 
-#### Gender & classifications
+##### Conflict & Classifications
 
 ```{r gender_conflict_class}
 results <- RunModels(labelspace = 16, equations = c(
@@ -506,70 +523,74 @@ lapply(c("fe", "fegls"), function(estimator) {
 })
 ```
 
-#### Gender (War) 
+##### War
 
 ```{r gender_war}
 results <- RunModels(labelspace = 16, equations = c(
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_gender,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health + lag_war_internal:lag_gender,
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender,
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health)
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_gender,
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender)
 )
 results$tests
 ```
 ```{r int_gender_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_gender, 
           ylabel =  "Gender", xlabel = "past Gender",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_health, 
           ylabel =  "Gender", xlabel = "past Health",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
           int_vars = "lag_war_internal:lag_health", 
           modvalues = mods_health, 
           ylabel = "Gender", xlabel = "past Health",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
           int_vars = "lag_war_internal:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Gender", xlabel = "past Gender",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_health", 
           modvalues = mods_health, 
           ylabel = "Gender", xlabel = "past Health",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
           int_vars = "lag_latentmean_fariss:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Gender", xlabel = "past Gender",
-          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 9, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
 
-#### Gender & classifications (War)
+##### War & Classifications
 
 ```{r gender_war_class}
 results <- RunModels(labelspace = 16, equations = c(
@@ -596,172 +617,228 @@ lapply(c("fe", "fegls"), function(estimator) {
 })
 ```
 
-#### Conflict {.tabset .tabset-fade .tabset-pills}
+#### Violence {.tabset .tabset-fade .tabset-pills}
+
+##### Conflict
 
 ```{r conflict}
 results <- RunModels(labelspace = 16, equations = c(
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender,
+  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
+  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health,
+  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_gender,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health + lag_conflict_internal:lag_gender,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_mid,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
-  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_conflict_internal:lag_class_GH +  lag_conflict_internal:lag_class_HG + lag_conflict_internal:lag_class_mid + lag_conflict_internal:lag_class_upp,
-  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender)
+  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_conflict_internal:lag_class_GH +  lag_conflict_internal:lag_class_HG + lag_conflict_internal:lag_class_mid + lag_conflict_internal:lag_class_upp)
 )
 results$tests
 ```
 
 ```{r int_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Internal Conflict", xlabel = "past Gender",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_health, 
           ylabel = "Internal Conflict", xlabel = "past Health",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
           int_vars = "lag_conflict_internal:lag_health", 
           modvalues = mods_health, 
           ylabel = "Internal Conflict", xlabel = "past Health",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
           int_vars = "lag_conflict_internal:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Internal Conflict", xlabel = "past Gender",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 5, ", str_to_upper(estimator), ")", sep = ""))
+})
+lapply(c("fe", "fegls"), function(estimator) {
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
+          eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
+          int_vars = "lag_conflict_internal:lag_health", 
+          modvalues = mods_health, 
+          ylabel = "Internal Conflict", xlabel = "past Health",
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
+})
+lapply(c("fe", "fegls"), function(estimator) {
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
+          eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
+          int_vars = "lag_conflict_internal:lag_gender", 
+          modvalues = mods_gender, 
+          ylabel = "Internal Conflict", xlabel = "past Gender",
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) { 
-  IntPlot(fit = results$ests[[estimator]][["m7"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m10"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"),
           ylabel = "Internal Conflict", xlabel = "past Classification",
-          title_addon = paste(" (Model 7, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 10, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
 
-#### War 
+##### War
 
 ```{r war}
 results <- RunModels(labelspace = 16, equations = c(
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender,
+  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
+  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health,
+  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_gender,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health + lag_war_internal:lag_gender,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_mid,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
-  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_war_internal:lag_class_GH +  lag_war_internal:lag_class_HG + lag_war_internal:lag_class_mid + lag_war_internal:lag_class_upp,
-  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender)
+  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_war_internal:lag_class_GH +  lag_war_internal:lag_class_HG + lag_war_internal:lag_class_mid + lag_war_internal:lag_class_upp)
 )
 results$tests
 ```
 
 ```{r int_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Internal War", xlabel = "past Gender",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_health, 
           ylabel = "Internal War", xlabel = "past Health",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
           int_vars = "lag_war_internal:lag_health", 
           modvalues = mods_health, 
           ylabel = "Internal War", xlabel = "past Health",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
           int_vars = "lag_war_internal:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "Internal War", xlabel = "past Gender",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 5, ", str_to_upper(estimator), ")", sep = ""))
+})
+lapply(c("fe", "fegls"), function(estimator) {
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
+          eff_var = c("past Internal War" = "lag_war_internal"), 
+          int_vars = "lag_war_internal:lag_health", 
+          modvalues = mods_health, 
+          ylabel = "Internal War", xlabel = "past Health",
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
+})
+lapply(c("fe", "fegls"), function(estimator) {
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
+          eff_var = c("past Internal War" = "lag_war_internal"), 
+          int_vars = "lag_war_internal:lag_gender", 
+          modvalues = mods_gender, 
+          ylabel = "Internal War", xlabel = "past Gender",
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) { 
-  IntPlot(fit = results$ests[[estimator]][["m7"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m10"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"),
           ylabel = "Internal War", xlabel = "past Classification",
-          title_addon = paste(" (Model 7, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 10, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
 
-#### Latent Physical Integrity
+##### Latent Physical Integrity 
 
 ```{r lpi}
 results <- RunModels(labelspace = 16, equations = c(
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender,
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_health + lag_gender,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health,
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_gender,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_mid,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
-  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp,
-  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_health + lag_gender)
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
 ```
 ```{r int_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_gender, 
           ylabel = "LPI", xlabel = "past Gender",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
+  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
           int_vars = "lag_health:lag_gender", 
           modvalues = mods_health, 
           ylabel = "LPI", xlabel = "past Health",
-          title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
-          eff_var = c("past LPI" = "lag_latentmean_fariss"), 
-          int_vars = "lag_latentmean_fariss:lag_health", 
-          modvalues = mods_health, 
+  IntPlot(fit = results$ests[[estimator]][["m4"]]$fit,
+          eff_var = c("past LPI" = "lag_latentmean_fariss"),
+          int_vars = "lag_latentmean_fariss:lag_health",
+          modvalues = mods_health,
           ylabel = "LPI", xlabel = "past Health",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
 lapply(c("fe", "fegls"), function(estimator) {
-  IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
-          eff_var = c("past LPI" = "lag_latentmean_fariss"), 
-          int_vars = "lag_latentmean_fariss:lag_gender", 
-          modvalues = mods_gender, 
+  IntPlot(fit = results$ests[[estimator]][["m5"]]$fit,
+          eff_var = c("past LPI" = "lag_latentmean_fariss"),
+          int_vars = "lag_latentmean_fariss:lag_gender",
+          modvalues = mods_gender,
           ylabel = "LPI", xlabel = "past Gender",
-          title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 5, ", str_to_upper(estimator), ")", sep = ""))
 })
-lapply(c("fe", "fegls"), function(estimator) { 
-  IntPlot(fit = results$ests[[estimator]][["m7"]]$fit, 
+lapply(c("fe", "fegls"), function(estimator) {
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit,
+          eff_var = c("past LPI" = "lag_latentmean_fariss"),
+          int_vars = "lag_latentmean_fariss:lag_health",
+          modvalues = mods_health,
+          ylabel = "LPI", xlabel = "past Health",
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
+})
+lapply(c("fe", "fegls"), function(estimator) {
+  IntPlot(fit = results$ests[[estimator]][["m6"]]$fit,
+          eff_var = c("past LPI" = "lag_latentmean_fariss"),
+          int_vars = "lag_latentmean_fariss:lag_gender",
+          modvalues = mods_gender,
+          ylabel = "LPI", xlabel = "past Gender",
+          title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
+})
+lapply(c("fe", "fegls"), function(estimator) {
+  IntPlot(fit = results$ests[[estimator]][["m10"]]$fit,
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
           ylabel = "LPI", xlabel = "past Classification",
-          title_addon = paste(" (Model 7, ", str_to_upper(estimator), ")", sep = ""))
+          title_addon = paste(" (Model 10, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
