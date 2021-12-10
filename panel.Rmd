@@ -215,27 +215,6 @@ IntPlot <- function(fit, eff_var,
 }
 ```
 
-```{r echo = FALSE, eval = FALSE}
-results <- RunModels(labelspace = 14, equations = c(
-  health ~ lag_health + lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp,
-  health ~ lag_health + lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal,
-  health ~ lag_health + lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal,
-  health ~ lag_health + lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss,
-  health ~ lag_health * lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss,
-  health ~ lag_health * lag_conflict_internal + lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss,
-  health ~ lag_health * lag_latentmean_fariss + lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal,
-  health ~ lag_health + lag_conflict_internal * lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss,
-  health ~ lag_health + lag_latentmean_fariss * lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal,
-  health ~ lag_class_vv + lag_health + lag_gender + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss,
-  health ~ lag_class_vv + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss,
-  health ~ lag_class_vv * lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss,
-  health ~ lag_class_vv * lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal)
-)
-results$tests
-```
-
-
-
 ### {.tabset .tabset-fade .tabset-pills}
 
 #### Health {.tabset .tabset-fade .tabset-pills}
