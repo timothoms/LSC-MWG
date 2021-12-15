@@ -253,7 +253,7 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_health_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_conflict_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 mods_health <- seq(round(min(dfp$health, na.rm = TRUE), 1), round(max(dfp$health, na.rm = TRUE), 1), 0.05)
 mods_gender <- seq(round(min(dfp$gender, na.rm = TRUE), 1), round(max(dfp$gender, na.rm = TRUE), 1), 0.05)
 lapply(c("fe", "fegls"), function(estimator) {
@@ -272,6 +272,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Health", xlabel = "past Health",
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_conflict_m6, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -288,6 +290,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Health", xlabel = "past Gender",
           title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_conflict_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -318,13 +322,15 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_health_conflict_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_conflict_class_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit,
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"),
           ylabel = "Health", xlabel = "past Classification",
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_conflict_class_m5, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -349,7 +355,7 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_health_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_war_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -366,6 +372,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Health", xlabel = "past Health",
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_war_m6, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -382,6 +390,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Health", xlabel = "past Gender",
           title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_war_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -412,13 +422,15 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_health_war_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_war_class_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit,
           eff_var = c("past Internal War" = "lag_war_internal"),
           ylabel = "Health", xlabel = "past Classification",
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_war_class_m5, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -445,7 +457,7 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_gender_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_conflict_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -462,6 +474,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Gender", xlabel = "past Health",
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_conflict_m6, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -478,6 +492,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Gender", xlabel = "past Gender",
           title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_conflict_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -508,13 +524,15 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_gender_conflict_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_conflict_class_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit,
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"),
           ylabel = "Gender", xlabel = "past Classification",
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_conflict_class_m5, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -539,7 +557,7 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_gender_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_war_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -556,6 +574,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Gender", xlabel = "past Health",
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_war_m6, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -572,6 +592,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Gender", xlabel = "past Gender",
           title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_war_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -602,13 +624,15 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_gender_war_class, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_war_class_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit,
           eff_var = c("past Internal War" = "lag_war_internal"),
           ylabel = "Gender", xlabel = "past Classification",
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_war_class_m5, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -636,8 +660,7 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-
-```{r int_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_conflict_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -654,6 +677,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal Conflict", xlabel = "past Health",
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_conflict_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -662,6 +687,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal Conflict", xlabel = "past Health",
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_conflict_m5, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -670,6 +697,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal Conflict", xlabel = "past Gender",
           title_addon = paste(" (Model 5, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_conflict_m6, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -686,6 +715,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal Conflict", xlabel = "past Gender",
           title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_conflict_m10, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m10"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"),
@@ -711,8 +742,7 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-
-```{r int_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_war_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -729,6 +759,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal War", xlabel = "past Health",
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_war_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -737,6 +769,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal War", xlabel = "past Health",
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_war_m5, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m5"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -745,6 +779,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal War", xlabel = "past Gender",
           title_addon = paste(" (Model 5, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_war_m6, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m6"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -761,6 +797,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal War", xlabel = "past Gender",
           title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_war_m10, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m10"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"),
@@ -786,7 +824,7 @@ results <- RunModels(labelspace = 16, equations = c(
 )
 results$tests
 ```
-```{r int_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_lpi_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -803,6 +841,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "LPI", xlabel = "past Health",
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_lpi_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit,
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -811,6 +851,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "LPI", xlabel = "past Health",
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_lpi_m5, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m5"]]$fit,
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -819,6 +861,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "LPI", xlabel = "past Gender",
           title_addon = paste(" (Model 5, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_lpi_m6, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m6"]]$fit,
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -835,6 +879,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "LPI", xlabel = "past Gender",
           title_addon = paste(" (Model 6, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_lpi_m10, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m10"]]$fit,
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
