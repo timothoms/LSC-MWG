@@ -25,7 +25,7 @@ IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_class.RData")
 vars <- c("pc_rgdpe_pwt", "growth_rgdpe_pwt", "pop_wpp", "pop_density_wpp", "imr_wpp", 
           "ufmr_wpp", "life_exp_wpp", "daly_ihme", "asfr_adol_wpp", "mys_age_ratio_ihme", 
-          "mys_pop_ratio_ihme", "mys_ratio_hdr", "gii_hdr", "conflict_internal", "war_internal", 
+          "mys_pop_ratio_ihme", "mys_ratio_hdr", "labor_mod_ratio15_ilo", "gii_hdr", "conflict_internal", "war_internal", 
           "conflict_non_state", "conflict_one_sided", "deaths_all_int_rate", 
           "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
           "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", 
@@ -227,9 +227,9 @@ knitr::asis_output("###### Base models")
 ```
 ```{r life_exp_base}
 results <- RunModels(equations = c(
-  health ~ lag_lg_health + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
-  health ~ lag_lg_health + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
-  health ~ lag_lg_health + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
 )
 results$tests
 ```
