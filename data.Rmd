@@ -129,7 +129,7 @@ paste(unique(data$country[IsTrue(data$mys_ratio_hdr > 1)]), collapse = "; ")
 Since we are dealing with a wide range of measures, we need to ensure that they reflect the same "direction" of effects. We do this by coding the negative of some variables, so that higher values indicate better outcomes for the health and gender categories and higher values indicate worse outcomes for the violence categories. 
 
 ```{r make_negative}
-variables$negative <- c("imr_wpp", "ufmr_wpp", "mmr_unicef", "daly_ihme", "asfr_adol_wpp", "tfr_wpp", 
+variables$negative <- c("imr_wpp", "ufmr_wpp", "mmr_unicef", "daly_ihme", "asfr_adol_wpp", "tfr_wpp", "gii_hdr",
                         "latentmean_fariss", "v2cltort", "v2clkill", "latentmean_fariss_cumulative1991", 
                         "latentmean_fariss_cumulative1996", "v2cltort_cumulative1991", 
                         "v2cltort_cumulative1996", "v2clkill_cumulative1991", "v2clkill_cumulative1996")
