@@ -4,8 +4,6 @@ _pdfs/
 _figures/
 
 # specific data files
-_data/LSCMWG_working_class.RData
-_data/LSCMWG_working_data.RData
 _data/ipu_temp.RData
 _data/women_in_parliament-historical_database-1945_to_2018.xlsx
 

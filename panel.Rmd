@@ -19,31 +19,30 @@ knitr::opts_chunk$set(fig.show = 'hold',
 library(plm)
 ```
 
-
 ```{r prelim}
 IsTrue <- function(x) { !is.na(x) & x }
 load("_data/LSCMWG_working_class.RData")
 vars <- c("pc_rgdpe_pwt", "growth_rgdpe_pwt", "pop_wpp", "pop_density_wpp", "imr_wpp", 
           "ufmr_wpp", "life_exp_wpp", "daly_ihme", "asfr_adol_wpp", "mys_age_ratio_ihme", 
-          "mys_pop_ratio_ihme", "mys_ratio_hdr", "labor_mod_ratio15_ilo", "gii_hdr", "conflict_internal", "war_internal", 
-          "conflict_non_state", "conflict_one_sided", "deaths_all_int_rate", 
-          "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
+          "mys_pop_ratio_ihme", "mys_ratio_hdr", "labor_mod_ratio15_ilo", "gii_hdr", 
+          "conflict_internal", "war_internal", "conflict_non_state", "conflict_one_sided", 
+          "deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
           "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", 
           "hom_odcwho_rate", "latentmean_fariss", "v2cltort", "v2clkill", "v2caviol", 
           "v2x_polyarchy", "v2x_libdem", "v2x_liberal", "v2x_partipdem", "v2x_partip")
-select <- c(vars, names(df)[names(df) %in% paste("lg", vars, sep = "_")])
-select <- c(select, names(df)[names(df) %in% paste(select, "avg", sep = "_")])
-dfp <- df[df$year %in% c(seq(1970, 2015, 5), 2018), c("country", "year", "period", "health_class", 
-                                                       "gender_class", "class", "class_vv", 
-                                                       "class_low", "class_HG", "class_GH", 
-                                                       "class_mid", "class_upp", select)]
+select_lg <- c(vars, names(df)[names(df) %in% paste("lg", vars, sep = "_")])
+select <- c(select_lg, names(df)[names(df) %in% paste(select_lg, "avg", sep = "_")])
+dfp <- df[df$year %in% c(seq(1965, 2015, 5), 2018), 
+          c("country", "year", "period", "health_class", "gender_class", "class", 
+            "class_vv", "class_low", "class_HG", "class_GH", "class_mid", "class_upp", select)]
 dfp$life_exp_wpp_avg_scaled <- as.numeric(scale(dfp$life_exp_wpp_avg))
 dfp$imr_wpp_avg_scaled <- as.numeric(scale(dfp$imr_wpp_avg))
 dfp$mys_age_ratio_ihme_avg_scaled <- as.numeric(scale(dfp$mys_age_ratio_ihme_avg))
 dfp$asfr_adol_wpp_avg_scaled <- as.numeric(scale(dfp$asfr_adol_wpp_avg))
 dfp$health <- rowMeans(dfp[, c("life_exp_wpp_avg_scaled", "imr_wpp_avg_scaled")], na.rm = FALSE)
 dfp$gender <- rowMeans(dfp[, c("mys_age_ratio_ihme_avg_scaled", "asfr_adol_wpp_avg_scaled")], na.rm = FALSE)
-dfp <- dfp[, names(dfp)[!names(dfp) %in% vars]]
+dfp <- dfp[, names(dfp)[!names(dfp) %in% select_lg]]
+# names(dfp)[!str_detect(names(dfp), "_avg")]
 names(dfp) <- str_replace(names(dfp), "_avg", "")
 dfp_lag <- dfp <- dfp[, names(dfp) != "period"]
 names(dfp_lag)[!names(dfp_lag) %in% c("country", "year", "period")] <- 
@@ -54,14 +53,6 @@ dfp_lag$year[dfp_lag$year == 2020] <- 2018
 dfp <- merge(dfp, dfp_lag, by = c("country", "year"), all.x = TRUE)
 dfp <- dfp[dfp$year >= 1965 + 5*number_of_lags, ]
 dfp <- dfp[dfp$year >= params$begin & dfp$year <= params$end, ]
-# dfp[, paste("growth", c(variables$health, variables$gender), sep = "_")] <- 
-#   lapply(c(variables$health, variables$gender), function(colname) {
-#     dfp[, colname] - dfp[, paste("lag", colname, sep = "_")]
-#   })
-# dfp[, paste("growth_lg", c(variables$health, "asfr_adol_wpp"), sep = "_")] <- 
-#   lapply(c(variables$health, "asfr_adol_wpp"), function(colname) {
-#     dfp[, paste("lg", colname, sep = "_")] - dfp[, paste("lag_lg", colname, sep = "_")]
-#   })
 
 # functions
 source("~/Dropbox/Analyses/functions/RegressionFig.R")

@@ -29,16 +29,16 @@ Classification <- function(health, gender,
   vars = c(health, gender)
   df <- df[, c("country", "year", "period", vars)]
   ## creating 5-year averages
-  df <- df %>% group_by(country, period) %>% 
-    mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}_avg"), .keep = "all")
-  df <- df %>%
+  df <- df %>% 
+    group_by(country, period) %>% 
+    mutate(across(all_of(vars), ~mean(.x, na.rm = TRUE), .names = "{col}_avg"), .keep = "all") %>%
     filter(year %in% seq(1970, 2015, 5)) %>%    # I removed 2018 here, for consistent panels, with downstream implications
-    group_by(year)
-  df <- df %>% mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[2], .names = "{col}_q20"))
-  df <- df %>% mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[3], .names = "{col}_q40"))
-  df <- df %>% mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[4], .names = "{col}_q60"))
-  df <- df %>% mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[5], .names = "{col}_q80"))
-  df <- ungroup(df)
+    group_by(year) %>% 
+    mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[2], .names = "{col}_q20")) %>% 
+    mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[3], .names = "{col}_q40")) %>% 
+    mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[4], .names = "{col}_q60")) %>% 
+    mutate(across(paste(vars, "avg", sep = "_"), ~quantile(.x, probs = seq(0, 1, 0.2), na.rm = TRUE)[5], .names = "{col}_q80")) %>% 
+    ungroup()
   df[, paste(vars, "quintile", sep = "_")] <- parallel::mclapply(vars, function(var) {
     col <- rep(NA, nrow(df))
     col[df[, paste(var, "avg", sep = "_")] < df[, paste(var, "avg_q20", sep = "_")]] <- 1
@@ -123,7 +123,7 @@ Classification <- function(health, gender,
   df$class_alt <- paste("H", df$health_class_alt, "G", df$gender_class_alt, sep = "")
   test <- table(df[df$year == year_to_show & df$valid >= min_to_include, c("health_class", "gender_class")])
   # print(test)
-  number_of_countries <- sum(test)
+  # sum(test)
   df$support <- paste(df$country, " (", df$combi, "/", df$valid, ")", sep = "")
   dat <- df[df$year == year_to_show, ]
   table_to_return <- tapply(dat$support, 
@@ -187,8 +187,6 @@ kableExtra::kable(result$table, format = "html") %>%
   kableExtra::kable_styling("striped") %>% 
   kableExtra::add_header_above(c(" " = 1, "Gender" = 5)) %>% 
   kableExtra::group_rows("Health", 1, 5)
-# sum(result$n_st)
-# xtable::xtable(result$n_st)
 ```
 
 #### Fuzzy version of classification 
@@ -202,16 +200,6 @@ kableExtra::kable(result$fuzzy, format = "html") %>%
 #### New version of classification based on standardized data
 ```{r classification_new}
 kableExtra::kable(result$table_st, format = "html") %>% 
-  kableExtra::kable_styling("striped") %>% 
-  kableExtra::add_header_above(c(" " = 1, "Gender" = 5)) %>% 
-  kableExtra::group_rows("Health", 1, 5)
-```
-
-<!-- ### Classification using the performance versions of the health and gender inputs -->
-```{r perf, eval = FALSE, echo = FALSE}
-result_perf <- Classification(health = paste("perf", variables$health, sep = "_"), 
-                              gender = paste("perf", variables$gender, sep = "_"), year_to_show = 1995)
-kableExtra::kable(result_perf$table, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
   kableExtra::add_header_above(c(" " = 1, "Gender" = 5)) %>% 
   kableExtra::group_rows("Health", 1, 5)
@@ -251,13 +239,6 @@ df <- merge(df, class1990, by = "country", all.x = TRUE)
 df <- merge(df, class1995, by = "country", all.x = TRUE)
 df <- df[order(df$country, df$year), 
          c("country", "year", "period", names(df)[!names(df) %in% c("country", "year", "period")])]
-# filepath <- paste("~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_cy_class", ".csv", sep = "" )
-# write_csv(df, file = filepath)
-```
-
-<!-- #### Subset of 1990 classifications for which "floor" rule was applied -->
-```{r flagged, eval = FALSE, echo =FALSE}
-flagged
 ```
 
 <!-- ### Classification trajectories (in 5-year increments based on global distributions in same time period) -->
@@ -510,7 +491,6 @@ new$lg_pc_rgdpe_avg_growth1995_2015[IsTrue(new$pc_rgdpe_avg_growth1995_2015 >= 0
 CodePerformance <- function(y_var, x_vars, show = FALSE, prefix = "perf") {
   x_vars <- paste(x_vars, collapse = " + ")
   equation <- paste(y_var, " ~ ", x_vars, sep = "")
-  # print(equation)
   df <- na.omit(get_all_vars(formula = equation, data = new, country = country))
   mod <- lm(formula = equation, data = df)
   df$predicted <- predict(mod)
@@ -532,8 +512,6 @@ performance_measures <- unlist(lapply(c(1990, 1995), function(year) {
 }), recursive = FALSE)
 performance_measures <- Reduce(f = function(...) merge(..., by = "country", all = TRUE), x = performance_measures)
 new <- merge(new, performance_measures, by = "country", all = TRUE)
-# filepath <- "~/Dropbox/Lancet-SIGHT Commission/Working Groups/Metrics/Datasets/dataset_crosssectional.csv"
-# write.csv(new, file = filepath)
 ```
 
 #### Performance Rankings within classification groups {.tabset .tabset-fade .tabset-pills}
@@ -544,9 +522,7 @@ Performance <- function(category, year, vars) {
   lapply(vars, function(var) {
     var <- paste(var, "_growth", year, "_2015", sep = "")
     # other <- paste(c("deaths_all_ucdp_rate_cumulative"), year + 1, "_2015", sep = "")
-    other <- NULL
-    select_vars <- c("country", var, paste("perf", var, sep = "_"), other)
-    # select_vars[!select_vars %in% names(new)]
+    select_vars <- c("country", var, paste("perf", var, sep = "_"))
     dat <- new[new$country %in% countries, select_vars]
     dat[order(dat[, var], decreasing = TRUE, na.last = NA), ]
   })

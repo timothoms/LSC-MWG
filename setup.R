@@ -11,3 +11,4 @@ knitr::opts_chunk$set(echo = TRUE, cache = params$cache,
                       rownames.print = FALSE,
                       rows.print = 10, cols.min.print = 10)
 options(width = 240, max.print = 5000)
+conflicted::conflict_prefer("filter", "dplyr")

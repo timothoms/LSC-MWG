@@ -48,13 +48,15 @@ categories <- list(
 categories
 variables <- list(
   measurement_models = c("latentmean_fariss", "v2cltort", "v2clkill", "v2caviol"),
-  death_rates = c("deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
-                  "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate"),
+  death_rates = c("deaths_all_int_rate", "deaths_civilians_int_rate", 
+                  "deaths_civilians_osv_rate", "deaths_all_nsc_rate", 
+                  "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate"),
   conflict_incidence = c("conflict_internal", "war_internal",  "conflict_non_state", "conflict_one_sided"),
   health_full = c("imr_wpp", "ufmr_wpp", "life_exp_wpp", "daly_ihme"),
   health = c("imr_wpp", "life_exp_wpp"),
   gender_full = c("labor_mod_ratio15_ilo", "wmn_parl_wdi", "tfr_wpp", 
-                  "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr", "mys_ratio_bl", "mys_age_ratio_ihme", "mys_pop_ratio_ihme" ),
+                  "asfr_adol_wpp", "daly_ratio_ihme", "mys_ratio_hdr", 
+                  "mys_ratio_bl", "mys_age_ratio_ihme", "mys_pop_ratio_ihme" ),
   gender = c("asfr_adol_wpp", "mys_age_ratio_ihme"),
   political = c("polity2_p4", "dem_bmr", "v2x_polyarchy", "v2x_libdem", 
                 "v2x_liberal", "v2x_partipdem", "v2x_partip")
@@ -146,10 +148,13 @@ data <- data %>%
 names(vars) <- vars <- c("pc_rgdpe_pwt", "growth_rgdpe_pwt", "pop_wpp", "pop_density_wpp", 
                          "imr_wpp", "ufmr_wpp", "life_exp_wpp", "daly_ihme", "asfr_adol_wpp", 
                          "mys_age_ratio_ihme", "mys_pop_ratio_ihme", "mys_ratio_hdr", 
-                         "labor_mod_ratio15_ilo", "gii_hdr", 
-                         "conflict_internal", "war_internal", "conflict_non_state", "conflict_one_sided", 
-                         "deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
-                         "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate",
+                         "labor_mod_ratio15_ilo", "gii_hdr", "conflict_internal", 
+                         "war_internal", "conflict_non_state", "conflict_one_sided", 
+                         "deaths_all_int", "deaths_civilians_int", "deaths_civilians_osv", 
+                         "deaths_all_nsc", "deaths_civilians_nsc", "deaths_all_ucdp", 
+                         "hom_odcwho", "deaths_all_int_rate", "deaths_civilians_int_rate", 
+                         "deaths_civilians_osv_rate", "deaths_all_nsc_rate", 
+                         "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", "hom_odcwho_rate", 
                          "latentmean_fariss", "v2cltort", "v2clkill", "v2caviol", 
                          "v2x_polyarchy", "v2x_libdem", "v2x_liberal", "v2x_partipdem", "v2x_partip")
 data <- data %>% 
@@ -161,20 +166,22 @@ data[, paste(vars, "avg", sep = "_")] <- lapply(data[, paste(vars, "avg", sep = 
   return(col)
 })
 take_logs <- c("pc_rgdpe_pwt", "pop_wpp", "pop_density_wpp", "life_exp_wpp")
-# take_logs_deaths <- c("deaths_all_int", "deaths_civilians_int", "deaths_civilians_osv", "deaths_all_nsc", "deaths_civilians_nsc")
 take_logs <- c(take_logs, paste(take_logs, "avg", sep = "_"))
 take_logs_negative <- c("imr_wpp", "ufmr_wpp", "daly_ihme", "asfr_adol_wpp")
 take_logs_negative <- c(take_logs_negative, paste(take_logs_negative, "avg", sep = "_"))
 summary(data[, sort(c(take_logs, take_logs_negative))])
 data[, paste("lg", take_logs, sep = "_")] <- lapply(data[, take_logs], log)
 data[, paste("lg", take_logs_negative, sep = "_")] <- lapply(data[, take_logs_negative], function(col) { -log(-col) })
+summary(data[, paste ("lg", sort(c(take_logs, take_logs_negative)), sep = "_")])
 # viol_vars <- c("conflict_internal", "war_internal", "conflict_non_state", 
 #                "conflict_one_sided", "latentmean_fariss", "v2cltort", "v2clkill")
 viol_vars_log <- c("deaths_all_int", "deaths_civilians_int", "deaths_civilians_osv", 
                    "deaths_all_nsc", "deaths_civilians_nsc", "deaths_all_ucdp", "hom_odcwho")
-viol_vars_log <- c(viol_vars_log, paste(viol_vars_log, "rate", sep = "_"))
+viol_vars_log <- c(viol_vars_log, 
+                   paste(viol_vars_log, "rate", sep = "_"), 
+                   paste(viol_vars_log, "avg", sep = "_"), 
+                   paste(viol_vars_log, "rate_avg", sep = "_"))
 data[, paste("lg", viol_vars_log, sep = "_")] <- lapply(data[, viol_vars_log], function(col) { log(col + 1) })
-summary(data[, paste ("lg", sort(c(take_logs, take_logs_negative)), sep = "_")])
 CodePerformance <- function(y_var, x_vars, df) {
   x_vars <- paste(x_vars, collapse = " + ")
   equation <- paste(y_var, "~", x_vars)
@@ -202,7 +209,6 @@ save(data, codebook, categories, variables, file = "_data/LSCMWG_working_data.RD
 ```
 
 ```{r unit_roots, echo = FALSE, eval = FALSE}
-# names(data)[str_detect(names(data), "avg")]
 # vars <- c("life_exp_wpp_avg", "imr_wpp_avg", "mys_ratio_hdr_avg", "asfr_adol_wpp_avg", "pc_rgdpe_pwt_avg")
 vars <- c("life_exp_wpp_avg", "pc_rgdpe_pwt_avg")
 df <- plm::pdata.frame(na.omit(data[data$year %in% seq(1970, 2015, 5), c("country", "year", vars)]), index = c("country", "year"))
