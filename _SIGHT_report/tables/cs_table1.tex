@@ -1,0 +1,30 @@
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Basic Model: lagged values of the health and gender variables}
+\label{cs_table1}
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{l}{Stepwise reduced models} & \multicolumn{4}{l}{Dependent variables: improvements from 1996-2015} \\
+\midrule
+Independent variables 1995  & Life expectancy & Infant mortality & Education equality & Adolescent fertility \\
+\midrule
+Life expectancy             & -0.420***       &                  &                    & \\
+                            & (0.000)         &                  &                    & \\
+Infant mortality            &                 & -0.583***        &                    & 0.200*** \\
+                            &                 & (0.000)          &                    & (0.004) \\
+Education equality          &                 &                  & -0.0647***         & -17.3\dag \\
+                            &                 &                  & (0.000)            & (0.055) \\
+Adolescent fertility        & 0.0394*         & 0.0962*          & 0.0000942\dag      & -0.273*** \\
+                            & (0.037)         & (0.032)          & (0.085)            & (0.000) \\
+\midrule
+Number of observations      & 180             & 180              & 180                & 180 \\
+$R^2$                       & 0.416           & 0.817            & 0.253              & 0.360 \\
+Probability F statistic = 0 & 0.000           & 0.000            & 0.000              & 0.000 \\
+Mean VIF                    & 2.37            & 2.46             & 1.54               & 2.87 \\
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize Coefficient estimates; p-values based on robust standard errors are reported in parentheses.
+***, **, *, \dag \ indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively.
+Constant coefficient not reported.}
+\end{table}

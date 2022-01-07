@@ -1,0 +1,40 @@
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Basic model with prior economic, political, conflict and violence measures}
+\label{cs_table3}
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{l}{Full models} & \multicolumn{4}{l}{Dependent variables: improvements from 1996-2015} \\
+\midrule
+Independent variables 1995    & Life expectancy & Infant mortality & Education equality & Adolescent fertility \\
+\midrule
+Life expectancy               & -0.442***       &                  &                    & \\
+                              & (0.001)         &                  &                    & \\
+Infant mortality              &                 & - 0.612***       & 0.0000573          & 0.200*** \\
+                              &                 & (0.000)          & (0.482)            & (0.000) \\
+Education equality            & -3.72           & 6.36             & -0.0567***         & -16.4 \\
+                              & (0.271)         & (0.450)          & (0.000)            & (0.111) \\
+Adolescent fertility          & 0.0438***       & 0.100***         & 0.000144\dag       & -0.256*** \\
+                              & (0.006)         & (0.003)          & (0.058)            & (0.000) \\
+Per capita income (\$1000)    & 0.0311\dag      & -0.0258          & -0.0000507***      & -0.00305 \\
+                              & (0.055)         & (0.598)          & (0.004)            & (0.962) \\
+Polyarchy                     & 4.85***         & 3.40             & -0.0247***         & -7.1 \\
+                              & (0.002)         & (0.340)          & (0.001)            & (0.267) \\
+Internal conflict indicator   & 0.0622\dag      & 0.0724           & 0.00018            & -0.0333 \\
+                              & (0.058)         & (0.394)          & (0.358)            & (0.844) \\
+Death rate internal conflicts & -1.41           & -6.45***         & -0.00415           & 1.04 \\
+                              & (0.201)         & (0.002)          & (0.181)            & (0.702) \\
+Death rate one-sided violence & 0.0685*         & 0.226***         & 0.0000605          & -0.00869 \\
+                              & (0.50)          & (0.001)          & (0.587)            & (0.911) \\
+\midrule
+Number of observations        & 161             & 161              & 161                & 161 \\
+$R^2$                         & 0.515           & 0.841            & 0.396              & 0.366 \\
+Probability F statistic = 0   & 0.000           & 0.000            & 0.000              & 0.000 \\
+Mean VIF                      & 2.35            & 2.47             & 2.47               & 2.47 \\
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize Coefficient estimates; p-values based on robust standard errors are reported in parentheses.
+***, **, *, \dag \ indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively.
+Constant coefficient not reported.}
+\end{table}

@@ -1,0 +1,48 @@
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Basic model with prior and contemporaneous variables}
+\label{cs_table4}
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{l}{Stepwise reduced models} & \multicolumn{4}{l}{Dependent variables: improvements from 1996-2015} \\
+\midrule
+Independent variables 1995         & Life expectancy & Infant mortality & Education equality & Adolescent fertility \\
+\midrule
+Life expectancy                    & -0.463***       &                  &                    & \\
+                                   & (0.003)         &                  &                    & \\
+Infant mortality                   &                 & - 0.589***       & -0.00000378        & 0.173** \\
+                                   &                 & (0.000)          & (0.967)            & (0.017) \\
+Education equality                 & -4.02           & 6.91             & -0.0561***         & -17.6* \\
+                                   & (0.240)         & (0.322)          & (0.000)            & (0.050) \\
+Adolescent fertility               & 0.0433**        & 0.0813***        & 0.000168*          & -0.265*** \\
+                                   & (0.014)         & (0.009)          & (0.026)            & (0.000) \\
+Per capita income (\$1000)         & 0.0257          &                  & -0.0000480***      & \\
+                                   & (0.261)         &                  & (0.004)            & \\
+Polyarchy                          & 5.28***         &                  & -0.0236***         & \\
+                                   & (0.001)         &                  & (0.001)            & \\
+Internal conflict indicator        & 0.0673*         &                  & 0.000535*          & \\
+                                   & (0.040)         &                  & (0.039)            & \\
+Death rate internal conflicts      &                 & -6.33***         & -0.00265\dag       & \\
+                                   &                 & (0.003)          & (0.057)            & \\
+Death rate one-sided violence      & 0.0360\dag      & 0.228***         &                    & \\
+                                   & (0.091)         & (0.002)          &                    & \\
+Per capita income growth (\$1000)  & 0.0425***       &                  &                    & \\
+\qquad (1996-2015)                 & (0.003)         &                  &                    & \\
+Conflict indicator                 &                 &                  & -0.000915*         & \\
+\qquad (1996-2015)                 &                 &                  & (0.048)            & \\
+Civilian deaths internal conflict  & -0.215**        &                  & 0.00106**          & \\
+\qquad (1996-2015)                 & (0.016)         &                  & (0.022)            & \\
+Civilian deaths one-sided violence &                 &                  &                    & -1.86 \\
+\qquad (1996-2015)                 &                 &                  &                    & (0.111) \\
+\midrule
+Number of observations             & 161             & 180              & 161                & 180 \\
+$R^2$                              & 0.517           & 0.837            & 0.416              & 0.371 \\
+Probability F statistic = 0        & 0.000           & 0.000            & 0.000              & 0.000\\
+Mean VIF                           & 1.94            & 2.81             & 2.14               & 2.56 \\
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize Coefficient estimates; p-values based on robust standard errors are reported in parentheses.
+***, **, *, \dag \ indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively.
+Constant coefficient not reported.}
+\end{table}

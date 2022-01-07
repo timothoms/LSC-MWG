@@ -1,0 +1,50 @@
+\begin{sidewaystable}[!htbp]
+\small
+\centering
+\caption{Summary of findings on health and gender outcomes: base models and state-based conflict interactions}
+\label{table_hg_base}
+\begin{tabular}{lccccccccccc}
+\toprule
+                                       & Life                      & IMR          & UFMR                & DALYs     & MYS                      & AFR        & Labor part. & GII \\
+                                       & Expectancy                &              &                     &           & ratio                    &            & ratio       & \\
+\midrule
+Life expectancy                        & lagged DV                 & na           & na                  & na        & $+$ \dag\ / $-$ \ddag    & $+$ \ddag  &             & $+$ \ddag \\
+Infant mortality rate                  & na                        & lagged DV    & na                  & na        &                          & $+$ \ddag  & $+$ \ddag   & $+$ \\
+MYS ratio                              & $+$                       & $+$ \ddag    & $+$ \ddag           & $+$ \ddag & lagged DV                & na         & na          & na \\
+Adolescent fertility rate              & $+$                       & $-$ \dag     & $-$ \dag            & $-$       & na                       & lagged DV  & na          & na \\
+\midrule
+low classification                     & reference                 & reference    & reference           & reference & reference                & reference  & reference   & reference\\
+G$>$H classification                   & $+$                       & $+$ \ddag    &                     & $-$ \dag  & $+$ \ddag                & $+$        &             & $-$ \ddag \\
+H$>$G classification                   & $+$                       & $+$          & $+$                 & $-$ \dag  &                          & $+$ \dag   &             & \\
+mid classification                     & $+$                       & $+$          & $+$                 & $-$ \dag  &                          & $+$        &             & \\
+upp classification                     & $+$                       & $+$          & $+$ \dag            & $-$ \dag  &                          & $+$ \dag   &             & \\
+\midrule
+internal conflict incidence            & $+$ \ddag                 &              & $-$ \dag            &           & $+$                      &            &             & $+$ \ddag \\
+--- low classification interaction     &                           & $-$ *        & $-$ *               &           & $+$ *                    &            &             & $+$ \ddag \\
+--- G$>$H classification interaction   & $+$                       & $-$          &                     & $+$ \dag  & $-$ \dag\ / $+$ \dag\ *  & $-$ \ddag  &             & \\
+--- H$>$G classification interaction   & $+$                       &              & $+$ \dag            &           & $-$ \ddag\ *             &            &             & $+$ \ddag \\
+--- mid classification interaction     & $+$                       &              & $+$ \dag\ *         &           & $+$ \ddag                &            &             & \\
+--- upp classification interaction     & $+$ (most)                &              &                     &           & $+$ \dag\ *              & $-$ \ddag  & $-$ \dag    & \\
+\midrule
+internal conflict deaths               & $+$ \ddag                 & $+$ \dag     & $-$                 & $+$ \ddag &                          & $-$ \dag   &             & \\
+--- low classification interaction     & $-$ \ddag\ / $+$ \ddag\ * & $-$          & $-$ \ddag\ or *\dag &           & $-$ \ddag\ *             &            &             & \\
+--- G$>$H classification interaction   & $+$ \ddag\ (most)         & $-$          & $-$ \dag\ or *      &           & $-$ \dag\ / $+$ \ddag\ * & $-$ \ddag  &             & \\
+--- H$>$G classification interaction   & $+$ \ddag\ *              &              &                     &           & $+$ \ddag\ *             &            & $-$ \dag    & $+$ \\
+--- mid classification interaction     &                           &              &                     &           & $+$ \ddag                &            &             & $+$ \ddag \\
+--- upp classification interaction     & $+$ \ddag\ * / $-$ \dag   &              &                     &           &                          & $-$        &             & \\
+% \midrule
+% internal conflict civilian deaths \\
+% --- low classification interaction   & $+$                       & $+$ \ddag\ * &                     & $+$ \ddag & $+$ \ddag                &            &             & $-$ \dag \\
+% --- G$>$H classification interaction & $+$                       & $-$ \ddag    & $-$ \ddag\ *        &           & $-$ \dag\ / $+$ \ddag    & $-$        &             & $-$ \ddag \\
+% --- H$>$G classification interaction & $-$                       & $-$ \dag     & $-$ \dag            & $-$ \dag  & $-$ \dag\ / $+$ \ddag\ * & $-$ (most) &             & $+$ \dag\ * \\
+% --- mid classification interaction   &                           & $-$ \dag     & $-$ \dag            &           & $-$ \ddag                & $-$        &             & $+$ \dag \\
+% --- upp classification interaction   & $+$                       &              &                     &           &                          & $-$        &             & \\
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize Legend:
+$+$, $-$ statistically significant effects;
+na not included;
+\dag\ FE model only;
+\ddag\ FEGLS model only;
+* model does not include controls for other types of violence.}
+\end{sidewaystable}

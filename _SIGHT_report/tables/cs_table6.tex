@@ -1,0 +1,47 @@
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Basic model with prior economic, political, conflict and violence measures}
+\label{cs_table6}
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{l}{Reduced models} & \multicolumn{4}{l}{Dependent variables: improvements from 1996-2015} \\
+Independent variables 1995    & Life expectancy & Infant mortality & Education equality & Adolescent fertility \\
+\midrule
+Life expectancy               & -0.684***       &                  &                    & \\
+                              & (0.000)         &                  &                    & \\
+Infant mortality              &                 & - 0.692***       &                    & 0.217* \\
+                              &                 & (0.000)          &                    & (0.027) \\
+Education equality            &                 &                  & -0.0588***         & -33.3*** \\
+                              &                 &                  & (0.006)            & (0.003) \\
+Adolescent fertility          & 0.0421***       & 0.0588\dag       & 0.000173**         & -0.321** \\
+                              & (0.000)         & (0.001)          & (0.013)            & (0.000) \\
+Per capita income (\$1000)    & 0.0211\dag      &                  & -0.0000442***      & \\
+                              & (0.098)         &                  & (0.000)            & \\
+Polyarchy                     & 3.88***         &                  & -0.0204***         & \\
+                              & (0.001)         &                  & (0.008)            & \\
+Internal conflict indicator   & 0.0577*         &                  &                    & \\
+                              & (0.040)         &                  &                    & \\
+Death rate internal conflicts & -1.46**         & -6.45***         &                    & \\
+                              & (0.021)         & (0.002)          &                    & \\
+Death rate one-sided violence & 0.0533***       & 0.204***         &                    & \\
+                              & (0.008)         & (0.004)          &                    & \\
+Lowest performance group      & -4.26***        & -14.4***         & -0.121             & -5.71 \\
+                              & (0.006)         & (0.000)          & (0.244)            & -0.439 \\
+G$>$H group                   & -4.78***        & -6.75***         & -0.0152**          & 11.9*** \\
+                              & (0.001)         & (0.006)          & (0.023)            & (0.002) \\
+H$>$G group                   & 1.23*           & 2.00             & -0.00321           & -1.59 \\
+                              & (0.031)         & (0.111)          & (0.642)            & (0.614) \\
+Highest performance group     & 1.08            & 3.02\dag         & -0.0141\dag        & 6.83 \\
+                              & (0.220)         & (0.095)          & (0.055)            & (0.133) \\
+\midrule
+Number of observations        & 161             & 180              & 161                & 180 \\
+$R^2$                         & 0.608           & 0.864            & 0.425              & 0.404 \\
+Probability F statistic = 0   & 0.000           & 0.000            & 0.000              & 0.000 \\
+Mean VIF                      & 2.93            & 3.03             & 2.94               & 3.5 \\
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize Coefficient estimates; p-values based on robust standard errors are reported in parentheses.
+***, **, *, \dag \ indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively.
+Constant coefficient not reported.}
+\end{table}

@@ -1,0 +1,46 @@
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Basic model with prior economic, political, conflict and violence measures}
+\label{cs_table7}
+\begin{tabular}{lccccc}
+\toprule
+\multicolumn{1}{l}{Reduced models} & \multicolumn{5}{l}{Dependent variables: changes from 1996-2015} \\
+Independent variables 1995    & Per capita  & Polyarchy     & Conflict  & Civilian deaths & Civilian deaths \\
+                              & real income &               & Indicator & (internal)      & (one-sided violence) \\
+\midrule
+Life expectancy               &             &               &           &                 & -0.0694*** \\
+                              &             &               &           &                 & (0.001) \\
+Infant mortality              &             &               & -0.0329** &                 & \\
+                              &             &               & (0.0170)  &                 & \\
+Education equality            &             &               & -4.25\dag &                 & \\
+                              &             &               & (0.059)   &                 & \\
+Adolescent fertility          &             & -0.000363\dag &           &                 & \\
+                              &             & (0.100)       &           &                 & \\
+Polyarchy                     &             & 0.842***      &           &                 & \\
+                              &             & (0.000)       &           &                 & \\
+Internal conflict indicator   &             &               & 0.398***  &                 & \\
+                              &             &               & (0.000)   &                 & \\
+Death rate internal conflict  & -1660***    & 0.04745***    &           &                 & \\
+                              & (0.001)     & (0.000)       &           &                 & \\
+Death rate one-sided violence &             &               &           &                 & \\
+                              &             &               &           &                 & \\
+Lowest group                  & -3210***    & -0.0493       & -2.90\dag & 0.149***        & -0.304 \\
+                              & (0.001)     & (0.187)       & (0.65)    & (0.002)         & (0.254) \\
+G$>$H group                   & 888         & -0.0480       & -0.272    & -0.00225        & -0.276*** \\
+                              & (0.513)     & (0.256)       & (0.827)   & (0.861)         & (0.010) \\
+H$>$G group                   & 2616        & -0.184        & -1.07     & 0.650           & 0.228 \\
+                              & (0.341)     & (0.569)       & (0.450)   & (0.325)         & (0.129) \\
+Highest group                 & 14078***    & 0.0260        & -0.545    & 0.536           & 0.381*** \\
+                              & (0.000)     & (0.449)       & (0.956)   & (0.232)         & (0.003) \\
+\midrule
+Number of obs.                & 168         & 169           & 180       & 184             & 180 \\
+$R^2$                         & 0.278       & 0.861         & 0.487     & 0.028           & 0.197 \\
+P(F statistic = 0)            & 0.000       & 0.000         & 0.000     & 0.014           & 0.014 \\
+Mean VIF                      & 1.83        & 2.20          & 2.98      & 2.04            & 3.06 \\
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize Coefficient estimates; p-values based on robust standard errors are reported in parentheses.
+***, **, *, \dag \ indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively.
+Constant coefficient not reported.}
+\end{table}

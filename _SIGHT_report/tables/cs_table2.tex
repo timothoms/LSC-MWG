@@ -1,0 +1,34 @@
+\begin{table}[!htb]
+\footnotesize
+\centering
+\caption{Basic model with prior economic and political variables}
+\label{cs_table2}
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{l}{Full models} & \multicolumn{4}{l}{Dependent variables: improvements from 1996-2015} \\
+\midrule
+Independent variables 1995  & Life expectancy & Infant mortality & Education equality & Adolescent fertility \\
+\midrule
+Life expectancy             & -0.479***       &                  &                    & \\
+                            & (0.004)         &                  &                    & \\
+Infant mortality            &                 & -0.648***        & 0.000052           & 0.200*** \\
+                            &                 & (0.000)          & (0.553)            & (0.007) \\
+Education equality          & -3.79           & 7.29             & -0.575***          & -16.2 \\
+                            & (0.286)         & (0.419)          & (0.000)            & (0.122) \\
+Adolescent fertility        & 0.0487**        & 0.115***         & 0.000144\dag       & -0.255*** \\
+                            & (0.014)         & (0.009)          & (0.057)            & (0.000) \\
+Per capita income (\$1000)  & 0.0261          & -0.0209          & -0.000051***       & -0.00372 \\
+                            & (0.146)         & (0.693)          & (0.000)            & (0.956) \\
+Polyarchy                   & 4.59***         & 3.61             & -0.0245***         & -7.23 \\
+                            & (0.002)         & (0.305)          & (0.001)            & (0.228) \\
+\midrule
+Number of observations      & 161             & 161              & 161                & 161 \\
+$R^2$                       & 0.472           & 0.825            & 0.389              & 0.365 \\
+Probability F statistic = 0 & 0.000           & 0.000            & 0.000              & 0.000 \\
+Mean VIF                    & 2.44            & 2.58             & 2.58               & 2.58 \\
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize Coefficient estimates; p-values based on robust standard errors are reported in parentheses.
+***, **, *, \dag \ indicate statistical significance at the 0.01, 0.025, 0.05 and .10 levels respectively.
+Constant coefficient not reported.}
+\end{table}
