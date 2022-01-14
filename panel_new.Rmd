@@ -101,12 +101,12 @@ RunModels <- function(equations,
     list(what = "unit effects", testfunction = "plmtest", x_estimator = "ols", effect = "twoways"),
     list(what = "correlated effects", testfunction = "phtest", x_estimator = "fe", x2_estimator = "re"),
     list(what = "correlated effects", testfunction = "phtest", x_estimator = "fegls", x2_estimator = "ggls", note = "(FGLS)"),
-    ## any type of serial corr. of time-decaying kind in the ideosyncratic error terms
-    list(what = "ideosyncratic serial corr.", testfunction = "pwtest", x_estimator = "ols"),
+    ## any type of serial corr. of time-decaying kind in the idiosyncratic error terms
+    list(what = "idiosyncratic serial corr.", testfunction = "pwtest", x_estimator = "ols"),
     ## serial corr.: detecting features of persistence
-    list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "ar"),
+    list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "j"),
     list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "re"),
-    # list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "j"),
+    list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "ar"),
     list(what = "persistent serial corr.", testfunction = "pbltest", x_estimator = "re", alternative = "onesided"),
     list(what = "traditional serial corr.", testfunction = "pwartest", x_estimator = "fe")
   )
