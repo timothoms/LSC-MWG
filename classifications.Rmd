@@ -446,17 +446,24 @@ parallel::mclapply(variables$outcomes, GrowthRatesTtest)
 
 <!-- #### Preparing cross-sectional dataset -->
 ```{r reg_prep}
+dfp <- df
+dfp$life_exp_wpp_avg_scaled <- as.numeric(scale(dfp$life_exp_wpp_avg))
+dfp$imr_wpp_avg_scaled <- as.numeric(scale(dfp$imr_wpp_avg))
+dfp$mys_age_ratio_ihme_avg_scaled <- as.numeric(scale(dfp$mys_age_ratio_ihme_avg))
+dfp$asfr_adol_wpp_avg_scaled <- as.numeric(scale(dfp$asfr_adol_wpp_avg))
+dfp$health <- rowMeans(dfp[, c("life_exp_wpp_avg_scaled", "imr_wpp_avg_scaled")], na.rm = FALSE)
+dfp$gender <- rowMeans(dfp[, c("mys_age_ratio_ihme_avg_scaled", "asfr_adol_wpp_avg_scaled")], na.rm = FALSE)
 covariates <- c("pc_rgdpe_pwt", "life_exp_wpp", "imr_wpp", "mys_ratio_hdr", "mys_age_ratio_ihme", "asfr_adol_wpp")
 covariates <- paste(covariates, "avg", sep = "_")
 # covariates <- c(covariates, "oda_provided_const_wdi", "oda_received_perc_gov_exp_wdi", "oda_aid_received_const_wdi", "oda_received_const_wdi", "oda_received_perc_imports_wdi", "aid_received_const_wdi")
 vars <- unlist(lapply(covariates, function(var) { names(df)[str_detect(names(df), var)] }))
 vars <- unique(vars[vars != "pasfr_adol_wpp"])
-include <- c("country", "class", "class_vv", "class_low", "class_upp", vars)
-new1990 <- df[df$year == 1990, c(include, variables$death_rates, variables$measurement_models)]
-new1995 <- df[df$year == 1995, c(include, variables$death_rates, variables$measurement_models, 
+include <- c("country", "class", "class_vv", "class_low", "class_upp", "health", "gender", vars)
+new1990 <- dfp[dfp$year == 1990, c(include, variables$death_rates, variables$measurement_models)]
+new1995 <- dfp[dfp$year == 1995, c(include, variables$death_rates, variables$measurement_models, 
   paste(variables$conflict_incidence, "cumulative1989", sep = "_"),
   paste(variables$political, "cumulative1991", sep = "_"))]
-new2015 <- df[df$year == 2015, c(include, 
+new2015 <- dfp[dfp$year == 2015, c(include, 
   paste(c(variables$death_rates, variables$measurement_models), "cumulative1991", sep = "_"),
   paste(c(variables$death_rates, variables$measurement_models), "cumulative1996", sep = "_"),
   paste(variables$conflict_incidence, "cumulative1991", sep = "_"),
@@ -469,6 +476,10 @@ names(new2015)[names(new2015) != "country"] <- paste(names(new2015)[names(new201
 new <- merge(new1990, new1995, by = c("country"), all = TRUE)
 new <- merge(new, new2015, by = c("country"), all = TRUE)
 ## growth vars 
+new$health_growth1990_2015      <- new$health_2015 - new$health_1990
+new$health_growth1995_2015      <- new$health_2015 - new$health_1995
+new$gender_growth1990_2015      <- new$gender_2015 - new$gender_1990
+new$gender_growth1995_2015      <- new$gender_2015 - new$gender_1995
 new$pc_rgdpe_avg_growth1990_2015      <- new$pc_rgdpe_pwt_avg_2015 - new$pc_rgdpe_pwt_avg_1990
 new$pc_rgdpe_avg_growth1995_2015      <- new$pc_rgdpe_pwt_avg_2015 - new$pc_rgdpe_pwt_avg_1995
 new$life_exp_wpp_avg_growth1990_2015  <- new$life_exp_wpp_avg_2015 - new$life_exp_wpp_avg_1990
