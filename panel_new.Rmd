@@ -205,6 +205,7 @@ IntPlot <- function(fit, eff_var,
     xlimits <- range(as.numeric(rownames(ests)))
   }
   if(pdfswitch & !is.null(pdfname)) pdf(file = paste("_figures/", pdfname, ".pdf", sep = ""), width = 8, height = 4.5)
+  # par(mar = c(5, 4, 1, 1) + 0.1)
   plot(x = xvalues, 
        y = ests$est, 
        pch = 18, 
@@ -220,6 +221,91 @@ IntPlot <- function(fit, eff_var,
   if(pdfswitch & !is.null(pdfname)) dev.off()
   invisible(NULL)
 }
+
+
+
+
+
+# results$ests$fe$m1$est
+# results$ests$fe$m1$info
+
+lapply(results$ests[c("fe", "fegls")], function(toplevel) {
+    lapply(toplevel, function(modellevel) {
+        names(modellevel)
+        # estimates <- lapply(1:2, function(index) {
+        #     names(outcomelevel[[index]]) <- paste(names(outcomelevel[[index]]), index, sep = "_")
+        #     return(outcomelevel[[index]])
+        # })
+        # estimates <- do.call(c, estimates)
+
+        # tf <- lapply(estimates, function(mod) {
+        #     mod_result <- mod[["est"]]
+        #     mod_result$output <- paste(format(round(mod_result$est, 3), 3), " [",
+        #                                format(round(abs(mod_result$z), 2), 2), "]", sep = "")
+        #     ### if not printing to LaTeX, then comment out next line
+        #     mod_result$output[abs(mod_result$z) >= zscore] <- paste("\\textbf{", mod_result$output[abs(mod_result$z) >= zscore], "}", sep = "")
+        #     info <- data.frame(output = unlist(mod$info))
+        #     info$var <- names(lookup[rownames(info)])
+        #     mod_result <- rbind(mod_result[, c("var", "output")], info)
+        #     return(mod_result)
+        # })
+        # tf <- lapply(names(tf), function(modelname) {
+        #     names(tf[[modelname]])[2] <- modelname
+        #     return(tf[[modelname]])
+        # })
+        # tf <- Reduce(f = function(...) merge(..., by = "var", all = TRUE), tf)
+        # varstable$order <- 1:nrow(varstable)
+        # tf <- merge(varstable[, c("var", "order", "label")], tf, by = "var", all.y = TRUE)
+        # tf$label[is.na(tf$label)] <- lookup[tf$var[is.na(tf$label)]]
+        # tf$order[is.na(tf$order)] <- match(tf$var[is.na(tf$order)], names(lookup)) + max(tf$order, na.rm = TRUE)
+        # tf <- tf[order(tf$order), names(tf) != "order"]
+        # tf <- tf[, sort(names(tf))]
+        # tf[is.na(tf)] <- ""
+        # return(tf)
+    })
+})
+
+
+
+ExtractTables <- function(tables, dvs, models_to_select,
+    file_suffix = NULL ## what to append to default filename
+) {
+    output <- lapply(dvs, function(dv) {
+        ### selecting relevant columns
+        columns <- sort(c("label", paste(models_to_select[[dv]], 1, sep = "_"), paste(models_to_select[[dv]], 2, sep = "_")))
+        tf <- tables[[dv]][, columns]
+        ### selecting relevant rows
+        rows <- rowSums(tf[, -1] == "") != ncol(tf[, -1])
+        tf <- tf[rows, ]
+        ### changing column names
+        names(tf)[-1] <- unlist(lapply(1:(ncol(tf[, -1])/2), function(num) {
+            paste("Model ", num, c("a", "b"), sep = "")
+        }))
+        names(tf) <- str_replace(names(tf), "label", "")
+        ### formatting and printing to file
+        latextable <- xtable(tf, align =  c("r", "l", rep("r", ncol(tf) - 1)),
+                             caption = "estimates [t-statistic]; significant at 0.05 alpha level in \\textbf{bold}")
+        file_suffix <- ifelse(!is.null(file_suffix), paste("_", file_suffix, sep = ""), "")
+        filename <- paste("tables/reg_", dv, file_suffix, ".tex", sep = "")
+        print(latextable,
+              sanitize.text.function = identity,
+              include.rownames = FALSE,
+              table.placement = "!hb",
+              size = "footnotesize",
+              floating.environment = "table",
+              booktabs = TRUE,
+              hline.after = c(-1, 0, nrow(tf) - 5, nrow(tf)),
+              comment = FALSE,
+              file = filename
+        )
+        return(tf)
+    })
+    invisible(output)
+}
+
+
+
+
 ```
 
 ### {.tabset .tabset-fade .tabset-pills}
@@ -239,6 +325,8 @@ results <- RunModels(labelspace = 16, equations = c(
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
+
+results[["ests"]][["fe"]][["m1"]]
 ```
 ```{r int_health_conflict_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 mods_health <- seq(round(min(dfp$health, na.rm = TRUE), 1), round(max(dfp$health, na.rm = TRUE), 1), 0.05)
