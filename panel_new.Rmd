@@ -17,6 +17,7 @@ knitr::opts_chunk$set(fig.width = 12, fig.height = 16, rows.print = 12,
                       cols.print = 14, cols.min.print = 14,
                       out.width = "100%", out.height = "100%", dpi = 96)
 library(plm)
+library(xtable)
 ```
 
 ```{r prelim}
@@ -205,7 +206,7 @@ IntPlot <- function(fit, eff_var,
     xlimits <- range(as.numeric(rownames(ests)))
   }
   if(pdfswitch & !is.null(pdfname)) pdf(file = paste("_figures/", pdfname, ".pdf", sep = ""), width = 8, height = 4.5)
-  # par(mar = c(5, 4, 1, 1) + 0.1)
+  par(mar = c(5, 4, 1, 1) + 0.1)
   plot(x = xvalues, 
        y = ests$est, 
        pch = 18, 
@@ -214,98 +215,103 @@ IntPlot <- function(fit, eff_var,
        ylab = ifelse(ylabel != "", paste("Change in", ylabel), ""), 
        xlab = xlabel, 
        xaxt = ifelse(length(int_vars) > 1, "n", "s"), 
-       main = title)
+       main = NULL)
+       # main = title)
   segments(x0 = xvalues, y0 = ests$cilower, y1 = ests$ciupper, lwd = 2, lend = "butt")
   abline(h = 0, lwd = 0.5)
   if(length(int_vars) > 1) axis(side = 1, at = 1:nrow(ests), labels = rownames(ests), tick = FALSE)
   if(pdfswitch & !is.null(pdfname)) dev.off()
   invisible(NULL)
 }
-
-
-
-
-
-# results$ests$fe$m1$est
-# results$ests$fe$m1$info
-
-lapply(results$ests[c("fe", "fegls")], function(toplevel) {
-    lapply(toplevel, function(modellevel) {
-        names(modellevel)
-        # estimates <- lapply(1:2, function(index) {
-        #     names(outcomelevel[[index]]) <- paste(names(outcomelevel[[index]]), index, sep = "_")
-        #     return(outcomelevel[[index]])
-        # })
-        # estimates <- do.call(c, estimates)
-
-        # tf <- lapply(estimates, function(mod) {
-        #     mod_result <- mod[["est"]]
-        #     mod_result$output <- paste(format(round(mod_result$est, 3), 3), " [",
-        #                                format(round(abs(mod_result$z), 2), 2), "]", sep = "")
-        #     ### if not printing to LaTeX, then comment out next line
-        #     mod_result$output[abs(mod_result$z) >= zscore] <- paste("\\textbf{", mod_result$output[abs(mod_result$z) >= zscore], "}", sep = "")
-        #     info <- data.frame(output = unlist(mod$info))
-        #     info$var <- names(lookup[rownames(info)])
-        #     mod_result <- rbind(mod_result[, c("var", "output")], info)
-        #     return(mod_result)
-        # })
-        # tf <- lapply(names(tf), function(modelname) {
-        #     names(tf[[modelname]])[2] <- modelname
-        #     return(tf[[modelname]])
-        # })
-        # tf <- Reduce(f = function(...) merge(..., by = "var", all = TRUE), tf)
-        # varstable$order <- 1:nrow(varstable)
-        # tf <- merge(varstable[, c("var", "order", "label")], tf, by = "var", all.y = TRUE)
-        # tf$label[is.na(tf$label)] <- lookup[tf$var[is.na(tf$label)]]
-        # tf$order[is.na(tf$order)] <- match(tf$var[is.na(tf$order)], names(lookup)) + max(tf$order, na.rm = TRUE)
-        # tf <- tf[order(tf$order), names(tf) != "order"]
-        # tf <- tf[, sort(names(tf))]
-        # tf[is.na(tf)] <- ""
-        # return(tf)
-    })
-})
-
-
-
-ExtractTables <- function(tables, dvs, models_to_select,
-    file_suffix = NULL ## what to append to default filename
-) {
-    output <- lapply(dvs, function(dv) {
-        ### selecting relevant columns
-        columns <- sort(c("label", paste(models_to_select[[dv]], 1, sep = "_"), paste(models_to_select[[dv]], 2, sep = "_")))
-        tf <- tables[[dv]][, columns]
-        ### selecting relevant rows
-        rows <- rowSums(tf[, -1] == "") != ncol(tf[, -1])
-        tf <- tf[rows, ]
-        ### changing column names
-        names(tf)[-1] <- unlist(lapply(1:(ncol(tf[, -1])/2), function(num) {
-            paste("Model ", num, c("a", "b"), sep = "")
-        }))
-        names(tf) <- str_replace(names(tf), "label", "")
-        ### formatting and printing to file
-        latextable <- xtable(tf, align =  c("r", "l", rep("r", ncol(tf) - 1)),
-                             caption = "estimates [t-statistic]; significant at 0.05 alpha level in \\textbf{bold}")
-        file_suffix <- ifelse(!is.null(file_suffix), paste("_", file_suffix, sep = ""), "")
-        filename <- paste("tables/reg_", dv, file_suffix, ".tex", sep = "")
-        print(latextable,
-              sanitize.text.function = identity,
-              include.rownames = FALSE,
-              table.placement = "!hb",
-              size = "footnotesize",
-              floating.environment = "table",
-              booktabs = TRUE,
-              hline.after = c(-1, 0, nrow(tf) - 5, nrow(tf)),
-              comment = FALSE,
-              file = filename
-        )
-        return(tf)
-    })
-    invisible(output)
+lookup <- c(
+  lg_pc_rgdpe_pwt = "GDP per capita (logged)",
+  lg_pop_density_wpp = "population density (logged)",
+  v2x_polyarchy = "electoral democracy component",
+  v2x_partip = "participatory democracy component",
+  v2x_liberal = "liberal democracy component",
+  gender = "gender",
+  health = "health",
+  "health:gender" = "health * gender",
+  class_low = "low classification",
+  class_GH = "G>H classification",
+  class_HG = "H>G classification",
+  class_mid = "mid classification",
+  class_upp = "high classification",
+  conflict_internal = "conflict incidence",
+  "conflict_internal:health" = "conflict * health",
+  "conflict_internal:gender" = "conflict * gender",
+  "conflict_internal:class_low" = "conflict * low",
+  "conflict_internal:class_GH" = "conflict * G>H",
+  "conflict_internal:class_HG" = "conflict * H>G",
+  "conflict_internal:class_mid" = "conflict * mid",
+  "conflict_internal:class_upp" = "conflict * high",
+  latentmean_fariss = "latent physical integrity (LPI)",
+  "latentmean_fariss:health" = "LPI * health",
+  "latentmean_fariss:gender" = "LPI * gender",
+  "latentmean_fariss:class_low" = "LPI * low",
+  "latentmean_fariss:class_GH" = "LPI * G>H",
+  "latentmean_fariss:class_HG" = "LPI * H>G",
+  "latentmean_fariss:class_mid" = "LPI * mid",
+  "latentmean_fariss:class_upp" = "LPI * high",
+  war_internal = "war incidence",
+  "war_internal:health" = "war * health",
+  "war_internal:gender" = "war * gender",
+  "war_internal:class_low" = "war * low",
+  "war_internal:class_GH" = "war * G>H",
+  "war_internal:class_HG" = "war * H>G",
+  "war_internal:class_mid" = "war * mid",
+  "war_internal:class_upp" = "war * high",
+  # "(Intercept)" = "intercept",
+  N = "N",
+  n = "countries", 
+  "T" = "periods",
+  rsquared = "$R^2$"
+)
+MakeTable <- function(results, dv, confl = NULL, estimator) {
+  zscore <- qnorm(1 - ((1 - 0.95)/2))
+  tf <- lapply(results, function(mod) {
+      mod_result <- mod[["est"]]
+      mod_result$z <- mod_result$est/mod_result$se
+      mod_result$output <- paste(format(round(mod_result$est, 3), 3), " [",
+                                 format(round(abs(mod_result$z), 2), 2), "]", sep = "")
+      mod_result$output[abs(mod_result$z) >= zscore] <- paste("\\textbf{", mod_result$output[abs(mod_result$z) >= zscore], "}", sep = "")
+      info <- data.frame(var = names(mod$info), output = unlist(mod$info))
+      info <- info[info$var != "years", ]
+      mod_result <- rbind(mod_result[, c("var", "output")], info)
+      mod_result$var <- str_replace_all(mod_result$var, "lag_", "")
+      mod_result$var <- lookup[mod_result$var]
+      return(mod_result)
+  })
+  tf <- lapply(names(tf), function(modelname) {
+      names(tf[[modelname]])[2] <- modelname
+      return(tf[[modelname]])
+  })
+  tf <- Reduce(f = function(...) merge(..., by = "var", all = TRUE), tf)
+  tf <- merge(tf, data.frame(order = 1:length(lookup), var = lookup), by = "var")
+  tf <- tf[order(tf$order), names(tf) != "order"]
+  tf[is.na(tf)] <- ""
+  names(tf)[-1] <- unlist(lapply(1:(ncol(tf[, -1])), function(num) {
+      paste("Model ", num, sep = "")
+  }))
+  names(tf) <- str_replace(names(tf), "var", "Variables (lagged)")
+  latextable <- xtable(tf, align =  c("r", "l", rep("r", ncol(tf) - 1)),
+                       caption = paste(str_to_title(dv), " (", str_to_upper(estimator), " models)", sep = ""))
+  filename <- paste("_tables/panel_", dv, ifelse(is.null(confl), "", "_"), confl, "_", estimator, ".tex", sep = "")
+  print(latextable,
+        sanitize.text.function = identity,
+        include.rownames = FALSE,
+        table.placement = "!hb",
+        size = "scriptsize",
+        floating.environment = "table",
+        caption.placement = "top",
+        booktabs = TRUE,
+        hline.after = c(-1, 0, nrow(tf) - 4, nrow(tf)),
+        comment = FALSE,
+        file = filename
+  )
+  invisible(tf)
 }
-
-
-
-
+### still need to add \caption*{estimates [t-statistic]; significant at 0.05 alpha level in \\textbf{bold}}
 ```
 
 ### {.tabset .tabset-fade .tabset-pills}
@@ -325,10 +331,10 @@ results <- RunModels(labelspace = 16, equations = c(
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
-
-results[["ests"]][["fe"]][["m1"]]
+MakeTable(results$ests$fe, dv = "health", confl = "conflict", estimator = "fe")
+MakeTable(results$ests$fegls, dv = "health", confl = "conflict", estimator = "fegls")
 ```
-```{r int_health_conflict_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_conflict_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 mods_health <- seq(round(min(dfp$health, na.rm = TRUE), 1), round(max(dfp$health, na.rm = TRUE), 1), 0.05)
 mods_gender <- seq(round(min(dfp$gender, na.rm = TRUE), 1), round(max(dfp$gender, na.rm = TRUE), 1), 0.05)
 lapply(c("fe", "fegls"), function(estimator) {
@@ -339,6 +345,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Health", xlabel = "past Gender",
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_conflict_m2_gender, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
@@ -348,7 +356,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_conflict_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_conflict_m3_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -366,7 +374,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_conflict_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_conflict_m4_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -384,7 +392,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_conflict_m8, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_conflict_m8_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m8"]]$fit,
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"),
@@ -392,7 +400,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 8, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_conflict_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_conflict_m9_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -416,8 +424,10 @@ results <- RunModels(labelspace = 16, equations = c(
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
+MakeTable(results$ests$fe, dv = "health", confl = "war", estimator = "fe")
+MakeTable(results$ests$fegls, dv = "health", confl = "war", estimator = "fegls")
 ```
-```{r int_health_war_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_war_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -426,6 +436,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Health", xlabel = "past Gender",
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_health_war_m2_gender, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
@@ -435,7 +447,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_war_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_war_m3_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -453,7 +465,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_war_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_war_m4_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -471,7 +483,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_war_m8, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_war_m8_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m8"]]$fit,
           eff_var = c("past Internal War" = "lag_war_internal"),
@@ -479,7 +491,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 8, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_health_war_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_health_war_m9_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -503,8 +515,10 @@ results <- RunModels(labelspace = 16, equations = c(
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
+MakeTable(results$ests$fe, dv = "gender", confl = "conflict", estimator = "fe")
+MakeTable(results$ests$fegls, dv = "gender", confl = "conflict", estimator = "fegls")
 ```
-```{r int_gender_conflict_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_conflict_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -513,6 +527,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Gender", xlabel = "past Gender",
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_conflict_m2_gender, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
@@ -522,7 +538,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_conflict_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_conflict_m3_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -540,7 +556,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_conflict_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_conflict_m4_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -558,7 +574,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_conflict_m8, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_conflict_m8_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m8"]]$fit,
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"),
@@ -566,7 +582,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 8, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_conflict_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_conflict_m9_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -590,8 +606,10 @@ results <- RunModels(labelspace = 16, equations = c(
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
+MakeTable(results$ests$fe, dv = "gender", confl = "war", estimator = "fe")
+MakeTable(results$ests$fegls, dv = "gender", confl = "war", estimator = "fegls")
 ```
-```{r int_gender_war_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_war_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -600,6 +618,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel =  "Gender", xlabel = "past Gender",
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_gender_war_m2_gender, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
@@ -609,7 +629,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_war_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_war_m3_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -627,7 +647,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_war_m4, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_war_m4_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m4"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"), 
@@ -645,7 +665,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 4, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_war_m8, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_war_m8_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m8"]]$fit,
           eff_var = c("past Internal War" = "lag_war_internal"),
@@ -653,7 +673,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 8, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_gender_war_m9, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_gender_war_m9_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m9"]]$fit, 
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -675,8 +695,10 @@ results <- RunModels(labelspace = 16, equations = c(
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_conflict_internal:lag_class_GH +  lag_conflict_internal:lag_class_HG + lag_conflict_internal:lag_class_mid + lag_conflict_internal:lag_class_upp)
 )
 results$tests
+MakeTable(results$ests$fe, dv = "conflict", estimator = "fe")
+MakeTable(results$ests$fegls, dv = "conflict", estimator = "fegls")
 ```
-```{r int_conflict_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_conflict_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -685,6 +707,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal Conflict", xlabel = "past Gender",
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_conflict_m2_gender, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
@@ -694,7 +718,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_conflict_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_conflict_m3_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"), 
@@ -712,7 +736,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_conflict_m7, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_conflict_m7_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m7"]]$fit, 
           eff_var = c("past Internal Conflict" = "lag_conflict_internal"),
@@ -734,8 +758,10 @@ results <- RunModels(labelspace = 16, equations = c(
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_war_internal:lag_class_GH +  lag_war_internal:lag_class_HG + lag_war_internal:lag_class_mid + lag_war_internal:lag_class_upp)
 )
 results$tests
+MakeTable(results$ests$fe, dv = "war", estimator = "fe")
+MakeTable(results$ests$fegls, dv = "war", estimator = "fegls")
 ```
-```{r int_war_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_war_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -744,6 +770,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "Internal War", xlabel = "past Gender",
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_war_m2_gender, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
@@ -753,7 +781,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_war_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_war_m3_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"), 
@@ -771,7 +799,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_war_m7, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_war_m7_war, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) { 
   IntPlot(fit = results$ests[[estimator]][["m7"]]$fit, 
           eff_var = c("past Internal War" = "lag_war_internal"),
@@ -793,8 +821,10 @@ results <- RunModels(labelspace = 16, equations = c(
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
+MakeTable(results$ests$fe, dv = "repression", estimator = "fe")
+MakeTable(results$ests$fegls, dv = "repression", estimator = "fegls")
 ```
-```{r int_lpi_m2, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_lpi_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Health" = "lag_health"), 
@@ -803,6 +833,8 @@ lapply(c("fe", "fegls"), function(estimator) {
           ylabel = "LPI", xlabel = "past Gender",
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
+```
+```{r int_lpi_m2_gender, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m2"]]$fit, 
           eff_var = c("past Gender" = "lag_gender"), 
@@ -812,7 +844,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 2, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_lpi_m3, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_lpi_m3_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m3"]]$fit,
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
@@ -830,7 +862,7 @@ lapply(c("fe", "fegls"), function(estimator) {
           title_addon = paste(" (Model 3, ", str_to_upper(estimator), ")", sep = ""))
 })
 ```
-```{r int_lpi_m7, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+```{r int_lpi_m7_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
 lapply(c("fe", "fegls"), function(estimator) {
   IntPlot(fit = results$ests[[estimator]][["m7"]]$fit,
           eff_var = c("past LPI" = "lag_latentmean_fariss"),
