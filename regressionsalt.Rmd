@@ -1,0 +1,56 @@
+---
+title: "Cross-sectional regressions"
+params: 
+  cache: true
+  optimize: false
+---
+
+```{r setup, include = FALSE}
+source("setup.R")
+```
+
+```{r startup}
+IsTrue <- function(x) { !is.na(x) & x }
+load("_data/LSCMWG_working_class.RData")
+RunModel <- function(equation, data = new) {
+  fit <- eval(bquote(lm(.(equation), data = data)))
+  print(list(
+    classical = summary(fit), ## classical SEs
+    robust = lmtest::coeftest(fit, vcov = sandwich::vcovHC(fit, type = "HC1")) ## CRSEs;  Stata robust default
+    # can also use: coeftest(fit, vcov = vcovCL, cluster = ~ country)
+  ))
+  invisible(fit)
+}
+vars <- names(new)
+vars <- vars[!str_detect(vars, "perf")]
+vars <- vars[!str_detect(vars, "class_low")]
+vars <- vars[!str_detect(vars, "class_upp")]
+vars <- vars[!str_detect(vars, "_1990")]
+vars <- vars[!str_detect(vars, "1990_")]
+new$class_vv_1995 <- factor(new$class_vv_1995, c("upp", "mid", "low", "H>G", "G>H"))
+new <- new[, vars]
+```
+
+### {.tabset .tabset-fade .tabset-pills}
+
+#### Health
+
+```{r health}
+RunModel(health_growth1995_2015 ~ health_1995 + gender_1995 + 
+           pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + 
+           conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015 + 
+           # v2x_polyarchy_cumulative1991_1995 + v2x_polyarchy_cumulative1996_2015 + 
+           # v2x_liberal_cumulative1991_1995 + v2x_liberal_cumulative1996_2015 + 
+           v2x_partipdem_cumulative1991_1995 + v2x_partipdem_cumulative1996_2015)
+```
+
+#### Gender
+
+```{r gender}
+RunModel(gender_growth1995_2015 ~ health_1995 + gender_1995 + 
+           pc_rgdpe_pwt_avg_1995 + pc_rgdpe_avg_growth1995_2015 + 
+           conflict_internal_cumulative1989_1995 + conflict_internal_cumulative1996_2015 + 
+           # v2x_polyarchy_cumulative1991_1995 + v2x_polyarchy_cumulative1996_2015 + 
+           # v2x_liberal_cumulative1991_1995 + v2x_liberal_cumulative1996_2015 + 
+           v2x_partipdem_cumulative1991_1995 + v2x_partipdem_cumulative1996_2015)
+```

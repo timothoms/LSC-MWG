@@ -1,0 +1,1977 @@
+---
+params: 
+  set_title: "Panel Regressions"
+  cache: false
+  optimize: true
+  pdfs: false
+  lags: 1
+  begin: 1975
+  end: 2015
+  incl_new: true
+title: "`r params$set_title`"
+---
+
+```{r global, include = FALSE}
+source("setup.R")
+knitr::opts_chunk$set(fig.show = 'hold',
+                      fig.width = 12, fig.height = 12, rows.print = 12, 
+                      out.width = "100%", out.height = "100%", dpi = 96)
+library(plm)
+```
+
+```{r prelim}
+IsTrue <- function(x) { !is.na(x) & x }
+load("_data/LSCMWG_working_class.RData")
+vars <- c("pc_rgdpe_pwt", "growth_rgdpe_pwt", "pop_wpp", "pop_density_wpp", "imr_wpp", 
+          "ufmr_wpp", "life_exp_wpp", "daly_ihme", "asfr_adol_wpp", "mys_age_ratio_ihme", 
+          "mys_pop_ratio_ihme", "mys_ratio_hdr", "labor_mod_ratio15_ilo", "gii_hdr", 
+          "conflict_internal", "war_internal", "conflict_non_state", "conflict_one_sided", 
+          "deaths_all_int_rate", "deaths_civilians_int_rate", "deaths_civilians_osv_rate", 
+          "deaths_all_nsc_rate", "deaths_civilians_nsc_rate", "deaths_all_ucdp_rate", 
+          "hom_odcwho_rate", "latentmean_fariss", "v2cltort", "v2clkill", "v2caviol", 
+          "v2x_polyarchy", "v2x_libdem", "v2x_liberal", "v2x_partipdem", "v2x_partip")
+select_lg <- c(vars, names(df)[names(df) %in% paste("lg", vars, sep = "_")])
+select <- c(select_lg, names(df)[names(df) %in% paste(select_lg, "avg", sep = "_")])
+dfp <- df[df$year %in% c(seq(1965, 2015, 5), 2018), 
+          c("country", "year", "period", "health_class", "gender_class", "class", 
+            "class_vv", "class_low", "class_HG", "class_GH", "class_mid", "class_upp", select)]
+dfp$life_exp_wpp_avg_scaled <- as.numeric(scale(dfp$life_exp_wpp_avg))
+dfp$imr_wpp_avg_scaled <- as.numeric(scale(dfp$imr_wpp_avg))
+dfp$mys_age_ratio_ihme_avg_scaled <- as.numeric(scale(dfp$mys_age_ratio_ihme_avg))
+dfp$asfr_adol_wpp_avg_scaled <- as.numeric(scale(dfp$asfr_adol_wpp_avg))
+dfp$health <- rowMeans(dfp[, c("life_exp_wpp_avg_scaled", "imr_wpp_avg_scaled")], na.rm = FALSE)
+dfp$gender <- rowMeans(dfp[, c("mys_age_ratio_ihme_avg_scaled", "asfr_adol_wpp_avg_scaled")], na.rm = FALSE)
+dfp <- dfp[, names(dfp)[!names(dfp) %in% select_lg]]
+# names(dfp)[!str_detect(names(dfp), "_avg")]
+names(dfp) <- str_replace(names(dfp), "_avg", "")
+dfp_lag <- dfp <- dfp[, names(dfp) != "period"]
+names(dfp_lag)[!names(dfp_lag) %in% c("country", "year", "period")] <- 
+  paste("lag", names(dfp_lag)[!names(dfp_lag) %in% c("country", "year", "period")], sep = "_")
+number_of_lags <- ifelse(params$lags %in% 1:3, params$lags, 1)
+dfp_lag$year <- dfp_lag$year + 5*number_of_lags
+dfp_lag$year[dfp_lag$year == 2020] <- 2018
+dfp <- merge(dfp, dfp_lag, by = c("country", "year"), all.x = TRUE)
+dfp <- dfp[dfp$year >= 1965 + 5*number_of_lags, ]
+dfp <- dfp[dfp$year >= params$begin & dfp$year <= params$end, ]
+
+# functions
+source("~/Dropbox/Analyses/functions/RegressionFig.R")
+RunModels <- function(equations,
+  estimators_to_show = c("fe", "fegls"),
+  labelspace = 18,
+  pdfname = NULL,
+  pdfswitch = params$pdfs
+){
+  if(is.null(names(equations))) names(equations) <- paste("m", 1:length(equations), sep = "")
+  PanelModel <- function(equation, estimator, estimation_function, effect = "individual", ses = "se") {
+    fit <- do.call(estimation_function, 
+                   args = list(formula = equation, data = dfp, index = c("country", "year"), 
+                               model = estimator, effect = effect), quote = TRUE)
+    est <- data.frame(var = names(fit$coefficients), est = fit$coefficients, se = sqrt(diag(fit$vcov)))
+    if(class(fit)[1] == "plm" & "crse" %in% ses & "se" %in% ses) {
+      est$crse <- sqrt(diag(sandwich::vcovHC(fit, method = "arellano", type = "HC0", cluster = "group")))
+    }
+    if(class(fit)[1] == "plm" & !("se" %in% ses)) {
+      est$se <- sqrt(diag(sandwich::vcovHC(fit, method = "arellano", type = "HC0", cluster = "group")))
+    }
+    info <- list(N = nrow(fit[["model"]]),
+                 n = length(unique(attributes(fit$model)$index$country)),
+                 T = noquote(paste(range(table(attributes(fit$model)$index$country)), collapse = "-")),
+                 years = noquote(paste(range(unique(as.character(attributes(fit$model)$index$year))), 
+                                       collapse = "-")))
+    if(class(fit)[1] == "plm") info$rsquared = round(summary(fit)[["r.squared"]][["adjrsq"]], 3)
+    if(class(fit)[1] == "pggls") info$rsquared = round(summary(fit)[["rsqr"]], 3)
+    # if(class(fit)[1] == "plm") info$ftest <- summary(fit)[["fstatistic"]][["p.value"]]
+    return(list(fit = fit, est = est, info = info))
+  }
+  estlist <- lapply(c(ols = "pooling", fe = "within", re = "random"), function(estimator) { # estimator = "within"
+    lapply(equations, function(equation) { 
+      PanelModel(equation = equation, estimator = estimator, estimation_function = plm::plm, ses = "crse")
+    })
+  })
+  estlist <- c(estlist, lapply(c(ggls = "pooling", fegls = "within"), function(estimator) { # estimator = "within"
+    lapply(equations, function(equation) { 
+      PanelModel(equation = equation, estimator = estimator, estimation_function = plm::pggls, ses = "se")
+    })
+  }) )
+  test_args_list <- list(
+    list(what = "unit effects", testfunction = "pFtest", x_estimator = "fe", z_estimator = "ols"),
+    list(what = "unit effects", testfunction = "plmtest", x_estimator = "ols"),
+    list(what = "unit effects", testfunction = "plmtest", x_estimator = "ols", effect = "time"),
+    list(what = "unit effects", testfunction = "plmtest", x_estimator = "ols", effect = "twoways"),
+    list(what = "correlated effects", testfunction = "phtest", x_estimator = "fe", x2_estimator = "re"),
+    list(what = "correlated effects", testfunction = "phtest", x_estimator = "fegls", x2_estimator = "ggls", note = "(FGLS)"),
+    ## any type of serial corr. of time-decaying kind in the ideosyncratic error terms
+    list(what = "ideosyncratic serial corr.", testfunction = "pwtest", x_estimator = "ols"),
+    ## serial corr.: detecting features of persistence
+    list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "ar"),
+    list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "re"),
+    ## list(what = "persistent serial corr.", testfunction = "pbsytest", x_estimator = "ols", test = "j"),
+    list(what = "persistent serial corr.", testfunction = "pbltest", x_estimator = "re", alternative = "onesided"),
+    # list(what = "traditional serial corr.", testfunction = "pbgtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
+    # list(what = "traditional serial corr.", testfunction = "pdwtest", x_estimator = "re", order = "2"), ## relies on large-T assymptotics
+    list(what = "traditional serial corr.", testfunction = "pwartest", x_estimator = "fe")
+  )
+  names(models) <- models <- unique(unlist(lapply(estlist, names)))
+  results <- lapply(test_args_list, function(test_args) { 
+    tests <- lapply(models, function(modelname, args = test_args) { 
+      args$x <- estlist[[args$x_estimator]][[modelname]]$fit
+      if("z_estimator" %in% names(args)) args$z <- estlist[[args$z_estimator]][[modelname]]$fit
+      if("x2_estimator" %in% names(args)) args$x2 <- estlist[[args$x2_estimator]][[modelname]]$fit
+      exclude <- c("testfunction", "x_estimator", "z_estimator", "note")
+      test_results <- do.call(args$testfunction, args = args[!names(args) %in% exclude], quote = TRUE)
+      # test_results$method <- paste(args$testfunction, test_results$method, sep = ": ")
+      if("note" %in% names(args)) test_results$method <- paste(test_results$method, args$note)
+      data.frame(what = args$what, test_results[c("method", "alternative", "p.value")])
+    })
+    tests <- lapply(names(tests), function(modelname) {
+      names(tests[[modelname]])[4] <- modelname
+      return(tests[[modelname]])
+    })
+    Reduce(f = function(...) merge(..., by = c("what", "method", "alternative"), all = TRUE), x = tests)
+  })
+  tests <- do.call(rbind, results)
+  tests[, !names(tests) %in% c("what", "method", "alternative")] <- 
+    format(round(tests[, !names(tests) %in% c("what", "method", "alternative")], 3), nsmall = 3)
+  tests <- tests[, c("method", names(tests)[!names(tests) %in% c("method", "alternative", "what")], "alternative", "what")]
+  estimators_to_show <- estimators_to_show[estimators_to_show %in% names(estlist)]
+  if(pdfswitch & !is.null(pdfname)) pdf(file = paste("_figures/", pdfname, ".pdf", sep = ""), width = 16, height = 9)
+  RegressionFig(estlist = estlist[estimators_to_show], 
+                labels = c(ols = "pooling models", fe = "FE models", re = "RE models", 
+                           ggls = "GGLS models", fegls = "FEGLS models")[estimators_to_show], 
+                labelspace = labelspace)
+  if(pdfswitch & !is.null(pdfname)) dev.off()
+  output <- list(ests = estlist, tests = tests)
+  return(output)
+}
+InteractionEffect <- function(
+  effect             , # name of variable for effect calculation
+  interaction        , # name of single interaction variable
+  modvalues = c(0, 1), # values of moderator variable; default is for dummy variable
+  coefs              ,
+  varcov
+){### general function for marginal effects calculated from coefficients
+  if(is.null(colnames(varcov))) rownames(varcov) <- colnames(varcov) <- names(coefs)
+  if(is.null(names(modvalues))) names(modvalues) <- modvalues
+  eff <- coefs[effect]
+  int <- coefs[interaction]
+  est <- eff + int * modvalues
+  vcv <- varcov[effect, effect] + modvalues^2 * varcov[interaction, interaction] + 2 * modvalues * varcov[effect, interaction]
+  se  <- sqrt(vcv)
+  return(list(est = est, se = se))
+}
+IntPlot <- function(fit, eff_var, 
+  int_vars = c(low   = paste(eff_var, ":lag_class_low", sep = ""), 
+               "G>H" = paste(eff_var, ":lag_class_GH", sep = ""), 
+               "H>G" = paste(eff_var, ":lag_class_HG", sep = ""), 
+               mid   = paste(eff_var, ":lag_class_mid", sep = ""), 
+               upp   = paste(eff_var, ":lag_class_upp", sep = "")), 
+  modvalues = c(0, 1),
+  ref_cat = NULL,
+  title = "",
+  pdfname = NULL,
+  pdfswitch = params$pdfs
+){
+  confidence = 0.95
+  zscore <- qnorm(1 - ((1 - confidence)/2))
+  if (class(fit)[1] == "pggls") {
+    varcov <- vcov(fit)
+  } else {
+    varcov <- sandwich::vcovHC(fit, method = "arellano", type = "HC0", cluster = "group")
+  }
+  int_vars <- int_vars[int_vars %in% names(fit$coef)]
+  ests <- lapply(int_vars, function(int_var) {
+    InteractionEffect(coefs = fit$coef, varcov = varcov, effect = eff_var, interaction = int_var, modvalues = modvalues)
+  })
+  ref <- unique(lapply(ests, function(toplevel) lapply(toplevel, function(x) x[1])))
+  if(is.null(ref_cat)) ref_cat <- c("low", "mid")[!c("low", "mid") %in% names(int_vars)]
+  names(ref) <- ref_cat
+  ests <- lapply(ests, function(toplevel) lapply(toplevel, function(x) x[-1]))
+  ests <- c(ref, ests)
+  ests <- do.call(rbind, lapply(ests, function(x) {
+    cilower <- x$est - zscore * x$se
+    ciupper <- x$est + zscore * x$se
+    return(data.frame(est = x$est, cilower = cilower, ciupper = ciupper))
+  }))
+  # ests <- ests[order(rownames(ests)), ]
+  ylimits <- range(list(ests, 0))
+  if(pdfswitch & !is.null(pdfname)) pdf(file = paste("_figures/", pdfname, ".pdf", sep = ""), width = 8, height = 4.5)
+  plot(x = 1:nrow(ests), y = ests$est, ylim = ylimits, xlim = c(0.5, nrow(ests) + 0.5), 
+       pch = 18, ylab = "", xlab = "", xaxt = "n", main = title)
+  segments(x0 = 1:nrow(ests), y0 = ests$cilower, y1 = ests$ciupper, lwd = 2, lend = "butt")
+  abline(h = 0, lwd = 0.5)
+  axis(side = 1, at = 1:nrow(ests), labels = rownames(ests), tick = FALSE)
+  if(pdfswitch & !is.null(pdfname)) dev.off()
+  invisible(NULL)
+}
+```
+
+### {.tabset .tabset-fade .tabset-pills}
+
+#### Health {.tabset .tabset-fade .tabset-pills}
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Life Expectancy {.tabset .tabset-fade .tabset-pills} ")
+```
+```{r echo = FALSE}
+knitr::asis_output("###### Base models")
+```
+```{r life_exp_base}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r life_exp_conflict_incidence}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_life_exp_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r life_exp_conflict_deaths}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_life_exp_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r life_exp_osv_incidence}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_life_exp_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r life_exp_osv_deaths}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_life_exp_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r life_exp_nsc_incidence}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_life_exp_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r life_exp_nsc_deaths}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_life_exp_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Homicides")
+```
+```{r life_exp_homicides}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_life_exp_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r life_exp_lpi}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_life_exp_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r life_exp_killings}
+results <- RunModels(equations = c(
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  life_exp_wpp ~ lag_lg_life_exp_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_life_exp_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Infant Mortality Rate (IMR) {.tabset .tabset-fade .tabset-pills}")
+```
+```{r echo = FALSE}
+knitr::asis_output("###### Base models")
+```
+```{r imr_base}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r imr_conflict_incidence}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_imr_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r imr_conflict_deaths}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_imr_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r imr_osv_incidence}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_imr_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r imr_osv_deaths}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_imr_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r imr_nsc_incidence}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_imr_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r imr_nsc_deaths}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_imr_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Homicides")
+```
+```{r imr_homicides}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_imr_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r imr_lpi}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_imr_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r imr_killings}
+results <- RunModels(equations = c(
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  imr_wpp ~ lag_lg_imr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_imr_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("##### DV: Under-five Mortality Rate (UFMR) {.tabset .tabset-fade .tabset-pills}")
+```
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Base models")
+```
+```{r ufmr_base, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE, eval = params$incl_new, include = params$incl_new}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r ufmr_conflict_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_ufmr_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r ufmr_conflict_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_ufmr_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r ufmr_osv_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_ufmr_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r ufmr_osv_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_ufmr_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r ufmr_nsc_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_ufmr_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r ufmr_nsc_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_ufmr_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Homicides")
+```
+```{r ufmr_homicides, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_ufmr_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r ufmr_lpi, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_ufmr_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r ufmr_killings, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  ufmr_wpp ~ lag_lg_ufmr_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_ufmr_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("##### DV: Disability-adjusted Life Years (DALYs) {.tabset .tabset-fade .tabset-pills}")
+```
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Base models")
+```
+```{r daly_base, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r daly_conflict_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_daly_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r daly_conflict_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_daly_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r daly_osv_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_daly_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r daly_osv_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_daly_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r daly_nsc_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_daly_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r daly_nsc_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_daly_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Homicides")
+```
+```{r daly_homicides, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_daly_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r daly_lpi, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_daly_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r daly_killings, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  daly_ihme ~ lag_lg_daly_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_daly_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+#### Gender {.tabset .tabset-fade .tabset-pills}
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Mean Years of School, ratio of female to male {.tabset .tabset-fade .tabset-pills}")
+```
+```{r echo = FALSE}
+knitr::asis_output("###### Base models")
+```
+```{r mys_base}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r mys_conflict_incidence}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_mys_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r mys_conflict_deaths}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_mys_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r mys_osv_incidence}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_mys_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r mys_osv_deaths}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_mys_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r mys_nsc_incidence}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_mys_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r mys_nsc_deaths}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_mys_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Homicides")
+```
+```{r mys_homicides}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_mys_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r mys_lpi}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_mys_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r mys_killings}
+results <- RunModels(equations = c(
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  mys_age_ratio_ihme ~ lag_mys_age_ratio_ihme + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_mys_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Adolescent Fertility Rate {.tabset .tabset-fade .tabset-pills}")
+```
+```{r echo = FALSE}
+knitr::asis_output("###### Base models")
+```
+```{r asfr_base}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r asfr_conflict_incidence}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_asfr_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r asfr_conflict_deaths}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_asfr_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r asfr_osv_incidence}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_asfr_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r asfr_osv_deaths}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_asfr_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r asfr_nsc_incidence}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_asfr_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r asfr_nsc_deaths}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_asfr_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Homicides")
+```
+```{r asfr_homicides}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_asfr_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r asfr_lpi}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_asfr_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r asfr_killings}
+results <- RunModels(equations = c(
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  asfr_adol_wpp ~ lag_lg_asfr_adol_wpp + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_asfr_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("##### DV: Labour participation ratio {.tabset .tabset-fade .tabset-pills}")
+```
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Base models")
+```
+```{r labor_base, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r labor_conflict_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_labor_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r labor_conflict_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_labor_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r labor_osv_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_labor_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r labor_osv_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_labor_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r labor_nsc_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_labor_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r labor_nsc_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_labor_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Homicides")
+```
+```{r labor_homicides, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_labor_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r labor_lpi, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_labor_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r labor_killings, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  labor_mod_ratio15_ilo ~ lag_labor_mod_ratio15_ilo + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_labor_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("##### DV: Gender Inequality Index (GII) {.tabset .tabset-fade .tabset-pills}")
+```
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Base models")
+```
+```{r gii_base, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp)
+)
+results$tests
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Conflict incidence")
+```
+```{r gii_conflict_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_gii_conflict_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Conflict deaths")
+```
+```{r gii_conflict_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_gii_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence incidence")
+```
+```{r gii_osv_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_gii_osv_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### One-sided violence deaths")
+```
+```{r gii_osv_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_gii_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of OSV Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict incidence")
+```
+```{r gii_nsc_incidence, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_gii_nsc_incidence, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-state Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Non-state conflict deaths")
+```
+```{r gii_nsc_deaths, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_gii_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-state Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Homicides")
+```
+```{r gii_homicides, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+)
+results$tests
+```
+```{r int_gii_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### State repression (LPI)")
+```
+```{r gii_lpi, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_gii_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("###### Extra-judicial killings")
+```
+```{r gii_killings, eval = params$incl_new, include = params$incl_new}
+results <- RunModels(equations = c(
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp,
+  gii_hdr ~ lag_gii_hdr + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+)
+results$tests
+```
+```{r int_gii_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%", eval = params$incl_new, include = params$incl_new}
+lapply(c("m2", "m3"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+#### Violence {.tabset .tabset-fade .tabset-pills}
+
+```{r echo = FALSE, eval = params$incl_new}
+knitr::asis_output("##### Correlations")
+```
+```{r violence_corr, message = FALSE, warning = FALSE, results = 'hide', eval = params$incl_new, include = params$incl_new}
+vars_viol <- c("conflict_internal", "conflict_one_sided", "conflict_non_state", "lg_deaths_all_int_rate", "lg_deaths_civilians_osv_rate", "lg_deaths_all_nsc_rate", "lg_hom_odcwho_rate", "latentmean_fariss", "v2clkill")
+GGally::ggpairs(dfp[, vars_viol], mapping = aes(stroke = 0, alpha = 0.25)) + 
+  theme_bw() + 
+  theme(strip.text.y.right = element_text(angle = 0)) + 
+  ggtitle("Different types of violence")
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Internal Conflict")
+```
+```{r conflict}
+
+table(dfp$conflict_internal)
+results <- RunModels(labelspace = 20, equations = c(
+  conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  conflict_internal ~ lag_conflict_internal + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_upp,
+  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_internal*lag_class_mid + lag_conflict_internal*lag_class_HG + lag_conflict_internal*lag_class_GH + lag_conflict_internal*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+)
+results$tests
+```
+```{r int_conflict, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_internal", title = "Effect of Internal Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Internal Conflict Deaths")
+```
+```{r conflict_deaths}
+results <- RunModels(labelspace = 20, equations = c(
+  deaths_all_int_rate ~ lag_lg_deaths_all_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  deaths_all_int_rate ~ lag_lg_deaths_all_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  deaths_all_int_rate ~ lag_lg_deaths_all_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  deaths_all_int_rate ~ lag_lg_deaths_all_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  deaths_all_int_rate ~ lag_lg_deaths_all_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  deaths_all_int_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_upp,
+  deaths_all_int_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_int_rate*lag_class_mid + lag_lg_deaths_all_int_rate*lag_class_HG + lag_lg_deaths_all_int_rate*lag_class_GH + lag_lg_deaths_all_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+) 
+results$tests
+```
+```{r int_conflict_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Internal Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_int_rate", title = "Effect of Internal Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Internal Conflict Civilian Deaths")
+```
+```{r conflict_deaths_civ}
+results <- RunModels(labelspace = 20, equations = c(
+  deaths_civilians_int_rate ~ lag_lg_deaths_civilians_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  deaths_civilians_int_rate ~ lag_lg_deaths_civilians_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  deaths_civilians_int_rate ~ lag_lg_deaths_civilians_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  deaths_civilians_int_rate ~ lag_lg_deaths_civilians_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  deaths_civilians_int_rate ~ lag_lg_deaths_civilians_int_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  deaths_civilians_int_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_int_rate*lag_class_mid + lag_lg_deaths_civilians_int_rate*lag_class_HG + lag_lg_deaths_civilians_int_rate*lag_class_GH + lag_lg_deaths_civilians_int_rate*lag_class_upp,
+  deaths_civilians_int_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_int_rate*lag_class_mid + lag_lg_deaths_civilians_int_rate*lag_class_HG + lag_lg_deaths_civilians_int_rate*lag_class_GH + lag_lg_deaths_civilians_int_rate*lag_class_upp + lag_lg_deaths_all_nsc_rate + lag_lg_deaths_civilians_osv_rate)
+) 
+results$tests
+```
+```{r int_conflict_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Internal Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_int_rate", title = "Effect of Internal Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: One-Sided Violence")
+```
+```{r osv}
+results <- RunModels(labelspace = 20, equations = c(
+  conflict_one_sided ~ lag_conflict_one_sided + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  conflict_one_sided ~ lag_conflict_one_sided + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  conflict_one_sided ~ lag_conflict_one_sided + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  conflict_one_sided ~ lag_conflict_one_sided + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  conflict_one_sided ~ lag_conflict_one_sided + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  conflict_one_sided ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_upp,
+  conflict_one_sided ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_one_sided*lag_class_mid + lag_conflict_one_sided*lag_class_HG + lag_conflict_one_sided*lag_class_GH + lag_conflict_one_sided*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+) 
+results$tests
+```
+```{r int_osv, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_one_sided", title = "Effect of One-Sided Violence (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: One-Sided Violence Deaths")
+```
+```{r osv_deaths}
+results <- RunModels(labelspace = 20, equations = c(
+  deaths_civilians_osv_rate ~ lag_lg_deaths_civilians_osv_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  deaths_civilians_osv_rate ~ lag_lg_deaths_civilians_osv_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  deaths_civilians_osv_rate ~ lag_lg_deaths_civilians_osv_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  deaths_civilians_osv_rate ~ lag_lg_deaths_civilians_osv_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  deaths_civilians_osv_rate ~ lag_lg_deaths_civilians_osv_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  deaths_civilians_osv_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_upp,
+  deaths_civilians_osv_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_osv_rate*lag_class_mid + lag_lg_deaths_civilians_osv_rate*lag_class_HG + lag_lg_deaths_civilians_osv_rate*lag_class_GH + lag_lg_deaths_civilians_osv_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+) 
+results$tests
+```
+```{r int_osv_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of One-Sided Violence Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_osv_rate", title = "Effect of One-Sided Violence Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Non-State Conflict")
+```
+```{r nsc}
+results <- RunModels(labelspace = 20, equations = c(
+  conflict_non_state ~ lag_conflict_non_state + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  conflict_non_state ~ lag_conflict_non_state + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  conflict_non_state ~ lag_conflict_non_state + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  conflict_non_state ~ lag_conflict_non_state + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  conflict_non_state ~ lag_conflict_non_state + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  conflict_non_state ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_upp,
+  conflict_non_state ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_conflict_non_state*lag_class_mid + lag_conflict_non_state*lag_class_HG + lag_conflict_non_state*lag_class_GH + lag_conflict_non_state*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+) 
+results$tests
+```
+```{r int_nsc, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-State Conflict (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_conflict_non_state", title = "Effect of Non-State Conflict (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Non-State Conflict Deaths")
+```
+```{r nsc_deaths}
+results <- RunModels(labelspace = 20, equations = c(
+  deaths_all_nsc_rate ~ lag_lg_deaths_all_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  deaths_all_nsc_rate ~ lag_lg_deaths_all_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  deaths_all_nsc_rate ~ lag_lg_deaths_all_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  deaths_all_nsc_rate ~ lag_lg_deaths_all_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  deaths_all_nsc_rate ~ lag_lg_deaths_all_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  deaths_all_nsc_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_upp, 
+  deaths_all_nsc_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_all_nsc_rate*lag_class_mid + lag_lg_deaths_all_nsc_rate*lag_class_HG + lag_lg_deaths_all_nsc_rate*lag_class_GH + lag_lg_deaths_all_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+) 
+results$tests
+```
+```{r int_nsc_deaths, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-State Conflict Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_all_nsc_rate", title = "Effect of Non-State Conflict Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Non-State Conflict Civilian Deaths")
+```
+```{r nsc_deaths_civ}
+results <- RunModels(labelspace = 20, equations = c(
+  deaths_civilians_nsc_rate ~ lag_lg_deaths_civilians_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  deaths_civilians_nsc_rate ~ lag_lg_deaths_civilians_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  deaths_civilians_nsc_rate ~ lag_lg_deaths_civilians_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  deaths_civilians_nsc_rate ~ lag_lg_deaths_civilians_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  deaths_civilians_nsc_rate ~ lag_lg_deaths_civilians_nsc_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  deaths_civilians_nsc_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_nsc_rate*lag_class_mid + lag_lg_deaths_civilians_nsc_rate*lag_class_HG + lag_lg_deaths_civilians_nsc_rate*lag_class_GH + lag_lg_deaths_civilians_nsc_rate*lag_class_upp,
+  deaths_civilians_nsc_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_deaths_civilians_nsc_rate*lag_class_mid + lag_lg_deaths_civilians_nsc_rate*lag_class_HG + lag_lg_deaths_civilians_nsc_rate*lag_class_GH + lag_lg_deaths_civilians_nsc_rate*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_civilians_osv_rate)
+) 
+results$tests
+```
+```{r int_nsc_deaths_civ, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-State Conflict Civilian Deaths (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_deaths_civilians_nsc_rate", title = "Effect of Non-State Conflict Civilian Deaths (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Homicides")
+```
+```{r homicides}
+results <- RunModels(labelspace = 20, equations = c(
+  hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  hom_odcwho_rate ~ lag_lg_hom_odcwho_rate + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  hom_odcwho_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_upp,
+  hom_odcwho_rate ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_hom_odcwho_rate*lag_class_mid + lag_lg_hom_odcwho_rate*lag_class_HG + lag_lg_hom_odcwho_rate*lag_class_GH + lag_lg_hom_odcwho_rate*lag_class_upp + lag_lg_deaths_all_int_rate)
+) 
+results$tests
+```
+```{r int_homicides, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_lg_hom_odcwho_rate", title = "Effect of Homicides (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Latent Physical Integrity")
+```
+```{r lpi}
+results <- RunModels(labelspace = 20, equations = c(
+  latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  latentmean_fariss ~ lag_latentmean_fariss + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_upp,
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_latentmean_fariss*lag_class_mid + lag_latentmean_fariss*lag_class_HG + lag_latentmean_fariss*lag_class_GH + lag_latentmean_fariss*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+) 
+results$tests
+```
+```{r int_lpi, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_latentmean_fariss", title = "Effect of Latent Physical Integrity (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```
+
+
+```{r echo = FALSE}
+knitr::asis_output("##### DV: Extra-Judicial Killings")
+```
+```{r killings}
+results <- RunModels(labelspace = 20, equations = c(
+  v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_life_exp_wpp,
+  v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_imr_wpp,
+  v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_mys_age_ratio_ihme,
+  v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_lg_asfr_adol_wpp,
+  v2clkill ~ lag_v2clkill + lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
+  v2clkill ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_upp,
+  v2clkill ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_wpp + lag_v2x_partipdem + lag_v2clkill*lag_class_mid + lag_v2clkill*lag_class_HG + lag_v2clkill*lag_class_GH + lag_v2clkill*lag_class_upp + lag_lg_deaths_all_int_rate + lag_lg_deaths_all_nsc_rate)
+) 
+results$tests
+```
+```{r int_killings, results = 'hide', fig.width = 7, fig.height = 5, out.width = "50%", out.height = "50%"}
+lapply(c("m6", "m7"), function(mod) {
+  IntPlot(fit = results$ests$fe[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FE)", pdfname = paste(knitr::opts_current$get()$label, mod, "fe", sep = "_"))
+  IntPlot(fit = results$ests$fegls[[mod]]$fit, eff_var = "lag_v2clkill", title = "Effect of Extra-Judicial Killings (FEGLS)", pdfname = paste(knitr::opts_current$get()$label, mod, "fegls", sep = "_"))
+})
+```

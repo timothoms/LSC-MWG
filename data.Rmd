@@ -138,6 +138,18 @@ variables$negative <- c("imr_wpp", "ufmr_wpp", "mmr_unicef", "daly_ihme", "asfr_
 summary(data[, c(variables$negative[1:9])])
 data[, variables$negative] <- lapply(data[, variables$negative], '-')
 summary(data[, c(variables$negative[1:9])])
+
+names(data)[str_detect(names(data), "gini")]
+
+
+data %>% 
+  filter(year >= 1970) %>%
+  mutate(check = !is.na(gini_disp_mean)) %>% 
+  select(year, check) %>% 
+  table
+table(data$year, !is.na(data$gini_disp_mean))
+
+
 ```
 
 #### Variable transformations and coding performance measures
