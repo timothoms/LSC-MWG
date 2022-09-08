@@ -49,10 +49,12 @@ dfp_lag <- dfp <- dfp[, names(dfp) != "period"]
 names(dfp_lag)[!names(dfp_lag) %in% c("country", "year", "period")] <- 
   paste("lag", names(dfp_lag)[!names(dfp_lag) %in% c("country", "year", "period")], sep = "_")
 number_of_lags <- ifelse(params$lags %in% 1:3, params$lags, 1)
+# number_of_lags <- 1
 dfp_lag$year <- dfp_lag$year + 5*number_of_lags
 dfp_lag$year[dfp_lag$year == 2020] <- 2018
 dfp <- merge(dfp, dfp_lag, by = c("country", "year"), all.x = TRUE)
 dfp <- dfp[dfp$year >= 1965 + 5*number_of_lags, ]
+# dfp <- dfp[dfp$year >= 1975 & dfp$year <= 2015 & !(dfp$country %in% c("Montenegro", "Serbia")), ]
 dfp <- dfp[dfp$year >= params$begin & dfp$year <= params$end & !(dfp$country %in% c("Montenegro", "Serbia")), ]
 
 temp <- dfp %>%
@@ -61,10 +63,9 @@ temp <- dfp %>%
          lag_conflict_internal, lag_latentmean_fariss,
          lag_health, lag_gender) %>%
   na.omit()
-
 table(data.frame("T" = tapply(temp$year, temp$country, length)))
-
 tapply(temp$year, temp$country, length)[tapply(temp$year, temp$country, length) < 4]
+# unique(temp$country)
 
 # functions
 source("~/Dropbox/Analyses/functions/RegressionFig.R")

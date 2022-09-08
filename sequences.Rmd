@@ -2,11 +2,12 @@
 title: "Mapping trajectories"
 params: 
   cache: false
-  optimize: true
+  optimize: false
 ---
 
 ```{r setup, include = FALSE}
 source("setup.R")
+library("Hmisc")
 knitr::opts_chunk$set(warning = FALSE, message = FALSE,
                       fig.show = "hold",
                       fig.width = 5, fig.height = 5, 
@@ -18,7 +19,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE,
 
 ```{r data, results = "hide"}
 IsTrue <- function(x) { !is.na(x) & x }
-load("_data/LSCMWG_working_class.RData")
+load("_data/LSCMWG_working_class.RData", verbose = TRUE)
 link <- "https://docs.google.com/spreadsheets/d/1KPUMNCixfyFU4KryzV0_5BYUHCUIyOq2heei9KdpSF8/edit?usp=sharing"
 googlesheets4::gs4_deauth()
 seq <- googlesheets4::read_sheet(link, sheet = "coding", na = "..")
@@ -62,9 +63,13 @@ lapply(unique(df$country), function(ctry) {
 ```
 
 ```{r sequencing, results = 'hide', out.width = "25%", out.height = "25%"}
-missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan", "Serbia & Montenegro")
+# missing_countries <- c("Andorra", "Czechoslovakia", "Dominica", "East Germany", "Ethiopia", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan", "Serbia & Montenegro")
+missing_countries <- c("Montenegro", "Serbia", "Timor-Leste", "Andorra", "Czechoslovakia", "Dominica", "East Germany", "Kosovo", "Liechtenstein", "Marshall Islands", "Monaco", "Nauru", "North Vietnam", "North Yemen", "Palau", "San Marino", "Saint Kitts & Nevis", "South Vietnam", "South Yemen", "Soviet Union", "Tuvalu", "West Germany", "Yugoslavia SFR", "South Sudan", "Serbia & Montenegro")
 # table(df[, c("conf_intra", "wars_intra")])
-ViolenceVars <- function(dataset = df[!(df$country %in% missing_countries), ], start_yr = 1975, end_yr = 2015, yrs_long = 3) {
+df <- df[!(df$country %in% missing_countries), ]
+df <- df[!(df$country == "Ethiopia" & df$year < 1991), ]
+seq <- seq[!(seq$country %in% missing_countries), ]
+ViolenceVars <- function(dataset = df, start_yr = 1975, end_yr = 2015, yrs_long = 3) {
   df <- dataset %>% 
     select(country, year, 
            conf_intra, wars_intra, 
@@ -156,7 +161,7 @@ class1975 <- df[IsTrue(df$period == 1975), c("country", "class", "health_class",
 names(class1975)[-1] <- paste(names(class1975)[-1], "1975", sep = "")
 df <- merge(df, class1975, by = "country", all.x = TRUE)
 df <- df[!is.na(df$country), ]
-df <- df[!(df$country %in% missing_countries), ]
+# df <- df[!(df$country %in% missing_countries), ]
 df$life_exp_wpp_avg <- as.numeric(scale(df$life_exp_wpp_avg))
 df$imr_wpp_avg <- as.numeric(scale(df$imr_wpp_avg))
 df$mys_age_ratio_ihme_avg <- as.numeric(scale(df$mys_age_ratio_ihme_avg))
@@ -166,12 +171,12 @@ df$gender <- rowMeans(df[, c("mys_age_ratio_ihme_avg", "asfr_adol_wpp_avg")], na
 df <- df %>% 
   arrange(country, period) %>% 
   group_by(country) %>% 
-  mutate(lag_imr_wpp_avg = lag(imr_wpp_avg), 
-         lag_asfr_adol_wpp_avg = lag(asfr_adol_wpp_avg),
-         lag_life_exp_wpp_avg = lag(life_exp_wpp_avg),
-         lag_mys_age_ratio_ihme_avg = lag(mys_age_ratio_ihme_avg),
-         lag_health = lag(health),
-         lag_gender = lag(gender))
+  mutate(lag_imr_wpp_avg = dplyr::lag(imr_wpp_avg), 
+         lag_asfr_adol_wpp_avg = dplyr::lag(asfr_adol_wpp_avg),
+         lag_life_exp_wpp_avg = dplyr::lag(life_exp_wpp_avg),
+         lag_mys_age_ratio_ihme_avg = dplyr::lag(mys_age_ratio_ihme_avg),
+         lag_health = dplyr::lag(health),
+         lag_gender = dplyr::lag(gender))
 mean_health <- mean(df$health, na.rm = TRUE)
 range_health <- range(df$health, na.rm = TRUE)
 mean_gender <- mean(df$gender, na.rm = TRUE)
@@ -182,6 +187,9 @@ df$gender_chg <- df$gender - df$lag_gender
 df$distance <- sqrt((df$health_chg)^2 + (df$gender_chg)^2)
 # df$slope <- (df$health - df$lag_health)/(df$gender - df$lag_gender)
 df <- df %>% group_by(country) %>% mutate(total = sum(distance, na.rm = TRUE), first = min(period), last = max(period), periods = length(unique(period)))
+###
+###
+###
 first <- df[df$period == df$first, c("country", "first", "periods", "class_vv1975", "class_vv1995", "total", "health", "gender")]
 names(first)[7:8] <- paste("first", names(first)[7:8], sep = "_")
 last <- df[df$period == df$last, c("country", "health", "gender")]
@@ -203,9 +211,9 @@ new[, paste(vars, "quart", sep = "_")] <- lapply(new[, vars], function(col) {
   return(as.factor(new))
 })
 new <- new[, !names(new) %in% c("last_health", "first_health", "last_gender", "first_gender")]
-new <- merge(seq[, names(seq)[!str_detect(names(seq), "sequence")]], new, by = "country", all = TRUE)
+new <- merge(seq[, names(seq)[!str_detect(names(seq), "sequence")]], new, by = "country", all.y = TRUE)
 new <- merge(new, violence, by = "country", all = TRUE)
-df <- merge(df, seq[, names(seq)[!str_detect(names(seq), "sequence")]], by = "country", all = TRUE)
+df <- merge(df, seq[, names(seq)[!str_detect(names(seq), "sequence")]], by = "country", all.x = TRUE)
 df <- merge(df, violence, by = "country", all = TRUE)
 ```
 
@@ -286,7 +294,7 @@ ggsave(device = "pdf", height = 4, width = 6.5, filename = "_figures/class_confl
 
 #### Countries
 ```{r countries, results = 'hide', out.width = "33%", out.height = "33%"}
-lapply(unique(df$country), function(ctry) {
+lapply(unique(df$country), function(ctry) { # ctry <- "Ethiopia"
   ggplot(data = df[df$country == ctry  & df$period > 1975, ], # & !is.na(df$lag_health) & !is.na(df$lag_gender)
          mapping = aes(x = lag_gender, y = lag_health, xend = gender, yend = health) ) + 
     coord_fixed(ratio = 1) + 
