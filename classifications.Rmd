@@ -75,8 +75,10 @@ Classification <- function(health, gender,
   new <- df[, c("country", "year", paste(vars, "avg", sep = "_"))] %>%
     group_by(year) %>%
     mutate(across(paste(vars, "avg", sep = "_"), ~as.numeric(scale(.x)), .names = "{col}")) %>%
-    mutate(health = (imr_wpp_avg + life_exp_wpp_avg)/2, 
-           gender = (asfr_adol_wpp_avg + mys_age_ratio_ihme_avg)/2) %>% 
+    # mutate(health = (imr_wpp_avg + life_exp_wpp_avg)/2, 
+    #        gender = (asfr_adol_wpp_avg + mys_age_ratio_ihme_avg)/2) %>% 
+    mutate(health = (.data[[paste(health[1], "avg", sep = "_")]] + .data[[paste(health[2], "avg", sep = "_")]])/2,
+           gender = (.data[[paste(gender[1], "avg", sep = "_")]] + .data[[paste(gender[2], "avg", sep = "_")]])/2) %>% 
     select(country, year, health, gender) %>% 
     ungroup()
   new$health_class[new$health >= quantile(new$health, probs = seq(0, 1, 0.2), na.rm = TRUE)[1]] <- 1
@@ -182,6 +184,7 @@ Classification <- function(health, gender,
   df <- df[, !names(df) %in% vars]
   return(list(df = df, n = test, table = table_to_return, fuzzy = fuzzy_table, standardized = new, table_st = tab_st, n_st = n_st))  
 }
+# variables$gender <- c("asfr_adol_wpp", "mys_ratio_hdr")
 result <- Classification(health = variables$health, gender = variables$gender, year_to_show = 1995)
 kableExtra::kable(result$table, format = "html") %>% 
   kableExtra::kable_styling("striped") %>% 
