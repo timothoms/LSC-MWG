@@ -1,9 +1,12 @@
 report.pdf
 
+*.DS_store
+
 # folders
 _ignore/
 _pdfs/
 _figures/
+_tables/
 
 # specific data files
 _data/ipu_temp.RData

@@ -2,7 +2,7 @@
 params: 
   set_title: "New Panel Regressions"
   cache: false
-  optimize: true
+  optimize: false
   pdfs: false
   lags: 1
   begin: 1975
@@ -63,12 +63,12 @@ temp <- dfp %>%
          lag_conflict_internal, lag_latentmean_fariss,
          lag_health, lag_gender) %>%
   na.omit()
-table(data.frame("T" = tapply(temp$year, temp$country, length)))
-tapply(temp$year, temp$country, length)[tapply(temp$year, temp$country, length) < 4]
+# table(data.frame("T" = tapply(temp$year, temp$country, length)))
+# tapply(temp$year, temp$country, length)[tapply(temp$year, temp$country, length) < 4]
 # unique(temp$country)
 
 # functions
-source("~/Dropbox/Analyses/functions/RegressionFig.R")
+source("~/Documents/Work/Analyses/functions/RegressionFig.R")
 RunModels <- function(equations,
   estimators_to_show = c("fe", "fd", "fegls", "fdgls"),
   labelspace = 18,
@@ -92,8 +92,8 @@ RunModels <- function(equations,
                  T = noquote(paste(range(table(attributes(fit$model)$index$country)), collapse = "-")),
                  years = noquote(paste(range(unique(as.character(attributes(fit$model)$index$year))), 
                                        collapse = "-")))
-    if(class(fit)[1] == "plm") info$rsquared = round(summary(fit)[["r.squared"]][["adjrsq"]], 3)
-    if(class(fit)[1] == "pggls") info$rsquared = round(summary(fit)[["rsqr"]], 3)
+    if(class(fit)[1] == "plm") info$rsquared = round(abs(summary(fit)[["r.squared"]][["adjrsq"]]), 3)
+    if(class(fit)[1] == "pggls") info$rsquared = round(abs(summary(fit)[["rsqr"]]), 3)
     # if(class(fit)[1] == "plm") info$ftest <- summary(fit)[["fstatistic"]][["p.value"]]
     return(list(fit = fit, est = est, info = info))
   }
@@ -238,11 +238,11 @@ IntPlot <- function(fit, eff_var,
   invisible(NULL)
 }
 lookup <- c(
-  lg_pc_rgdpe_pwt = "GDP per capita (logged)",
-  lg_pop_density_wpp = "population density (logged)",
-  v2x_polyarchy = "electoral democracy component",
-  v2x_partip = "participatory democracy component",
-  v2x_liberal = "liberal democracy component",
+  lg_pc_rgdpe_pwt = "GDP per capita (log)",
+  lg_pop_density_wpp = "population density (log)",
+  v2x_polyarchy = "electoral democracy",
+  v2x_partip = "participatory democracy",
+  v2x_liberal = "liberal democracy",
   gender = "gender",
   health = "health",
   "health:gender" = "health * gender",
@@ -259,7 +259,7 @@ lookup <- c(
   "conflict_internal:class_HG" = "conflict * H>G",
   "conflict_internal:class_mid" = "conflict * mid",
   "conflict_internal:class_upp" = "conflict * high",
-  latentmean_fariss = "latent physical integrity (LPI)",
+  latentmean_fariss = "latent physical integrity",
   "latentmean_fariss:health" = "LPI * health",
   "latentmean_fariss:gender" = "LPI * gender",
   "latentmean_fariss:class_low" = "LPI * low",
@@ -281,14 +281,25 @@ lookup <- c(
   "T" = "periods",
   rsquared = "$R^2$"
 )
-MakeTable <- function(results, dv, confl = NULL, estimator) {
+MakeTable <- function(results, dv, confl = NULL, estimator, dist = NULL) {
   zscore <- qnorm(1 - ((1 - 0.95)/2))
   tf <- lapply(results, function(mod) {
+      dfres <- mod[["fit"]][["df.residual"]]
       mod_result <- mod[["est"]]
-      mod_result$z <- mod_result$est/mod_result$se
-      mod_result$output <- paste(format(round(mod_result$est, 3), 3), " [",
-                                 format(round(abs(mod_result$z), 2), 2), "]", sep = "")
-      mod_result$output[abs(mod_result$z) >= zscore] <- paste("\\textbf{", mod_result$output[abs(mod_result$z) >= zscore], "}", sep = "")
+      mod_result$stat <- abs(mod_result$est) / mod_result$se
+      if(is.null(dist)) {
+        mod_result$output <- paste(format(round(mod_result$est, 6), 3), " [",
+                                   format(round(mod_result$stat, 3), 2), "]", sep = "")
+        mod_result$output[mod_result$stat >= zscore] <- paste("\\textbf{", mod_result$output[mod_result$stat >= zscore], "}", sep = "")
+      } else if (dist == "pt") {
+        mod_result$p <- 2 * pt(-mod_result$stat, df = dfres, lower.tail = TRUE)
+        mod_result$output <- paste(format(round(mod_result$est, 3), 3), " (",
+                                   format(round(mod_result$p, 3), 2), ")", sep = "")
+      } else if(dist == "pnorm") {
+        mod_result$p <- 2 * pnorm(-mod_result$stat, lower.tail = TRUE)
+        mod_result$output <- paste(format(round(mod_result$est, 3), 3), " (",
+                                   format(round(mod_result$p, 3), 2), ")", sep = "")
+      }
       info <- data.frame(var = names(mod$info), output = unlist(mod$info))
       info <- info[info$var != "years", ]
       mod_result <- rbind(mod_result[, c("var", "output")], info)
@@ -334,6 +345,7 @@ MakeTable <- function(results, dv, confl = NULL, estimator) {
 
 ```{r health_conflict}
 results <- RunModels(labelspace = 16, equations = c(
+  # health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health + lag_conflict_internal:lag_gender,
@@ -342,12 +354,24 @@ results <- RunModels(labelspace = 16, equations = c(
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_conflict_internal:lag_class_GH + lag_conflict_internal:lag_class_HG + lag_conflict_internal:lag_class_mid + lag_conflict_internal:lag_class_upp, 
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH + lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp,
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_gender)
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH + lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
-MakeTable(results$ests$fe, dv = "health", confl = "conflict", estimator = "fe")
-MakeTable(results$ests$fegls, dv = "health", confl = "conflict", estimator = "fegls")
+MakeTable(results$ests$fe, dv = "health", confl = "conflict", estimator = "fe", dist = "pt")
+MakeTable(results$ests$fegls, dv = "health", confl = "conflict", estimator = "fegls", dist = "pnorm")
+
+# summary(results$ests$fe$m1$fit)
+# cbind(est = round(results$ests$fe$m1$fit$coef, 7),
+#       se = round(sqrt(diag(results$ests$fe$m1$fit$vcov)), 7),
+#       "t-value" = round(results$ests$fe$m1$fit$coef / sqrt(diag(results$ests$fe$m1$fit$vcov)), 4),
+#       "p-value" = round(2* pt(q = -abs(results$ests$fe$m1$fit$coef) / sqrt(diag(results$ests$fe$m1$fit$vcov)), df = results$ests$fe$m1$fit$df.residual, lower.tail = TRUE), 6))
+# 
+# summary(results$ests$fegls$m1$fit)
+# cbind(est = round(results$ests$fegls$m1$fit$coef, 7),
+#       se = round(sqrt(diag(results$ests$fegls$m1$fit$vcov)), 7),
+#       "z-value" = round(results$ests$fegls$m1$fit$coef / sqrt(diag(results$ests$fegls$m1$fit$vcov)), 4),
+#       "p-value" = round(2* pnorm(q = -abs(results$ests$fegls$m1$fit$coef) / sqrt(diag(results$ests$fegls$m1$fit$vcov)), lower.tail = TRUE), 7))
+
 ```
 ```{r int_health_conflict_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "25%", out.height = "25%"}
 mods_health <- seq(round(min(dfp$health, na.rm = TRUE), 1), round(max(dfp$health, na.rm = TRUE), 1), 0.05)
@@ -428,6 +452,7 @@ lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
 
 ```{r health_war}
 results <- RunModels(labelspace = 16, equations = c(
+  # health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health + lag_war_internal:lag_gender,
@@ -436,12 +461,11 @@ results <- RunModels(labelspace = 16, equations = c(
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
   health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_war_internal:lag_class_GH +  lag_war_internal:lag_class_HG + lag_war_internal:lag_class_mid + lag_war_internal:lag_class_upp, 
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp,
-  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_gender)
+  health ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
-MakeTable(results$ests$fe, dv = "health", confl = "war", estimator = "fe")
-MakeTable(results$ests$fegls, dv = "health", confl = "war", estimator = "fegls")
+MakeTable(results$ests$fe, dv = "health", confl = "war", estimator = "fe", dist = "pt")
+MakeTable(results$ests$fegls, dv = "health", confl = "war", estimator = "fegls", dist = "pnorm")
 ```
 ```{r int_health_war_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "25%", out.height = "25%"}
 lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
@@ -520,6 +544,7 @@ lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
 
 ```{r gender_conflict}
 results <- RunModels(labelspace = 16, equations = c(
+    # gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health + lag_conflict_internal:lag_gender,
@@ -528,12 +553,11 @@ results <- RunModels(labelspace = 16, equations = c(
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_conflict_internal:lag_class_GH +  lag_conflict_internal:lag_class_HG + lag_conflict_internal:lag_class_mid + lag_conflict_internal:lag_class_upp, 
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp,
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health)
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
-MakeTable(results$ests$fe, dv = "gender", confl = "conflict", estimator = "fe")
-MakeTable(results$ests$fegls, dv = "gender", confl = "conflict", estimator = "fegls")
+MakeTable(results$ests$fe, dv = "gender", confl = "conflict", estimator = "fe", dist = "pt")
+MakeTable(results$ests$fegls, dv = "gender", confl = "conflict", estimator = "fegls", dist = "pnorm")
 ```
 ```{r int_gender_conflict_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "25%", out.height = "25%"}
 lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
@@ -612,6 +636,7 @@ lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
 
 ```{r gender_war}
 results <- RunModels(labelspace = 16, equations = c(
+    # gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health + lag_war_internal:lag_gender,
@@ -620,12 +645,11 @@ results <- RunModels(labelspace = 16, equations = c(
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
   gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_war_internal:lag_class_GH +  lag_war_internal:lag_class_HG + lag_war_internal:lag_class_mid + lag_war_internal:lag_class_upp, 
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp,
-  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health)
+  gender ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
-MakeTable(results$ests$fe, dv = "gender", confl = "war", estimator = "fe")
-MakeTable(results$ests$fegls, dv = "gender", confl = "war", estimator = "fegls")
+MakeTable(results$ests$fe, dv = "gender", confl = "war", estimator = "fe", dist = "pt")
+MakeTable(results$ests$fegls, dv = "gender", confl = "war", estimator = "fegls", dist = "pnorm")
 ```
 ```{r int_gender_war_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "25%", out.height = "25%"}
 lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
@@ -704,18 +728,18 @@ lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
 
 ```{r conflict}
 results <- RunModels(labelspace = 16, equations = c(
+  # conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_conflict_internal:lag_health + lag_conflict_internal:lag_gender,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_mid,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
-  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_conflict_internal:lag_class_GH +  lag_conflict_internal:lag_class_HG + lag_conflict_internal:lag_class_mid + lag_conflict_internal:lag_class_upp,
-  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender)
+  conflict_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_conflict_internal:lag_class_GH +  lag_conflict_internal:lag_class_HG + lag_conflict_internal:lag_class_mid + lag_conflict_internal:lag_class_upp)
 )
 results$tests
-MakeTable(results$ests$fe, dv = "conflict", estimator = "fe")
-MakeTable(results$ests$fegls, dv = "conflict", estimator = "fegls")
+MakeTable(results$ests$fe, dv = "conflict", estimator = "fe", dist = "pt")
+MakeTable(results$ests$fegls, dv = "conflict", estimator = "fegls", dist = "pnorm")
 ```
 ```{r int_conflict_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "25%", out.height = "25%"}
 lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
@@ -768,18 +792,18 @@ lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
 
 ```{r war}
 results <- RunModels(labelspace = 16, equations = c(
+    # war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_war_internal:lag_health + lag_war_internal:lag_gender,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_mid,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
-  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_war_internal:lag_class_GH +  lag_war_internal:lag_class_HG + lag_war_internal:lag_class_mid + lag_war_internal:lag_class_upp,
-  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_latentmean_fariss + lag_health + lag_gender)
+  war_internal ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_war_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_war_internal:lag_class_GH +  lag_war_internal:lag_class_HG + lag_war_internal:lag_class_mid + lag_war_internal:lag_class_upp)
 )
 results$tests
-MakeTable(results$ests$fe, dv = "war", estimator = "fe")
-MakeTable(results$ests$fegls, dv = "war", estimator = "fegls")
+MakeTable(results$ests$fe, dv = "war", estimator = "fe", dist = "pt")
+MakeTable(results$ests$fegls, dv = "war", estimator = "fegls", dist = "pnorm")
 ```
 ```{r int_war_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "25%", out.height = "25%"}
 lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
@@ -832,18 +856,18 @@ lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
 
 ```{r lpi}
 results <- RunModels(labelspace = 16, equations = c(
+  # latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_health + lag_gender,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_health:lag_gender,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_health + lag_gender + lag_latentmean_fariss:lag_health + lag_latentmean_fariss:lag_gender,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_mid,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_low + lag_class_GH + lag_class_HG + lag_class_upp,
   latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp,
-  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp,
-  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_health + lag_gender)
+  latentmean_fariss ~ lag_lg_pc_rgdpe_pwt + lag_lg_pop_density_wpp + lag_v2x_polyarchy + lag_v2x_partip + lag_v2x_liberal + lag_conflict_internal + lag_latentmean_fariss + lag_class_GH + lag_class_HG + lag_class_mid + lag_class_upp + lag_latentmean_fariss:lag_class_GH +  lag_latentmean_fariss:lag_class_HG + lag_latentmean_fariss:lag_class_mid + lag_latentmean_fariss:lag_class_upp)
 )
 results$tests
-MakeTable(results$ests$fe, dv = "repression", estimator = "fe")
-MakeTable(results$ests$fegls, dv = "repression", estimator = "fegls")
+MakeTable(results$ests$fe, dv = "repression", estimator = "fe", dist = "pt")
+MakeTable(results$ests$fegls, dv = "repression", estimator = "fegls", dist = "pnorm")
 ```
 ```{r int_lpi_m2_health, results = 'hide', fig.width = 7, fig.height = 5, out.width = "25%", out.height = "25%"}
 lapply(c("fe", "fd", "fegls", "fdgls"), function(estimator) {
