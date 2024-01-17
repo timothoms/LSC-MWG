@@ -195,7 +195,7 @@ summary(df$class_upp_1995)
 summary(df$class_upp_1995[df$mys_age_ratio_ihme_avg_growth1995_2015 < -0.00437])
 ```
 
-```{r new}
+```{r new0}
 # summ asfr_adol_wpp_grow95_2015 life_exp_wpp_1995 imr_wpp_1995 mys_age_ratio_ihme_1995 asfr_adol_wpp_1995 pc_rgdpe_avg_1995 pc_rgdpe_avg_grow95_2015 v2x_polyarchy_cum91_1995 v2x_polyarchy_cum96_2015 conflict_interl_cum89_19 conflict_interl_cum96_2015 deathciv_int_rate_1995 deathciv_int_rate_cum96_2015 deathciv_osv_rate_1995 deathciv_osv_rate_cum96_2015
 ```
 
@@ -282,7 +282,7 @@ round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")
 ```
 
 
-```{r new}
+```{r new1}
 # ***TABLE 1: SIMPLE MODEL
 # **TABLE 1: COLUMN 1
 # reg life_exp_wpp_grow95_2015 life_exp_wpp_1995 asfr_adol_wpp_1995 , robust
@@ -295,7 +295,7 @@ round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")
 # reg asfr_adol_wpp_grow95_2015 imr_wpp_1995  mys_age_ratio_ihme_1995 asfr_adol_wpp_1995, robust
 ```
 
-```{r new}
+```{r new2}
 # ***TABLE 2: add in 1995 political and economic variables
 # *life expectancy
 # ** TABLE 2 COLUMN 1 LIFE EXPECTANCY
@@ -308,7 +308,7 @@ round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")
 # reg asfr_adol_wpp_grow95_2015 imr_wpp_1995  mys_age_ratio_ihme_1995 asfr_adol_wpp_1995 pc_rgdpe_avg_1995 v2x_polyarchy_cum91_1995, robust
 ```
 
-```{r new}
+```{r new3}
 # ***ADDING IN PAST CONFLICT AND VIOLENCE FOR TABLE 3
 # **TABLE 3 COLUMN 1 life expectancy
 # reg life_exp_wpp_grow95_2015 life_exp_wpp_1995 mys_age_ratio_ihme_1995 asfr_adol_wpp_1995 pc_rgdpe_avg_1995 v2x_polyarchy_cum91_1995 conflict_interl_cum89_19 deathciv_int_rate_1995 deathciv_osv_rate_1995, robust
@@ -320,7 +320,7 @@ round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")
 # reg asfr_adol_wpp_grow95_2015 imr_wpp_1995 mys_age_ratio_ihme_1995 asfr_adol_wpp_1995 pc_rgdpe_avg_1995 v2x_polyarchy_cum91_1995 conflict_interl_cum89_19 deathciv_int_rate_1995 deathciv_osv_rate_1995, robust
 ```
 
-```{r new}
+```{r new4}
 # **ADDING IN CONTEMPOREANEOUS VARIABLES TABLE 4
 # *life_exp_wpp_1995 imr_wpp_1995  mys_age_ratio_ihme_1995 asfr_adol_wpp_1995 pc_rgdpe_avg_1995 v2x_polyarchy_cum91_1995 conflict_interl_cum89_19 deathciv_int_rate_1995 deathciv_osv_rate_1995 pc_rgdpe_avg_grow95_2015 v2x_polyarchy_cum96_2015 conflict_interl_cum96_2015 deathciv_int_rate_cum96_2015 deathciv_osv_rate_cum96_2015 , robust
 # *TABLE 4 col 1  life expectancy
@@ -333,7 +333,7 @@ round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")
 # reg asfr_adol_wpp_grow95_2015 imr_wpp_1995 mys_age_ratio_ihme_1995 asfr_adol_wpp_1995     deathciv_osv_rate_cum96_2015,  robust
 ```
 
-```{r new}
+```{r new5}
 # **TABLE 5 analysis of current variables on future conflict growth and democracy
 # *TABLE 5 COL 1 gdppc growth
 # gen rgdpgrow = (pc_rgdpe_avg_grow95_2015 - pc_rgdpe_avg_1995)*100/pc_rgdpe_avg_1995
@@ -354,7 +354,7 @@ round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")
 # reg deathciv_osv_rate_cum96_2015  imr_wpp_1995  asfr_adol_wpp_1995  ,  robust
 ```
 
-```{r new}
+```{r new6}
 # **CLASSIFICATION ANALYSIS : WITH DUMMIES BY CLASSIFICATION
 # **TABLE 6
 # *TABLE 6 COL 1 LIFE EXPECTANCY
@@ -367,7 +367,7 @@ round(prop.table(table(df[, c("class_vv_1995", "war_1996_2015", "war_1989_1995")
 # reg asfr_adol_wpp_grow95_2015  imr_wpp_1995 mys_age_ratio_ihme_1995 asfr_adol_wpp_1995 class_low_1995 classgh95 classhg95 class_upp_1995 , robust
 ```
 
-```{r new}
+```{r new7}
 # **Table 7 analysis of current variables on future conflict growth and democracy, including classifiactions
 # 
 # *TABLE 7 COL 1 gdppc growth

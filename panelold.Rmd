@@ -55,7 +55,8 @@ dfp <- dfp[dfp$year >= 1965 + 5*number_of_lags, ]
 dfp <- dfp[dfp$year >= params$begin & dfp$year <= params$end, ]
 
 # functions
-source("~/Dropbox/Analyses/functions/RegressionFig.R")
+source("~/Documents/Work/Analyses/functions/RegressionFig.R")
+# source("~/Dropbox/Analyses/functions/RegressionFig.R")
 RunModels <- function(equations,
   estimators_to_show = c("fe", "fegls"),
   labelspace = 18,

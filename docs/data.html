@@ -13,7 +13,7 @@
 
 <title>Data &amp; Correlations</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -33,8 +33,8 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -44,6 +44,7 @@
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
     </style>
+
 
 
 <style type="text/css">
@@ -56,7 +57,7 @@
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -93,7 +94,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -106,7 +107,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -136,13 +137,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -178,6 +186,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -235,11 +246,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -268,8 +283,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -277,16 +292,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -333,7 +341,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -373,7 +381,7 @@ $(document).ready(function () {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -387,68 +395,82 @@ $(document).ready(function () {
 </div>
 
 
-<div id="section" class="section level3 tabset tabset-fade tabset-pills">
+<div id="section"
+class="section level3 tabset tabset-fade tabset-pills">
 <h3 class="tabset tabset-fade tabset-pills"></h3>
 <div id="dataset" class="section level4">
 <h4>Dataset</h4>
-<p>All the analyses are based on a large global dataset (and accompanying codebook) which we assembled from commonly used quantitative indicators on health, gender equality and several types of violence. The codebook, including variable definitions and summary statistics, is available as a Googlesheet in the shared Google Drive of the Lancet Commission Metrics Working Group, or at this <a href="https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing">link</a> (access via logging into the shared folder provides more functionality). The dataset is also available in the shared Dropbox folder of the Working Group.) We begin by considering the following measures within the categories of health outcomes, gender inequalities, state-based violent conflict, one-sided violence, and societal violence. The code also sets up vectors of variable names for later use.)</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>link <span class="ot">&lt;-</span> <span class="st">&quot;https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing&quot;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>googlesheets4<span class="sc">::</span><span class="fu">gs4_deauth</span>()</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>codebook <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(link, <span class="at">sheet =</span> <span class="st">&quot;codebook&quot;</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>IsTrue <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> x }</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;_data/dataset_LSCMWG.RData&quot;</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1960</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># data &lt;- data[, names(data) %in% codebook$variable[codebook$flag %in% c(&quot;id&quot;, &quot;maybe&quot;, &quot;use&quot;)]]</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>categories <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">one_sided =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    codebook<span class="sc">$</span>sub_category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;one-sided violence&quot;</span>, <span class="st">&quot;repression&quot;</span>)],</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">societal =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;societal violence&quot;</span>)],</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">conflict =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;state-based conflict&quot;</span>)],</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(<span class="sc">!</span>codebook<span class="sc">$</span>sub_category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;education&quot;</span>, <span class="st">&quot;labor&quot;</span>) <span class="sc">|</span> <span class="fu">is.na</span>(codebook<span class="sc">$</span>sub_category))],</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender_labor =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span> <span class="sc">&amp;</span> codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;labor&quot;</span>)],</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender_educ =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span> <span class="sc">&amp;</span> codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;education&quot;</span>)],</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">health =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    codebook<span class="sc">$</span>category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;health&quot;</span>)]</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>categories</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">measurement_models =</span> <span class="fu">c</span>(<span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;v2caviol&quot;</span>),</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">death_rates =</span> <span class="fu">c</span>(<span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_int_rate&quot;</span>, </span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;deaths_civilians_osv_rate&quot;</span>, <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, </span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;deaths_civilians_nsc_rate&quot;</span>, <span class="st">&quot;deaths_all_ucdp_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>),</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">conflict_incidence =</span> <span class="fu">c</span>(<span class="st">&quot;conflict_internal&quot;</span>, <span class="st">&quot;war_internal&quot;</span>,  <span class="st">&quot;conflict_non_state&quot;</span>, <span class="st">&quot;conflict_one_sided&quot;</span>),</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">health_full =</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>),</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">health =</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>),</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender_full =</span> <span class="fu">c</span>(<span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;wmn_parl_wdi&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, </span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;daly_ratio_ihme&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, </span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;mys_ratio_bl&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;mys_pop_ratio_ihme&quot;</span> ),</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> <span class="fu">c</span>(<span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>),</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">political =</span> <span class="fu">c</span>(<span class="st">&quot;polity2_p4&quot;</span>, <span class="st">&quot;dem_bmr&quot;</span>, <span class="st">&quot;v2x_polyarchy&quot;</span>, <span class="st">&quot;v2x_libdem&quot;</span>, </span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;v2x_liberal&quot;</span>, <span class="st">&quot;v2x_partipdem&quot;</span>, <span class="st">&quot;v2x_partip&quot;</span>)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">lapply</span>(variables, <span class="cf">function</span>(set) {</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(set) <span class="ot">&lt;-</span> set </span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(set)</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>All the analyses are based on a large global dataset (and
+accompanying codebook) which we assembled from commonly used
+quantitative indicators on health, gender equality and several types of
+violence. The codebook, including variable definitions and summary
+statistics, is available as a Googlesheet in the shared Google Drive of
+the Lancet Commission Metrics Working Group, or at this <a
+href="https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing">link</a>
+(access via logging into the shared folder provides more functionality).
+The dataset is also available in the shared Dropbox folder of the
+Working Group.) We begin by considering the following measures within
+the categories of health outcomes, gender inequalities, state-based
+violent conflict, one-sided violence, and societal violence. The code
+also sets up vectors of variable names for later use.)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>link <span class="ot">&lt;-</span> <span class="st">&quot;https://docs.google.com/spreadsheets/d/1KLFTva--XHVBM-IX6qaPtuyzmIlRMnpyjUXfBdJPsag/edit?usp=sharing&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>googlesheets4<span class="sc">::</span><span class="fu">gs4_deauth</span>()</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>codebook <span class="ot">&lt;-</span> googlesheets4<span class="sc">::</span><span class="fu">read_sheet</span>(link, <span class="at">sheet =</span> <span class="st">&quot;codebook&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>IsTrue <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> x }</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;_data/dataset_LSCMWG.RData&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1960</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># data &lt;- data[, names(data) %in% codebook$variable[codebook$flag %in% c(&quot;id&quot;, &quot;maybe&quot;, &quot;use&quot;)]]</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>categories <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="at">one_sided =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    codebook<span class="sc">$</span>sub_category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;one-sided violence&quot;</span>, <span class="st">&quot;repression&quot;</span>)],</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="at">societal =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;societal violence&quot;</span>)],</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="at">conflict =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;state-based conflict&quot;</span>)],</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>  <span class="at">gender =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="fu">IsTrue</span>(<span class="sc">!</span>codebook<span class="sc">$</span>sub_category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;education&quot;</span>, <span class="st">&quot;labor&quot;</span>) <span class="sc">|</span> <span class="fu">is.na</span>(codebook<span class="sc">$</span>sub_category))],</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  <span class="at">gender_labor =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span> <span class="sc">&amp;</span> codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;labor&quot;</span>)],</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="at">gender_educ =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>    <span class="fu">IsTrue</span>(codebook<span class="sc">$</span>category <span class="sc">==</span> <span class="st">&quot;gender&quot;</span> <span class="sc">&amp;</span> codebook<span class="sc">$</span>sub_category <span class="sc">==</span> <span class="st">&quot;education&quot;</span>)],</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>  <span class="at">health =</span> codebook<span class="sc">$</span>variable[<span class="fu">IsTrue</span>(codebook<span class="sc">$</span>flag <span class="sc">==</span> <span class="st">&quot;use&quot;</span>) <span class="sc">&amp;</span> </span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>    codebook<span class="sc">$</span>category <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;health&quot;</span>)]</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>)</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>categories</span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>  <span class="at">measurement_models =</span> <span class="fu">c</span>(<span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;v2caviol&quot;</span>),</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>  <span class="at">death_rates =</span> <span class="fu">c</span>(<span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_int_rate&quot;</span>, </span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>                  <span class="st">&quot;deaths_civilians_osv_rate&quot;</span>, <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, </span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>                  <span class="st">&quot;deaths_civilians_nsc_rate&quot;</span>, <span class="st">&quot;deaths_all_ucdp_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>),</span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>  <span class="at">conflict_incidence =</span> <span class="fu">c</span>(<span class="st">&quot;conflict_internal&quot;</span>, <span class="st">&quot;war_internal&quot;</span>,  <span class="st">&quot;conflict_non_state&quot;</span>, <span class="st">&quot;conflict_one_sided&quot;</span>),</span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>  <span class="at">health_full =</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>),</span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>  <span class="at">health =</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>),</span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>  <span class="at">gender_full =</span> <span class="fu">c</span>(<span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;wmn_parl_wdi&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, </span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>                  <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;daly_ratio_ihme&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, </span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>                  <span class="st">&quot;mys_ratio_bl&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;mys_pop_ratio_ihme&quot;</span> ),</span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>  <span class="at">gender =</span> <span class="fu">c</span>(<span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>),</span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>  <span class="at">political =</span> <span class="fu">c</span>(<span class="st">&quot;polity2_p4&quot;</span>, <span class="st">&quot;dem_bmr&quot;</span>, <span class="st">&quot;v2x_polyarchy&quot;</span>, <span class="st">&quot;v2x_libdem&quot;</span>, </span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>                <span class="st">&quot;v2x_liberal&quot;</span>, <span class="st">&quot;v2x_partipdem&quot;</span>, <span class="st">&quot;v2x_partip&quot;</span>)</span>
+<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a>)</span>
+<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a>variables <span class="ot">&lt;-</span> <span class="fu">lapply</span>(variables, <span class="cf">function</span>(set) {</span>
+<span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a>  <span class="fu">names</span>(set) <span class="ot">&lt;-</span> set </span>
+<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a>  <span class="fu">return</span>(set)</span>
+<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a>})</span></code></pre></div>
 </div>
 <div id="country-data-coverage-over-time" class="section level4">
 <h4>Country data coverage over time</h4>
-<p>Due to data availability, the time period for our analyses will be primarily from 1990 until 2015 or 2018.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(categories, <span class="cf">function</span>(cat) { </span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cat, <span class="cf">function</span>(col_name) { </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(data<span class="sc">$</span>year, <span class="sc">!</span><span class="fu">is.na</span>(data[, col_name]))[, <span class="st">&quot;TRUE&quot;</span>] </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, tbl)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(tbl) <span class="ot">&lt;-</span> cat</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(tbl)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p>Due to data availability, the time period for our analyses will be
+primarily from 1990 until 2015 or 2018.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">lapply</span>(categories, <span class="cf">function</span>(cat) { </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cat, <span class="cf">function</span>(col_name) { </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>    <span class="fu">table</span>(data<span class="sc">$</span>year, <span class="sc">!</span><span class="fu">is.na</span>(data[, col_name]))[, <span class="st">&quot;TRUE&quot;</span>] </span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  })</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  tbl <span class="ot">&lt;-</span> <span class="fu">do.call</span>(cbind, tbl)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>  <span class="fu">colnames</span>(tbl) <span class="ot">&lt;-</span> cat</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="fu">return</span>(tbl)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>})</span></code></pre></div>
 <pre><code>## $one_sided
 ##      deaths_civilians_osv_rate deaths_pitf_rate latentmean_fariss v2clkill v2cltort killing_estimate_mean_fariss
 ## 1960                         0                0               109      108      108                            0
@@ -892,30 +914,37 @@ $(document).ready(function () {
 </div>
 <div id="within-category-correlations" class="section level4">
 <h4>Within-category correlations</h4>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">names</span>(categories), <span class="cf">function</span>(category) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data[, categories[[category]]], <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">stroke =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)) <span class="sc">+</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>)) <span class="sc">+</span> </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(category)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">names</span>(categories), <span class="cf">function</span>(category) {</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data[, categories[[category]]], <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">stroke =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)) <span class="sc">+</span> </span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>)) <span class="sc">+</span> </span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="fu">ggtitle</span>(category)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>})</span></code></pre></div>
 <p><img src="data_files/figure-html/within-1.png" width="100%" height="100%" /><img src="data_files/figure-html/within-2.png" width="100%" height="100%" /><img src="data_files/figure-html/within-3.png" width="100%" height="100%" /><img src="data_files/figure-html/within-4.png" width="100%" height="100%" /><img src="data_files/figure-html/within-5.png" width="100%" height="100%" /><img src="data_files/figure-html/within-6.png" width="100%" height="100%" /><img src="data_files/figure-html/within-7.png" width="100%" height="100%" /></p>
 </div>
 <div id="across-category-correlations" class="section level4">
 <h4>Across-category correlations</h4>
-<p>Based on theoretical relevance and representativeness (see within-category correlations), we show correlations of certain of these variables across the categories:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>variables_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;physicians_pc_wdi&quot;</span>, </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_all_osv_rate&quot;</span>, </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;killing_estimate_mean_fariss&quot;</span>, <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data[, variables_to_include], <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">stroke =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)) <span class="sc">+</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">strip.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>))</span></code></pre></div>
+<p>Based on theoretical relevance and representativeness (see
+within-category correlations), we show correlations of certain of these
+variables across the categories:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>variables_to_include <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>                          <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;physicians_pc_wdi&quot;</span>, </span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                          <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_all_osv_rate&quot;</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>                          <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;killing_estimate_mean_fariss&quot;</span>, <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(data[, variables_to_include], <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">stroke =</span> <span class="dv">0</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)) <span class="sc">+</span> </span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">strip.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">0</span>))</span></code></pre></div>
 <p><img src="data_files/figure-html/across-1.png" width="100%" height="100%" /></p>
 </div>
-<div id="which-countries-have-such-high-ratios-of-years-of-schooling-in-favor-of-women" class="section level4">
-<h4>Which countries have such high ratios of years of schooling in favor of women?</h4>
-<p>We noticed that some of the education ratios (female to male) are surprisingly high, and want to know which country-years account for this.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>ed <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;mys_ratio_uis&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;eys_ratio_hdr&quot;</span>, <span class="st">&quot;eys_ratio_uis&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, variables<span class="sc">$</span>ed])</span></code></pre></div>
+<div
+id="which-countries-have-such-high-ratios-of-years-of-schooling-in-favor-of-women"
+class="section level4">
+<h4>Which countries have such high ratios of years of schooling in favor
+of women?</h4>
+<p>We noticed that some of the education ratios (female to male) are
+surprisingly high, and want to know which country-years account for
+this.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>variables<span class="sc">$</span>ed <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mys_ratio_hdr&quot;</span>, <span class="st">&quot;mys_ratio_uis&quot;</span>, <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;eys_ratio_hdr&quot;</span>, <span class="st">&quot;eys_ratio_uis&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">summary</span>(data[, variables<span class="sc">$</span>ed])</span></code></pre></div>
 <pre><code>##  mys_ratio_hdr   mys_ratio_uis   mys_age_ratio_ihme eys_ratio_hdr   eys_ratio_uis  
 ##  Min.   :0.104   Min.   :0.081   Min.   :0.1226     Min.   :0.080   Min.   :0.052  
 ##  1st Qu.:0.744   1st Qu.:0.878   1st Qu.:0.5306     1st Qu.:0.942   1st Qu.:0.884  
@@ -924,18 +953,23 @@ $(document).ready(function () {
 ##  3rd Qu.:1.000   3rd Qu.:1.002   3rd Qu.:0.9516     3rd Qu.:1.064   3rd Qu.:1.015  
 ##  Max.   :1.529   Max.   :1.267   Max.   :1.2726     Max.   :1.317   Max.   :1.441  
 ##  NA&#39;s   :8015    NA&#39;s   :9165    NA&#39;s   :2538       NA&#39;s   :7926    NA&#39;s   :5100</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="fu">unique</span>(data<span class="sc">$</span>country[<span class="fu">IsTrue</span>(data<span class="sc">$</span>mys_ratio_hdr <span class="sc">&gt;</span> <span class="dv">1</span>)]), <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">paste</span>(<span class="fu">unique</span>(data<span class="sc">$</span>country[<span class="fu">IsTrue</span>(data<span class="sc">$</span>mys_ratio_hdr <span class="sc">&gt;</span> <span class="dv">1</span>)]), <span class="at">collapse =</span> <span class="st">&quot;; &quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;Argentina; Armenia; Australia; Bahamas; Barbados; Belize; Brazil; Bulgaria; Canada; Colombia; Costa Rica; Cuba; Denmark; Dominican Republic; Estonia; Fiji; Finland; Gabon; Georgia; Guyana; Honduras; Iceland; Ireland; Israel; Jamaica; Japan; Jordan; Kazakhstan; Kuwait; Kyrgyzstan; Latvia; Lesotho; Libya; Lithuania; Madagascar; Malawi; Malta; Moldova; Mongolia; Myanmar; Namibia; New Zealand; Nicaragua; Norway; Oman; Panama; Paraguay; Philippines; Poland; Portugal; Qatar; Saint Lucia; Saint Vincent &amp; the Grenadines; Suriname; Sweden; Tonga; Trinidad &amp; Tobago; United Arab Emirates; United States of America; Uruguay; Venezuela&quot;</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data[IsTrue(data$mys_ratio_hdr &gt; 1), c(&quot;country&quot;, &quot;year&quot;, variables$ed)]</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># data[IsTrue(data$mys_ratio_hdr &gt; 1), c(&quot;country&quot;, &quot;year&quot;, variables$ed)]</span></span></code></pre></div>
 </div>
-<div id="inverting-variables-for-comparable-interpretations" class="section level4">
+<div id="inverting-variables-for-comparable-interpretations"
+class="section level4">
 <h4>Inverting variables for comparable interpretations</h4>
-<p>Since we are dealing with a wide range of measures, we need to ensure that they reflect the same “direction” of effects. We do this by coding the negative of some variables, so that higher values indicate better outcomes for the health and gender categories and higher values indicate worse outcomes for the violence categories.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>variables<span class="sc">$</span>negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;mmr_unicef&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, <span class="st">&quot;gii_hdr&quot;</span>,</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;latentmean_fariss_cumulative1991&quot;</span>, </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss_cumulative1996&quot;</span>, <span class="st">&quot;v2cltort_cumulative1991&quot;</span>, </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;v2cltort_cumulative1996&quot;</span>, <span class="st">&quot;v2clkill_cumulative1991&quot;</span>, <span class="st">&quot;v2clkill_cumulative1996&quot;</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<p>Since we are dealing with a wide range of measures, we need to ensure
+that they reflect the same “direction” of effects. We do this by coding
+the negative of some variables, so that higher values indicate better
+outcomes for the health and gender categories and higher values indicate
+worse outcomes for the violence categories.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>variables<span class="sc">$</span>negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;mmr_unicef&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, <span class="st">&quot;tfr_wpp&quot;</span>, <span class="st">&quot;gii_hdr&quot;</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;latentmean_fariss_cumulative1991&quot;</span>, </span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>                        <span class="st">&quot;latentmean_fariss_cumulative1996&quot;</span>, <span class="st">&quot;v2cltort_cumulative1991&quot;</span>, </span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>                        <span class="st">&quot;v2cltort_cumulative1996&quot;</span>, <span class="st">&quot;v2clkill_cumulative1991&quot;</span>, <span class="st">&quot;v2clkill_cumulative1996&quot;</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
 <pre><code>##     imr_wpp           ufmr_wpp         mmr_unicef     daly_ihme      asfr_adol_wpp        tfr_wpp         gii_hdr      latentmean_fariss    v2cltort     
 ##  Min.   :  1.254   Min.   :  1.765   Min.   :   2   Min.   : 15334   Min.   :  0.283   Min.   :1.051   Min.   :0.025   Min.   :-3.4595   Min.   :-3.150  
 ##  1st Qu.: 15.363   1st Qu.: 18.328   1st Qu.:  17   1st Qu.: 27130   1st Qu.: 29.676   1st Qu.:2.170   1st Qu.:0.208   1st Qu.:-0.8403   1st Qu.:-0.879  
@@ -944,8 +978,8 @@ $(document).ready(function () {
 ##  3rd Qu.: 85.913   3rd Qu.:129.686   3rd Qu.: 277   3rd Qu.: 50724   3rd Qu.:117.050   3rd Qu.:5.955   3rd Qu.:0.537   3rd Qu.: 1.4236   3rd Qu.: 1.747  
 ##  Max.   :319.239   Max.   :465.517   Max.   :2480   Max.   :788016   Max.   :242.574   Max.   :8.800   Max.   :0.819   Max.   : 5.3362   Max.   : 3.509  
 ##  NA&#39;s   :8259      NA&#39;s   :8259      NA&#39;s   :9396   NA&#39;s   :5145     NA&#39;s   :8259      NA&#39;s   :8259    NA&#39;s   :8365    NA&#39;s   :274       NA&#39;s   :975</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data[, variables<span class="sc">$</span>negative] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, variables<span class="sc">$</span>negative], <span class="st">&#39;-&#39;</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>data[, variables<span class="sc">$</span>negative] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, variables<span class="sc">$</span>negative], <span class="st">&#39;-&#39;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">c</span>(variables<span class="sc">$</span>negative[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>])])</span></code></pre></div>
 <pre><code>##     imr_wpp            ufmr_wpp          mmr_unicef      daly_ihme       asfr_adol_wpp         tfr_wpp          gii_hdr       latentmean_fariss    v2cltort     
 ##  Min.   :-319.239   Min.   :-465.517   Min.   :-2480   Min.   :-788016   Min.   :-242.574   Min.   :-8.800   Min.   :-0.819   Min.   :-5.3362   Min.   :-3.509  
 ##  1st Qu.: -85.913   1st Qu.:-129.686   1st Qu.: -277   1st Qu.: -50724   1st Qu.:-117.050   1st Qu.:-5.955   1st Qu.:-0.537   1st Qu.:-1.4236   1st Qu.:-1.747  
@@ -954,37 +988,160 @@ $(document).ready(function () {
 ##  3rd Qu.: -15.363   3rd Qu.: -18.328   3rd Qu.:  -17   3rd Qu.: -27130   3rd Qu.: -29.676   3rd Qu.:-2.170   3rd Qu.:-0.208   3rd Qu.: 0.8403   3rd Qu.: 0.879  
 ##  Max.   :  -1.254   Max.   :  -1.765   Max.   :   -2   Max.   : -15334   Max.   :  -0.283   Max.   :-1.051   Max.   :-0.025   Max.   : 3.4595   Max.   : 3.150  
 ##  NA&#39;s   :8259       NA&#39;s   :8259       NA&#39;s   :9396    NA&#39;s   :5145      NA&#39;s   :8259       NA&#39;s   :8259     NA&#39;s   :8365     NA&#39;s   :274       NA&#39;s   :975</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">names</span>(data)[<span class="fu">str_detect</span>(<span class="fu">names</span>(data), <span class="st">&quot;gini&quot;</span>)]</span></code></pre></div>
+<pre><code>## [1] &quot;gini_wdi&quot;       &quot;gini_disp_mean&quot; &quot;gini_disp_sd&quot;</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">&gt;=</span> <span class="dv">1970</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">check =</span> <span class="sc">!</span><span class="fu">is.na</span>(gini_disp_mean)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>  <span class="fu">select</span>(year, check) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  table</span></code></pre></div>
+<pre><code>##       check
+## year   FALSE TRUE
+##   1970   107   36
+##   1971   110   38
+##   1972   108   40
+##   1973   105   44
+##   1974   105   46
+##   1975   110   48
+##   1976   107   51
+##   1977   105   54
+##   1978   107   55
+##   1979   107   58
+##   1980   106   60
+##   1981   105   63
+##   1982   105   63
+##   1983   104   65
+##   1984   102   67
+##   1985    95   74
+##   1986    93   78
+##   1987    89   82
+##   1988    85   86
+##   1989    82   89
+##   1990    81   90
+##   1991    80  106
+##   1992    70  118
+##   1993    67  123
+##   1994    64  128
+##   1995    58  134
+##   1996    51  141
+##   1997    50  142
+##   1998    48  144
+##   1999    45  147
+##   2000    42  150
+##   2001    38  154
+##   2002    33  160
+##   2003    31  162
+##   2004    30  163
+##   2005    24  169
+##   2006    19  175
+##   2007    19  175
+##   2008    21  174
+##   2009    27  168
+##   2010    30  165
+##   2011    36  160
+##   2012    40  156
+##   2013    47  149
+##   2014    52  144
+##   2015    67  129
+##   2016    83  113
+##   2017    98   98
+##   2018   115   81
+##   2019   152   44</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">table</span>(data<span class="sc">$</span>year, <span class="sc">!</span><span class="fu">is.na</span>(data<span class="sc">$</span>gini_disp_mean))</span></code></pre></div>
+<pre><code>##       
+##        FALSE TRUE
+##   1960   109    4
+##   1961   108    9
+##   1962   110   14
+##   1963   110   15
+##   1964   111   17
+##   1965   112   20
+##   1966   115   21
+##   1967   114   23
+##   1968   115   26
+##   1969   110   31
+##   1970   107   36
+##   1971   110   38
+##   1972   108   40
+##   1973   105   44
+##   1974   105   46
+##   1975   110   48
+##   1976   107   51
+##   1977   105   54
+##   1978   107   55
+##   1979   107   58
+##   1980   106   60
+##   1981   105   63
+##   1982   105   63
+##   1983   104   65
+##   1984   102   67
+##   1985    95   74
+##   1986    93   78
+##   1987    89   82
+##   1988    85   86
+##   1989    82   89
+##   1990    81   90
+##   1991    80  106
+##   1992    70  118
+##   1993    67  123
+##   1994    64  128
+##   1995    58  134
+##   1996    51  141
+##   1997    50  142
+##   1998    48  144
+##   1999    45  147
+##   2000    42  150
+##   2001    38  154
+##   2002    33  160
+##   2003    31  162
+##   2004    30  163
+##   2005    24  169
+##   2006    19  175
+##   2007    19  175
+##   2008    21  174
+##   2009    27  168
+##   2010    30  165
+##   2011    36  160
+##   2012    40  156
+##   2013    47  149
+##   2014    52  144
+##   2015    67  129
+##   2016    83  113
+##   2017    98   98
+##   2018   115   81
+##   2019   152   44</code></pre>
 </div>
-<div id="variable-transformations-and-coding-performance-measures" class="section level4">
+<div id="variable-transformations-and-coding-performance-measures"
+class="section level4">
 <h4>Variable transformations and coding performance measures</h4>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, year) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">cut</span>(year, <span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2020</span>, <span class="dv">5</span>), <span class="at">right =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;growth_rgdpe_pwt&quot;</span>, <span class="st">&quot;pop_wpp&quot;</span>, <span class="st">&quot;pop_density_wpp&quot;</span>, </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;mys_pop_ratio_ihme&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;gii_hdr&quot;</span>, <span class="st">&quot;conflict_internal&quot;</span>, </span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;war_internal&quot;</span>, <span class="st">&quot;conflict_non_state&quot;</span>, <span class="st">&quot;conflict_one_sided&quot;</span>, </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;deaths_all_int&quot;</span>, <span class="st">&quot;deaths_civilians_int&quot;</span>, <span class="st">&quot;deaths_civilians_osv&quot;</span>, </span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;deaths_all_nsc&quot;</span>, <span class="st">&quot;deaths_civilians_nsc&quot;</span>, <span class="st">&quot;deaths_all_ucdp&quot;</span>, </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;hom_odcwho&quot;</span>, <span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_int_rate&quot;</span>, </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;deaths_civilians_osv_rate&quot;</span>, <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, </span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;deaths_civilians_nsc_rate&quot;</span>, <span class="st">&quot;deaths_all_ucdp_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>, </span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;v2caviol&quot;</span>, </span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&quot;v2x_polyarchy&quot;</span>, <span class="st">&quot;v2x_libdem&quot;</span>, <span class="st">&quot;v2x_liberal&quot;</span>, <span class="st">&quot;v2x_partipdem&quot;</span>, <span class="st">&quot;v2x_partip&quot;</span>)</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, period, year) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country, period) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars), <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.names =</span> <span class="st">&quot;{col}_avg&quot;</span>), <span class="at">.keep =</span> <span class="st">&quot;all&quot;</span>)</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)], <span class="cf">function</span>(col) {</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  col[<span class="fu">is.nan</span>(col)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(col)</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;pop_wpp&quot;</span>, <span class="st">&quot;pop_density_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>)</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs, <span class="fu">paste</span>(take_logs, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs_negative, <span class="fu">paste</span>(take_logs_negative, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative))])</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">cut</span>(year, <span class="fu">seq</span>(<span class="dv">1960</span>, <span class="dv">2020</span>, <span class="dv">5</span>), <span class="at">right =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;growth_rgdpe_pwt&quot;</span>, <span class="st">&quot;pop_wpp&quot;</span>, <span class="st">&quot;pop_density_wpp&quot;</span>, </span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a>                         <span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>, </span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a>                         <span class="st">&quot;mys_age_ratio_ihme&quot;</span>, <span class="st">&quot;mys_pop_ratio_ihme&quot;</span>, <span class="st">&quot;mys_ratio_hdr&quot;</span>, </span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a>                         <span class="st">&quot;labor_mod_ratio15_ilo&quot;</span>, <span class="st">&quot;gii_hdr&quot;</span>, <span class="st">&quot;conflict_internal&quot;</span>, </span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a>                         <span class="st">&quot;war_internal&quot;</span>, <span class="st">&quot;conflict_non_state&quot;</span>, <span class="st">&quot;conflict_one_sided&quot;</span>, </span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a>                         <span class="st">&quot;deaths_all_int&quot;</span>, <span class="st">&quot;deaths_civilians_int&quot;</span>, <span class="st">&quot;deaths_civilians_osv&quot;</span>, </span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a>                         <span class="st">&quot;deaths_all_nsc&quot;</span>, <span class="st">&quot;deaths_civilians_nsc&quot;</span>, <span class="st">&quot;deaths_all_ucdp&quot;</span>, </span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a>                         <span class="st">&quot;hom_odcwho&quot;</span>, <span class="st">&quot;deaths_all_int_rate&quot;</span>, <span class="st">&quot;deaths_civilians_int_rate&quot;</span>, </span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a>                         <span class="st">&quot;deaths_civilians_osv_rate&quot;</span>, <span class="st">&quot;deaths_all_nsc_rate&quot;</span>, </span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a>                         <span class="st">&quot;deaths_civilians_nsc_rate&quot;</span>, <span class="st">&quot;deaths_all_ucdp_rate&quot;</span>, <span class="st">&quot;hom_odcwho_rate&quot;</span>, </span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a>                         <span class="st">&quot;latentmean_fariss&quot;</span>, <span class="st">&quot;v2cltort&quot;</span>, <span class="st">&quot;v2clkill&quot;</span>, <span class="st">&quot;v2caviol&quot;</span>, </span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a>                         <span class="st">&quot;v2x_polyarchy&quot;</span>, <span class="st">&quot;v2x_libdem&quot;</span>, <span class="st">&quot;v2x_liberal&quot;</span>, <span class="st">&quot;v2x_partipdem&quot;</span>, <span class="st">&quot;v2x_partip&quot;</span>)</span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> </span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(country, period, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a>  <span class="fu">group_by</span>(country, period) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(vars), <span class="sc">~</span><span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.names =</span> <span class="st">&quot;{col}_avg&quot;</span>), <span class="at">.keep =</span> <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a>data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)], <span class="cf">function</span>(col) {</span>
+<span id="cb21-21"><a href="#cb21-21" tabindex="-1"></a>  col[<span class="fu">is.nan</span>(col)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb21-22"><a href="#cb21-22" tabindex="-1"></a>  <span class="fu">return</span>(col)</span>
+<span id="cb21-23"><a href="#cb21-23" tabindex="-1"></a>})</span>
+<span id="cb21-24"><a href="#cb21-24" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pc_rgdpe_pwt&quot;</span>, <span class="st">&quot;pop_wpp&quot;</span>, <span class="st">&quot;pop_density_wpp&quot;</span>, <span class="st">&quot;life_exp_wpp&quot;</span>)</span>
+<span id="cb21-25"><a href="#cb21-25" tabindex="-1"></a>take_logs <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs, <span class="fu">paste</span>(take_logs, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb21-26"><a href="#cb21-26" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;imr_wpp&quot;</span>, <span class="st">&quot;ufmr_wpp&quot;</span>, <span class="st">&quot;daly_ihme&quot;</span>, <span class="st">&quot;asfr_adol_wpp&quot;</span>)</span>
+<span id="cb21-27"><a href="#cb21-27" tabindex="-1"></a>take_logs_negative <span class="ot">&lt;-</span> <span class="fu">c</span>(take_logs_negative, <span class="fu">paste</span>(take_logs_negative, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb21-28"><a href="#cb21-28" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative))])</span></code></pre></div>
 <pre><code>##  asfr_adol_wpp      asfr_adol_wpp_avg    daly_ihme       daly_ihme_avg        imr_wpp          imr_wpp_avg        life_exp_wpp   life_exp_wpp_avg  pc_rgdpe_pwt      pc_rgdpe_pwt_avg   pop_density_wpp     pop_density_wpp_avg
 ##  Min.   :-242.574   Min.   :-242.574   Min.   :-788016   Min.   :-251744   Min.   :-319.239   Min.   :-319.239   Min.   :14.49   Min.   :14.49    Min.   :   244.6   Min.   :   460.6   Min.   :    0.615   Min.   :    0.615  
 ##  1st Qu.:-117.050   1st Qu.:-114.743   1st Qu.: -50724   1st Qu.: -51072   1st Qu.: -85.913   1st Qu.: -81.977   1st Qu.:55.06   1st Qu.:55.78    1st Qu.:  2486.8   1st Qu.:  2502.9   1st Qu.:   19.004   1st Qu.:   18.845  
@@ -1001,9 +1158,9 @@ $(document).ready(function () {
 ##  3rd Qu.:  18647.1   3rd Qu.:  18753.9   3rd Qu.: -18.328   3rd Qu.: -17.785  
 ##  Max.   :1433783.7   Max.   :1424125.7   Max.   :  -1.765   Max.   :  -1.765  
 ##  NA&#39;s   :301         NA&#39;s   :299         NA&#39;s   :8259       NA&#39;s   :773</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs], log)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs_negative, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs_negative], <span class="cf">function</span>(col) { <span class="sc">-</span><span class="fu">log</span>(<span class="sc">-</span>col) })</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">paste</span> (<span class="st">&quot;lg&quot;</span>, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative)), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)])</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs], log)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, take_logs_negative, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, take_logs_negative], <span class="cf">function</span>(col) { <span class="sc">-</span><span class="fu">log</span>(<span class="sc">-</span>col) })</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="fu">summary</span>(data[, <span class="fu">paste</span> (<span class="st">&quot;lg&quot;</span>, <span class="fu">sort</span>(<span class="fu">c</span>(take_logs, take_logs_negative)), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)])</span></code></pre></div>
 <pre><code>##  lg_asfr_adol_wpp lg_asfr_adol_wpp_avg  lg_daly_ihme     lg_daly_ihme_avg    lg_imr_wpp     lg_imr_wpp_avg    lg_life_exp_wpp lg_life_exp_wpp_avg lg_pc_rgdpe_pwt  lg_pc_rgdpe_pwt_avg lg_pop_density_wpp lg_pop_density_wpp_avg
 ##  Min.   :-5.491   Min.   :-5.491       Min.   :-13.577   Min.   :-12.436   Min.   :-5.766   Min.   :-5.7659   Min.   :2.673   Min.   :2.674       Min.   : 5.500   Min.   : 6.133      Min.   :-0.4861    Min.   :-0.4861       
 ##  1st Qu.:-4.763   1st Qu.:-4.743       1st Qu.:-10.834   1st Qu.:-10.841   1st Qu.:-4.453   1st Qu.:-4.4064   1st Qu.:4.008   1st Qu.:4.021       1st Qu.: 7.819   1st Qu.: 7.825      1st Qu.: 2.9447    1st Qu.: 2.9362       
@@ -1020,39 +1177,39 @@ $(document).ready(function () {
 ##  3rd Qu.: 9.833   3rd Qu.: 9.839   3rd Qu.:-2.908   3rd Qu.:-2.8784  
 ##  Max.   :14.176   Max.   :14.169   Max.   :-0.568   Max.   :-0.5682  
 ##  NA&#39;s   :301      NA&#39;s   :299      NA&#39;s   :8259     NA&#39;s   :773</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># viol_vars &lt;- c(&quot;conflict_internal&quot;, &quot;war_internal&quot;, &quot;conflict_non_state&quot;, </span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#                &quot;conflict_one_sided&quot;, &quot;latentmean_fariss&quot;, &quot;v2cltort&quot;, &quot;v2clkill&quot;)</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>viol_vars_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;deaths_all_int&quot;</span>, <span class="st">&quot;deaths_civilians_int&quot;</span>, <span class="st">&quot;deaths_civilians_osv&quot;</span>, </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                   <span class="st">&quot;deaths_all_nsc&quot;</span>, <span class="st">&quot;deaths_civilians_nsc&quot;</span>, <span class="st">&quot;deaths_all_ucdp&quot;</span>, <span class="st">&quot;hom_odcwho&quot;</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>viol_vars_log <span class="ot">&lt;-</span> <span class="fu">c</span>(viol_vars_log, </span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">paste</span>(viol_vars_log, <span class="st">&quot;rate&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>), </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">paste</span>(viol_vars_log, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>), </span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">paste</span>(viol_vars_log, <span class="st">&quot;rate_avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, viol_vars_log, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, viol_vars_log], <span class="cf">function</span>(col) { <span class="fu">log</span>(col <span class="sc">+</span> <span class="dv">1</span>) })</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>CodePerformance <span class="ot">&lt;-</span> <span class="cf">function</span>(y_var, x_vars, df) {</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  x_vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(x_vars, <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  equation <span class="ot">&lt;-</span> <span class="fu">paste</span>(y_var, <span class="st">&quot;~&quot;</span>, x_vars)</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df, <span class="at">country =</span> country, <span class="at">year =</span> year))</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df)</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  df[, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> df[, y_var] <span class="sc">-</span> df<span class="sc">$</span>predicted</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))])</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1965</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>)</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vars, <span class="cf">function</span>(var) {</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    dat <span class="ot">&lt;-</span> data[data<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, var)]</span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">nrow</span>(<span class="fu">na.omit</span>(dat)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>        <span class="fu">CodePerformance</span>(<span class="at">y_var =</span> var, <span class="at">x_vars =</span> <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, <span class="at">df =</span> dat)</span>
-<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> results[<span class="sc">!</span><span class="fu">unlist</span>(<span class="fu">lapply</span>(results, is.null))]</span>
-<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, results)</span>
-<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> performance_measures)</span>
-<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, performance_measures, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(data, codebook, categories, variables, <span class="at">file =</span> <span class="st">&quot;_data/LSCMWG_working_data.RData&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># viol_vars &lt;- c(&quot;conflict_internal&quot;, &quot;war_internal&quot;, &quot;conflict_non_state&quot;, </span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="co">#                &quot;conflict_one_sided&quot;, &quot;latentmean_fariss&quot;, &quot;v2cltort&quot;, &quot;v2clkill&quot;)</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>viol_vars_log <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;deaths_all_int&quot;</span>, <span class="st">&quot;deaths_civilians_int&quot;</span>, <span class="st">&quot;deaths_civilians_osv&quot;</span>, </span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a>                   <span class="st">&quot;deaths_all_nsc&quot;</span>, <span class="st">&quot;deaths_civilians_nsc&quot;</span>, <span class="st">&quot;deaths_all_ucdp&quot;</span>, <span class="st">&quot;hom_odcwho&quot;</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>viol_vars_log <span class="ot">&lt;-</span> <span class="fu">c</span>(viol_vars_log, </span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>                   <span class="fu">paste</span>(viol_vars_log, <span class="st">&quot;rate&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>), </span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>                   <span class="fu">paste</span>(viol_vars_log, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>), </span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>                   <span class="fu">paste</span>(viol_vars_log, <span class="st">&quot;rate_avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a>data[, <span class="fu">paste</span>(<span class="st">&quot;lg&quot;</span>, viol_vars_log, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(data[, viol_vars_log], <span class="cf">function</span>(col) { <span class="fu">log</span>(col <span class="sc">+</span> <span class="dv">1</span>) })</span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a>CodePerformance <span class="ot">&lt;-</span> <span class="cf">function</span>(y_var, x_vars, df) {</span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a>  x_vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(x_vars, <span class="at">collapse =</span> <span class="st">&quot; + &quot;</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>  equation <span class="ot">&lt;-</span> <span class="fu">paste</span>(y_var, <span class="st">&quot;~&quot;</span>, x_vars)</span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">get_all_vars</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df, <span class="at">country =</span> country, <span class="at">year =</span> year))</span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a>  mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> equation, <span class="at">data =</span> df)</span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a>  df<span class="sc">$</span>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod)</span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a>  df[, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)] <span class="ot">&lt;-</span> df[, y_var] <span class="sc">-</span> df<span class="sc">$</span>predicted</span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a>  <span class="fu">return</span>(df[, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="fu">paste</span>(<span class="st">&quot;perf&quot;</span>, y_var, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))])</span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a>}</span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a><span class="fu">names</span>(vars) <span class="ot">&lt;-</span> vars <span class="ot">&lt;-</span> <span class="fu">paste</span>(vars, <span class="st">&quot;avg&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)</span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a><span class="fu">names</span>(years) <span class="ot">&lt;-</span> years <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1965</span>, <span class="dv">2015</span>, <span class="dv">5</span>), <span class="dv">2018</span>)</span>
+<span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vars, <span class="cf">function</span>(var) {</span>
+<span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(years, <span class="cf">function</span>(year) {</span>
+<span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a>    dat <span class="ot">&lt;-</span> data[data<span class="sc">$</span>year <span class="sc">==</span> year, <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>, <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, var)]</span>
+<span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">nrow</span>(<span class="fu">na.omit</span>(dat)) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a>        <span class="fu">CodePerformance</span>(<span class="at">y_var =</span> var, <span class="at">x_vars =</span> <span class="st">&quot;lg_pc_rgdpe_pwt_avg&quot;</span>, <span class="at">df =</span> dat)</span>
+<span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a>      }</span>
+<span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a>  })</span>
+<span id="cb25-28"><a href="#cb25-28" tabindex="-1"></a>  results <span class="ot">&lt;-</span> results[<span class="sc">!</span><span class="fu">unlist</span>(<span class="fu">lapply</span>(results, is.null))]</span>
+<span id="cb25-29"><a href="#cb25-29" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, results)</span>
+<span id="cb25-30"><a href="#cb25-30" tabindex="-1"></a>})</span>
+<span id="cb25-31"><a href="#cb25-31" tabindex="-1"></a>performance_measures <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(<span class="at">f =</span> <span class="cf">function</span>(...) <span class="fu">merge</span>(..., <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all =</span> <span class="cn">TRUE</span>), <span class="at">x =</span> performance_measures)</span>
+<span id="cb25-32"><a href="#cb25-32" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(data, performance_measures, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>), <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb25-33"><a href="#cb25-33" tabindex="-1"></a><span class="fu">save</span>(data, codebook, categories, variables, <span class="at">file =</span> <span class="st">&quot;_data/LSCMWG_working_data.RData&quot;</span>)</span></code></pre></div>
 </div>
 </div>
 

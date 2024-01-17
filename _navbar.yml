@@ -7,8 +7,6 @@ left:
   href: data.html
 - text: "Classifications"
   href: classifications.html
-- text: "Cross-sectional Models"
-  href: regressions.html
 - text: "Panel Models"
   href: panel.html
 - text: "Sequences"
